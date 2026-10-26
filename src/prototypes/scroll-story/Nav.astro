@@ -1,0 +1,66 @@
+<header class="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="/" aria-label="Leaf home">
+      <img src="/leaf.svg" alt="" width="22" height="21" />
+      <span>Leaf</span>
+    </a>
+    <nav class="nav-links" aria-label="Page">
+      <a class="nav-link" href="#lifecycle">How it works</a>
+      <a class="btn btn-small" href="#demo">Book a demo</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ground) 84%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-row {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .nav-link {
+    font-size: 15px;
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--ink);
+  }
+
+  @media (max-width: 599px) {
+    .nav-link {
+      display: none;
+    }
+  }
+</style>

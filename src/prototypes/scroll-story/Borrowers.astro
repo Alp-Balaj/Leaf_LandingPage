@@ -1,0 +1,89 @@
+---
+const borrowers = [
+  {
+    title: 'Individuals',
+    body: 'Income and expense analysis, co-borrowers and guarantors, payroll-linked loans created automatically.',
+  },
+  {
+    title: 'Micro and SME',
+    body: 'Balance sheet and P&L over three periods, declared against assumed figures, and credit limits that open new applications.',
+  },
+  {
+    title: 'Corporate',
+    body: 'Full financial-statement analysis, legal opinion, mortgages and movable collateral kept with their history.',
+  },
+];
+---
+
+<section class="sec borrowers">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <h2>Individuals, micro, SME and corporate in one place.</h2>
+      <p>One record format, with the analysis each borrower type needs.</p>
+    </div>
+    <div class="bor-grid">
+      {
+        borrowers.map((b) => (
+          <div class="bor" data-reveal>
+            <h3>{b.title}</h3>
+            <p>{b.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <div class="bor-cta" data-reveal>
+      <a class="btn" href="#demo">Book a 45-minute demo</a>
+      <span>Bring your credit and risk leads.</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .borrowers {
+    background: var(--ground-2);
+    border-top: 1px solid var(--line);
+  }
+
+  .bor-grid {
+    margin-top: clamp(40px, 5vw, 64px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+  }
+
+  .bor {
+    padding-top: 20px;
+    border-top: 2px solid var(--red);
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1.1;
+  }
+
+  .bor p {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .bor-cta {
+    margin-top: clamp(48px, 6vw, 80px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 799px) {
+    .bor-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+</style>

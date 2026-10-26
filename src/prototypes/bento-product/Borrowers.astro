@@ -1,0 +1,32 @@
+---
+const borrowers = [
+  {
+    title: 'Individuals',
+    body: 'Income and expense analysis, co-borrowers and guarantors, payroll-linked loans created automatically.',
+  },
+  {
+    title: 'Micro and SME',
+    body: 'Balance sheet and P&L over three periods, declared against assumed figures, and credit limits that open new applications.',
+  },
+  {
+    title: 'Corporate',
+    body: 'Full financial-statement analysis, legal opinion, mortgages and movable collateral kept with their history.',
+  },
+];
+---
+
+<section class="wrap section">
+  <div class="section-head">
+    <h2>Individuals, micro, SME and corporate in one place.</h2>
+  </div>
+  <div class="bento">
+    {
+      borrowers.map((b) => (
+        <div class="tile c4 reveal">
+          <h3>{b.title}</h3>
+          <p class="body">{b.body}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

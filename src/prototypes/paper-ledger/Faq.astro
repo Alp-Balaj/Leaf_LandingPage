@@ -1,0 +1,161 @@
+---
+const faqs = [
+  {
+    q: 'How long does implementation take?',
+    a: '[X to Y weeks] for a standard set of products, including configuration of your approval limits, scorecards and contract templates. Data migration from an existing system is scoped separately.',
+  },
+  {
+    q: 'Where is Leaf hosted?',
+    a: '[On-premise in your own data centre, or a hosted option in region]. Confirm the data-residency statement before publishing.',
+  },
+  {
+    q: 'What does it integrate with?',
+    a: 'The credit registry for exposure, and your core banking system for accounts and payments. [List the specific core systems and registry already connected.]',
+  },
+  {
+    q: 'How is it priced?',
+    a: '[Pricing model, for example an annual licence per active loan or per branch, with implementation as a one-off fee.] We share a written range before the demo if you ask.',
+  },
+];
+---
+
+<section id="faq" class="section">
+  <div class="wrap ledger" data-reveal>
+    <div>
+      <h2 class="section-title">Questions banks ask first.</h2>
+      <p class="section-intro">The short answers. The demo covers the rest, with your own process on screen.</p>
+    </div>
+
+    <ul class="faqs">
+      {
+        faqs.map((f, i) => (
+          <li>
+            <button type="button" class="q" aria-expanded="false" aria-controls={`faq-${i}`}>
+              <span>{f.q}</span>
+              <span class="sign" aria-hidden="true" />
+            </button>
+            <div id={`faq-${i}`} class="a" hidden>
+              <p>{f.a}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  import { animate } from 'motion/mini';
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('#faq .q');
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      const panel = document.getElementById(button.getAttribute('aria-controls')!)!;
+      button.setAttribute('aria-expanded', String(open));
+      if (open) {
+        panel.hidden = false;
+        if (!reduce) {
+          const h = panel.scrollHeight;
+          panel.style.overflow = 'hidden';
+          animate(
+            panel,
+            { height: ['0px', `${h}px`], opacity: [0, 1] },
+            { duration: 0.24, ease: [0.2, 0.7, 0.2, 1] },
+          ).finished.then(() => {
+            panel.style.height = '';
+            panel.style.overflow = '';
+          });
+        }
+      } else if (!reduce) {
+        const h = panel.scrollHeight;
+        panel.style.overflow = 'hidden';
+        animate(panel, { height: [`${h}px`, '0px'], opacity: [1, 0] }, { duration: 0.18 }).finished.then(
+          () => {
+            panel.hidden = true;
+            panel.style.height = '';
+            panel.style.overflow = '';
+          },
+        );
+      } else {
+        panel.hidden = true;
+      }
+    });
+  });
+</script>
+
+<style>
+  .faqs {
+    border-top: 1px solid var(--rule);
+  }
+
+  .faqs li {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .q {
+    width: 100%;
+    min-height: 56px;
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: transparent;
+    border: 0;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .sign {
+    position: relative;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+  }
+
+  .sign::before,
+  .sign::after {
+    content: '';
+    position: absolute;
+    background: var(--ink-faint);
+    transition: transform 160ms ease;
+  }
+
+  .sign::before {
+    left: 0;
+    right: 0;
+    top: 6px;
+    height: 1.5px;
+  }
+
+  .sign::after {
+    top: 0;
+    bottom: 0;
+    left: 6px;
+    width: 1.5px;
+  }
+
+  .q[aria-expanded='true'] .sign::after {
+    transform: scaleY(0);
+  }
+
+  .a {
+    padding: 0 40px 18px 0;
+  }
+
+  .a[hidden] {
+    display: none;
+  }
+
+  .a p {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+</style>

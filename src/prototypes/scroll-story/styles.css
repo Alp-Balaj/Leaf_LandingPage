@@ -1,0 +1,678 @@
+/* Scroll-story prototype: self-contained stylesheet. */
+
+@font-face {
+  font-family: 'Futura LT';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/futura-lt-medium.ttf') format('truetype');
+}
+
+:root {
+  --ground: #070a08;
+  --ground-2: #0c110e;
+  --surface: #121a15;
+  --surface-2: #182219;
+  --line: #1f2a23;
+  --line-strong: #38463d;
+  --ink: #f1f3ef;
+  --ink-2: #b4bcb6;
+  --ink-3: #8d968f;
+  --red: #d6473f;
+  --red-text: #ec6b63;
+  --amber: #e9b44c;
+  --green: #8fd3a3;
+  --paper: #ecece6;
+  --paper-ink: #141814;
+  --paper-ink-2: #4d554f;
+  --paper-line: #b8bcb4;
+
+  --font-display: 'Futura LT', 'Jost', 'Avenir Next', 'Century Gothic', sans-serif;
+  --font-body: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--ink);
+}
+
+img {
+  display: block;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+dl,
+dd {
+  margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}
+
+/* Layout */
+
+.wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (max-width: 599px) {
+  .wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.sec {
+  padding-top: clamp(72px, 10vw, 128px);
+  padding-bottom: clamp(72px, 10vw, 128px);
+}
+
+.sec-head {
+  max-width: 760px;
+}
+
+.sec-head h2,
+.story h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.06;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.sec-head p {
+  margin-top: 18px;
+  max-width: 52ch;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* Buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--red);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.btn:hover {
+  background: #e2554d;
+  color: #ffffff;
+}
+
+.btn-small {
+  min-height: 40px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+
+/* Hero pre-animation state. Only applies while the html.motion-ok flag is set
+   (motion allowed, within the first seconds after load). */
+
+.motion-ok .hero h1 {
+  visibility: hidden;
+}
+
+.motion-ok .hero [data-rise],
+.motion-ok .hero-mock {
+  opacity: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* The loan record                                                     */
+/* ------------------------------------------------------------------ */
+
+.record {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #e4e9e4;
+  box-shadow:
+    0 40px 90px -40px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.record .num {
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 16px;
+  background: var(--ground-2);
+  border-bottom: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.rec-chrome img {
+  opacity: 0.8;
+}
+
+.rec-crumb + .rec-crumb::before {
+  content: '/';
+  margin-right: 12px;
+  color: var(--line-strong);
+}
+
+.rec-sample {
+  margin-left: auto;
+  padding: 2px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.rec-client {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 16px 14px;
+}
+
+.rec-name {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.rec-meta {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.rec-meta span + span {
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid var(--line-strong);
+}
+
+.rec-status {
+  flex-shrink: 0;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 3px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chip-grey {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.chip-green {
+  background: #16301f;
+  color: var(--green);
+}
+
+.chip-amber {
+  background: #35290e;
+  color: var(--amber);
+}
+
+.chip-red {
+  background: #3b1512;
+  color: #f49a94;
+}
+
+/* Lifecycle timeline inside the record */
+
+.rec-tl {
+  position: relative;
+  margin: 0;
+  padding: 6px 16px 14px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.rec-tl::before,
+.rec-tl::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: calc(16px + (100% - 32px) / 12);
+  right: calc(16px + (100% - 32px) / 12);
+  height: 2px;
+  background: var(--line-strong);
+}
+
+.rec-tl::after {
+  right: auto;
+  width: calc((100% - 32px) * 5 / 6);
+  background: var(--red);
+  transform-origin: left;
+  transform: scaleX(1);
+  transition: transform 500ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.rec-tl li {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.tl-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--line-strong);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+/* Record blocks */
+
+.rec-block {
+  padding: 11px 16px 12px;
+  border-top: 1px solid var(--line);
+}
+
+.rec-block h4 {
+  margin-bottom: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink-3);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.kv dt {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.kv dd {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #e4e9e4;
+  font-variant-numeric: tabular-nums;
+}
+
+.score {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.appr {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.appr th {
+  padding: 0 8px 6px 0;
+  text-align: left;
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.appr td {
+  padding: 5px 8px 5px 0;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+  color: #e4e9e4;
+}
+
+.appr td:last-child,
+.appr th:last-child {
+  padding-right: 0;
+  white-space: nowrap;
+}
+
+.docs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12.5px;
+}
+
+.docs li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #e4e9e4;
+}
+
+.doc-ico {
+  flex-shrink: 0;
+  width: 12px;
+  height: 15px;
+  margin-top: 2px;
+  border: 1.5px solid var(--ink-3);
+  border-radius: 2px;
+}
+
+.doc-ico-col {
+  border-radius: 2px 2px 6px 6px;
+}
+
+.doc-ico-pay {
+  height: 10px;
+  margin-top: 4px;
+  border-radius: 2px;
+}
+
+.rec-flag {
+  padding: 11px 16px;
+  font-size: 12.5px;
+}
+
+.rec-flag strong {
+  font-weight: 500;
+}
+
+.rec-flag-amber {
+  border-left: 3px solid var(--amber);
+  background: #1b1710;
+  color: #f0dcae;
+}
+
+.rec-flag-red {
+  border-left: 3px solid var(--red);
+  background: #1f1211;
+  color: #f4c0bc;
+}
+
+.rec-audit ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11.5px;
+}
+
+.rec-audit li {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  gap: 10px;
+  color: var(--ink-2);
+}
+
+.au-when {
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.au-who {
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* Stage rules: what the record shows at each stage. Default is stage 5. */
+
+.record[data-stage='0'] [data-from='1'],
+.record[data-stage='0'] [data-from='2'],
+.record[data-stage='0'] [data-from='3'],
+.record[data-stage='0'] [data-from='4'],
+.record[data-stage='0'] [data-from='5'],
+.record[data-stage='1'] [data-from='2'],
+.record[data-stage='1'] [data-from='3'],
+.record[data-stage='1'] [data-from='4'],
+.record[data-stage='1'] [data-from='5'],
+.record[data-stage='2'] [data-from='3'],
+.record[data-stage='2'] [data-from='4'],
+.record[data-stage='2'] [data-from='5'],
+.record[data-stage='3'] [data-from='4'],
+.record[data-stage='3'] [data-from='5'],
+.record[data-stage='4'] [data-from='5'] {
+  display: none;
+}
+
+.record[data-stage='0'] [data-only]:not([data-only='0']),
+.record[data-stage='1'] [data-only]:not([data-only='1']),
+.record[data-stage='2'] [data-only]:not([data-only='2']),
+.record[data-stage='3'] [data-only]:not([data-only='3']),
+.record[data-stage='4'] [data-only]:not([data-only='4']),
+.record[data-stage='5'] [data-only]:not([data-only='5']) {
+  display: none;
+}
+
+/* Timeline dots per stage: earlier steps done, current step highlighted. */
+
+.record[data-stage='1'] .rec-tl li:nth-child(-n + 1),
+.record[data-stage='2'] .rec-tl li:nth-child(-n + 2),
+.record[data-stage='3'] .rec-tl li:nth-child(-n + 3),
+.record[data-stage='4'] .rec-tl li:nth-child(-n + 4),
+.record[data-stage='5'] .rec-tl li:nth-child(-n + 5) {
+  color: var(--ink);
+}
+
+.record[data-stage='1'] .rec-tl li:nth-child(-n + 1) .tl-dot,
+.record[data-stage='2'] .rec-tl li:nth-child(-n + 2) .tl-dot,
+.record[data-stage='3'] .rec-tl li:nth-child(-n + 3) .tl-dot,
+.record[data-stage='4'] .rec-tl li:nth-child(-n + 4) .tl-dot,
+.record[data-stage='5'] .rec-tl li:nth-child(-n + 5) .tl-dot {
+  border-color: var(--red);
+  background: var(--red);
+}
+
+.record[data-stage='0'] .rec-tl li:nth-child(1),
+.record[data-stage='1'] .rec-tl li:nth-child(2),
+.record[data-stage='2'] .rec-tl li:nth-child(3),
+.record[data-stage='3'] .rec-tl li:nth-child(4),
+.record[data-stage='4'] .rec-tl li:nth-child(5),
+.record[data-stage='5'] .rec-tl li:nth-child(6) {
+  color: var(--ink);
+}
+
+.record[data-stage='0'] .rec-tl li:nth-child(1) .tl-dot,
+.record[data-stage='1'] .rec-tl li:nth-child(2) .tl-dot,
+.record[data-stage='2'] .rec-tl li:nth-child(3) .tl-dot,
+.record[data-stage='3'] .rec-tl li:nth-child(4) .tl-dot,
+.record[data-stage='4'] .rec-tl li:nth-child(5) .tl-dot,
+.record[data-stage='5'] .rec-tl li:nth-child(6) .tl-dot {
+  border-color: var(--red);
+  background: var(--red);
+  box-shadow: 0 0 0 4px rgba(214, 71, 63, 0.25);
+}
+
+.record[data-stage='0'] .rec-tl::after { transform: scaleX(0); }
+.record[data-stage='1'] .rec-tl::after { transform: scaleX(0.2); }
+.record[data-stage='2'] .rec-tl::after { transform: scaleX(0.4); }
+.record[data-stage='3'] .rec-tl::after { transform: scaleX(0.6); }
+.record[data-stage='4'] .rec-tl::after { transform: scaleX(0.8); }
+.record[data-stage='5'] .rec-tl::after { transform: scaleX(1); }
+
+/* Compact density so the full record fits one viewport beside the copy. */
+
+.record {
+  font-size: 12.5px;
+}
+
+.record .rec-client {
+  padding: 12px 16px 10px;
+}
+
+.record .rec-name {
+  font-size: 16px;
+}
+
+.record .rec-tl {
+  padding-bottom: 10px;
+}
+
+.record .rec-block {
+  padding: 9px 16px 10px;
+}
+
+.record .rec-block h4 {
+  margin-bottom: 6px;
+}
+
+.record .kv {
+  gap: 6px 10px;
+}
+
+.record .kv dd {
+  font-size: 12.5px;
+}
+
+.record .appr td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.record .docs {
+  gap: 5px;
+  font-size: 12px;
+}
+
+.record .rec-flag {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.record .rec-audit ul {
+  gap: 3px;
+  font-size: 11px;
+}
+
+/* Narrow screens: the record stays legible, with fewer columns. */
+
+@media (max-width: 599px) {
+  .record {
+    font-size: 12.5px;
+  }
+
+  .rec-client {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kv {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .appr th:nth-child(3),
+  .appr td:nth-child(3) {
+    display: none;
+  }
+
+  .appr td,
+  .appr th {
+    padding-right: 6px;
+  }
+
+  .rec-tl li {
+    font-size: 10px;
+  }
+
+  .rec-audit li {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+
+  .au-who {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rec-tl::after,
+  .tl-dot,
+  .btn {
+    transition: none;
+  }
+}

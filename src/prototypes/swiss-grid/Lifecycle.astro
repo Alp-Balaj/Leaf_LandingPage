@@ -1,0 +1,231 @@
+---
+const stages = [
+  {
+    name: 'Apply',
+    body: 'Individuals, micro, SME and corporate clients in one place. Client data, products, co-borrowers and guarantors are captured once and reused at every later step.',
+    who: 'Branch officer',
+  },
+  {
+    name: 'Score',
+    body: 'Financial statements, credit-registry exposure and your internal scorecard come together in the file, with knock-out and adjustment criteria applied automatically.',
+    who: 'Credit analyst, risk',
+  },
+  {
+    name: 'Approve',
+    body: 'The application routes from branch to risk to committee by the approval limits you set per branch and product.',
+    who: 'Branch manager, risk, committee',
+  },
+  {
+    name: 'Disburse',
+    body: 'Contracts are generated from your own templates. Collateral and mortgages sit on the same record, and disbursement is controlled product by product.',
+    who: 'Credit administration',
+  },
+  {
+    name: 'Monitor',
+    body: 'Reviews and early warnings are raised automatically for collateral revaluation, product expiry and special conditions.',
+    who: 'Monitoring team',
+  },
+  {
+    name: 'Collect',
+    body: 'Arrears are sorted by days of delay and handed to collectors or executors. Restructure terms without opening a new file.',
+    who: 'Collections',
+  },
+];
+---
+
+<section id="lifecycle" class="section">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="section-num">02</p>
+      <p class="section-label">Lifecycle. Six stages, one record, every hand-off tracked.</p>
+    </div>
+
+    <div class="cols stage-grid">
+      <ol class="ladder" aria-label="Stages">
+        {
+          stages.map((s, i) => (
+            <li>
+              <button
+                type="button"
+                class="rung"
+                data-stage={i}
+                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-controls={`stage-panel-${i}`}
+              >
+                <span class="marker" aria-hidden="true" />
+                <span class="rung-num display">{i + 1}</span>
+                <span class="rung-name display">{s.name}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="stage-view" data-reveal>
+        {
+          stages.map((s, i) => (
+            <div id={`stage-panel-${i}`} class="panel" data-stage={i} hidden={i !== 0}>
+              <p class="word-clip">
+                <span class="word display">{s.name}</span>
+              </p>
+              <div class="panel-text">
+                <p class="body">{s.body}</p>
+                <p class="who">
+                  <span class="label muted">Who works here</span>
+                  {s.who}
+                </p>
+              </div>
+            </div>
+          ))
+        }
+        <p class="stage-cta">
+          <a class="btn-ghost" href="#demo">Walk through your own process in a demo</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stage-grid {
+    align-items: start;
+  }
+
+  .ladder {
+    grid-column: 1 / span 4;
+    border-top: 1px solid var(--ink);
+  }
+
+  .rung {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    padding: 16px 0 16px 22px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .rung:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: -1px;
+    width: 6px;
+    background: transparent;
+  }
+
+  .rung[aria-expanded='true'] .marker {
+    background: var(--red);
+  }
+
+  .rung-num {
+    width: 20px;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  .rung-name {
+    font-size: clamp(20px, 2vw, 26px);
+    line-height: 1;
+  }
+
+  .rung[aria-expanded='true'] .rung-name {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .stage-view {
+    grid-column: 6 / span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .word-clip {
+    overflow: hidden;
+    padding-bottom: 0.05em;
+    margin-top: -0.1em;
+  }
+
+  .word {
+    display: block;
+    font-size: clamp(64px, 11vw, 176px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+  }
+
+  .panel-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    gap: 24px;
+    align-items: start;
+    max-width: 640px;
+  }
+
+  .body {
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .who {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--ink);
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .stage-cta {
+    padding-top: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .ladder {
+      grid-column: 1 / span 6;
+      margin-bottom: 40px;
+    }
+
+    .stage-view {
+      grid-column: 1 / span 6;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .ladder,
+    .stage-view {
+      grid-column: 1 / span 4;
+    }
+
+    .panel-text {
+      grid-template-columns: 1fr;
+    }
+
+    .stage-cta .btn-ghost {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>

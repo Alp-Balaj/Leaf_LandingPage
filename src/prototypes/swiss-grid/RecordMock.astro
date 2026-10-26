@@ -1,0 +1,321 @@
+---
+const stages = ['Apply', 'Score', 'Approve', 'Disburse', 'Monitor', 'Collect'];
+const current = 2; // Approve
+const audit = [
+  { t: '09:14', who: 'Branch manager', what: 'approved within branch limit' },
+  { t: '09:02', who: 'Credit analyst', what: 'recalculated the internal score' },
+  { t: '08:40', who: 'Branch officer', what: 'attached three periods of financial statements' },
+  { t: '08:31', who: 'Branch officer', what: 'imported credit-registry exposure' },
+];
+---
+
+<figure class="mock" aria-label="Illustration of one loan record in Leaf: client header, lifecycle timeline, approval row, collateral and audit lines">
+  <div class="mock-top">
+    <span class="label">Loan record</span>
+    <span class="label muted">LN-[year]-[number]</span>
+    <span class="label stage-chip"><i aria-hidden="true"></i>Approve</span>
+  </div>
+
+  <div class="client">
+    <div class="client-name">
+      <span class="display">[Client name]</span>
+      <span class="bar w-40" aria-hidden="true"></span>
+    </div>
+    <dl class="client-meta">
+      <div><dt class="label muted">Segment</dt><dd>SME</dd></div>
+      <div><dt class="label muted">Product</dt><dd>Working capital</dd></div>
+      <div><dt class="label muted">Branch</dt><dd><span class="bar w-70" aria-hidden="true"></span><span class="sr">[Branch]</span></dd></div>
+      <div><dt class="label muted">Officer</dt><dd><span class="bar w-60" aria-hidden="true"></span><span class="sr">[Officer]</span></dd></div>
+    </dl>
+  </div>
+
+  <ol class="timeline" aria-label="Lifecycle">
+    {
+      stages.map((s, i) => (
+        <li class:list={[{ done: i < current, now: i === current }]}>
+          <span class="t-num label">{String(i + 1).padStart(2, '0')}</span>
+          <span class="t-bar" aria-hidden="true" />
+          <span class="t-name">{s}</span>
+          {i === current && <span class="sr">(current stage)</span>}
+        </li>
+      ))
+    }
+  </ol>
+
+  <table class="approval">
+    <caption class="label">Approval</caption>
+    <thead>
+      <tr>
+        <th class="label muted">Approver</th>
+        <th class="label muted">Limit</th>
+        <th class="label muted">Decision</th>
+        <th class="label muted">Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Branch manager</td>
+        <td>Within branch limit</td>
+        <td>Approved</td>
+        <td>[date] 09:14</td>
+      </tr>
+      <tr class="pending">
+        <td>Risk</td>
+        <td>Product limit</td>
+        <td>Waiting</td>
+        <td><span class="bar w-50" aria-hidden="true"></span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="two">
+    <div class="collateral">
+      <span class="label">Collateral</span>
+      <ul>
+        <li><span>Mortgage</span><span class="bar w-50" aria-hidden="true"></span><span class="label muted">valued [date]</span></li>
+        <li><span>Movable, vehicle</span><span class="bar w-30" aria-hidden="true"></span><span class="label muted">valued [date]</span></li>
+      </ul>
+    </div>
+    <div class="audit">
+      <span class="label">Audit trail</span>
+      <ul>
+        {
+          audit.map((a) => (
+            <li>
+              <span class="label muted">{a.t}</span>
+              <span>
+                <strong>{a.who}</strong> {a.what}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .mock {
+    background: var(--card);
+    border: 1px solid var(--ink);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .bar {
+    display: inline-block;
+    height: 9px;
+    background: var(--bar);
+    vertical-align: middle;
+  }
+
+  .w-30 { width: 30%; }
+  .w-40 { width: 40%; }
+  .w-50 { width: 50%; }
+  .w-60 { width: 60%; }
+  .w-70 { width: 70%; }
+
+  .mock-top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .stage-chip {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .stage-chip i {
+    width: 9px;
+    height: 9px;
+    background: var(--red);
+  }
+
+  .client {
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .client-name {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .client-meta {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 16px;
+  }
+
+  .client-meta dt {
+    margin-bottom: 2px;
+  }
+
+  .client-meta dd {
+    margin: 0;
+  }
+
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .timeline li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+  }
+
+  .t-bar {
+    height: 4px;
+    border: 1px solid var(--ink);
+    background: transparent;
+  }
+
+  .done .t-bar {
+    background: var(--ink);
+  }
+
+  .now .t-bar {
+    background: var(--red);
+    border-color: var(--red);
+  }
+
+  .now .t-name {
+    font-weight: 500;
+  }
+
+  .t-name {
+    font-size: 12px;
+  }
+
+  .approval {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .approval caption {
+    text-align: left;
+    padding: 12px 16px 6px;
+  }
+
+  .approval th,
+  .approval td {
+    padding: 6px 16px;
+    font-weight: 400;
+    vertical-align: top;
+  }
+
+  .approval th {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .approval tbody tr:last-child td {
+    padding-bottom: 12px;
+  }
+
+  .pending td {
+    color: var(--ink-muted);
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    border-top: 1px solid var(--line);
+  }
+
+  .collateral {
+    padding: 12px 16px;
+    border-right: 1px solid var(--line);
+  }
+
+  .audit {
+    padding: 12px 16px;
+  }
+
+  .collateral ul,
+  .audit ul {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .collateral li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .audit li {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 8px;
+  }
+
+  .audit strong {
+    font-weight: 500;
+  }
+
+  @media (max-width: 600px) {
+    .mock {
+      font-size: 12px;
+    }
+
+    .client,
+    .two {
+      grid-template-columns: 1fr;
+    }
+
+    .collateral {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .timeline {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px 8px;
+    }
+
+    .approval thead {
+      display: none;
+    }
+
+    .approval tr {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 6px 16px;
+    }
+
+    .approval td {
+      padding: 2px 0;
+    }
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+const stages = [
+  {
+    name: 'Apply',
+    body: 'Individuals, micro, SME and corporate clients in one place. Client data, products, co-borrowers and guarantors are captured once and reused at every later step.',
+    who: 'Branch officer',
+  },
+  {
+    name: 'Score',
+    body: 'Financial statements, credit-registry exposure and your internal scorecard come together in the file, with knock-out and adjustment criteria applied automatically.',
+    who: 'Credit analyst, risk',
+  },
+  {
+    name: 'Approve',
+    body: 'The application routes from branch to risk to committee by the approval limits you set per branch and product.',
+    who: 'Branch manager, risk, committee',
+  },
+  {
+    name: 'Disburse',
+    body: 'Contracts are generated from your own templates. Collateral and mortgages sit on the same record, and disbursement is controlled product by product.',
+    who: 'Credit administration',
+  },
+  {
+    name: 'Monitor',
+    body: 'Reviews and early warnings are raised automatically for collateral revaluation, product expiry and special conditions.',
+    who: 'Monitoring team',
+  },
+  {
+    name: 'Collect',
+    body: 'Arrears are sorted by days of delay and handed to collectors or executors. Restructure terms without opening a new file.',
+    who: 'Collections',
+  },
+];
+---
+
+<section id="lifecycle" class="wrap section">
+  <div class="section-head">
+    <h2>How Leaf works, step by step.</h2>
+    <p>Every hand-off is tracked on the same record, and no file waits in someone's inbox.</p>
+  </div>
+  <ol class="bento stages">
+    {
+      stages.map((s, i) => (
+        <li class="tile c4 reveal">
+          <span class="num" aria-hidden="true">{i + 1}</span>
+          <h3>{s.name}</h3>
+          <p class="body">{s.body}</p>
+          <p class="who">{s.who}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .stages .tile {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .num {
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .who {
+    margin-top: auto;
+    padding-top: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+</style>

@@ -1,0 +1,764 @@
+---
+// Six controls from the current page, each paired with a living micro-illustration.
+const audit = [
+  { t: '09:42', s: 'A. Krasniqi approved within branch limit' },
+  { t: '09:31', s: 'B. Gashi completed scorecard, grade B+' },
+  { t: '09:18', s: 'Registry exposure refreshed' },
+  { t: '08:55', s: 'D. Berisha uploaded statements 2023–2025' },
+  { t: '08:40', s: 'Application LN-2026-0418 opened' },
+  { t: '08:36', s: 'Client Agrokultura Sh.p.k. matched to existing record' },
+  { t: '08:31', s: 'D. Berisha started application' },
+];
+const roles = ['Branch officer', 'Risk analyst', 'Credit admin'];
+const modules = ['Apply', 'Score', 'Approve', 'Disburse'];
+// 1 = can edit, 2 = can view, 0 = hidden
+const matrix = [
+  [1, 2, 2, 0],
+  [2, 1, 1, 0],
+  [2, 2, 2, 1],
+];
+---
+
+<section id="controls" class="wrap section">
+  <div class="section-head">
+    <h2>Built to pass your risk and compliance review.</h2>
+    <p>Each tile shows the control working on a sample file. The demo shows it on yours.</p>
+  </div>
+
+  <div class="bento">
+    <!-- 1. Approval limits: a dot travels branch -> risk -> committee by limit -->
+    <div class="tile c8 reveal">
+      <h3>Approval limits per branch and product</h3>
+      <p class="body">Applications route to the right authority by your rules.</p>
+      <svg class="route" viewBox="0 0 520 150" role="img" aria-label="An application travelling from branch to risk to committee, stopping at the authority whose limit covers it">
+        <path class="line" d="M60 75 H460" />
+        <g class="node n1" transform="translate(60 75)">
+          <circle class="ring" r="22" />
+          <circle class="core" r="7" />
+          <text y="46" text-anchor="middle">Branch</text>
+          <text class="sub" y="-34" text-anchor="middle">up to branch limit</text>
+        </g>
+        <g class="node n2" transform="translate(260 75)">
+          <circle class="ring" r="22" />
+          <circle class="core" r="7" />
+          <text y="46" text-anchor="middle">Risk</text>
+          <text class="sub" y="-34" text-anchor="middle">up to risk limit</text>
+        </g>
+        <g class="node n3" transform="translate(460 75)">
+          <circle class="ring" r="22" />
+          <circle class="core" r="7" />
+          <text y="46" text-anchor="middle">Committee</text>
+          <text class="sub" y="-34" text-anchor="middle">above risk limit</text>
+        </g>
+        <g class="traveller" transform="translate(60 75)">
+          <circle r="9" />
+        </g>
+      </svg>
+    </div>
+
+    <!-- 2. Audit trail: lines keep appending -->
+    <div class="tile c4 r2 reveal">
+      <h3>Full audit trail</h3>
+      <p class="body">Who changed what, and when, on every application.</p>
+      <ul class="audit" data-audit aria-live="off">
+        {
+          audit.map((a) => (
+            <li>
+              <span class="t">{a.t}</span>
+              <span>{a.s}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- 3. Permissions matrix -->
+    <div class="tile c4 reveal">
+      <h3>Permissions by role and module</h3>
+      <p class="body">Each user sees and does only what their role allows.</p>
+      <div class="perm" role="img" aria-label="A role-by-module permission matrix, highlighting one role at a time">
+        <div class="perm-head">
+          <span></span>
+          {modules.map((m) => <span>{m}</span>)}
+        </div>
+        <div class="perm-rows">
+          <span class="perm-hl" aria-hidden="true"></span>
+          {
+            matrix.map((row, i) => (
+              <div class="perm-row">
+                <span class="role">{roles[i]}</span>
+                {row.map((v) => (
+                  <span class:list={['cell', { edit: v === 1, view: v === 2 }]} />
+                ))}
+              </div>
+            ))
+          }
+        </div>
+        <p class="legend"><span class="cell edit"></span> edit <span class="cell view"></span> view <span class="cell"></span> hidden</p>
+      </div>
+    </div>
+
+    <!-- 4. Scorecard bars settle -->
+    <div class="tile c4 reveal">
+      <h3>Your own scorecards</h3>
+      <p class="body">Internal rating models with knock-out and adjustment criteria.</p>
+      <div class="score" role="img" aria-label="Scorecard bars settling into a rating of B plus with no knock-out">
+        <div class="bar" style="--w: 0.78"><span>Liquidity</span><i></i></div>
+        <div class="bar" style="--w: 0.52"><span>Leverage</span><i></i></div>
+        <div class="bar" style="--w: 0.9"><span>Repayment history</span><i></i></div>
+        <div class="bar" style="--w: 0.64"><span>Sector</span><i></i></div>
+        <div class="grade"><span>Grade</span><b>B+</b><em>no knock-out</em></div>
+      </div>
+    </div>
+
+    <!-- 5. Credit registry import -->
+    <div class="tile c4 reveal">
+      <h3>Credit registry and core banking</h3>
+      <p class="body">Exposure imported from the registry; accounts and payments read from your core system.</p>
+      <div class="import" role="img" aria-label="Rows from the credit registry arriving in the exposure section of the Leaf file">
+        <div class="col src">
+          <p>Credit registry</p>
+          <span class="rowline"></span>
+          <span class="rowline"></span>
+          <span class="rowline"></span>
+        </div>
+        <div class="col dst">
+          <p>Leaf file, exposure</p>
+          <span class="rowline in i1"><i></i>Exposure, other banks</span>
+          <span class="rowline in i2"><i></i>Guarantees given</span>
+          <span class="rowline in i3"><i></i>Days in arrears</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Early warning flag -->
+    <div class="tile c4 reveal">
+      <h3>Early warnings on the record</h3>
+      <p class="body">Collateral revaluation, product expiry and special conditions raise a review automatically.</p>
+      <div class="warn" role="img" aria-label="A calendar with a pulsing flag on the collateral revaluation date">
+        <div class="cal">
+          <p>March 2027</p>
+          <div class="days">
+            {Array.from({ length: 14 }, (_, i) => <span class:list={{ due: i === 11 }}>{i + 1}</span>)}
+          </div>
+        </div>
+        <p class="warn-line"><span class="pulse" aria-hidden="true"></span>Revaluation due, warehouse, Fushë Kosovë</p>
+      </div>
+    </div>
+
+    <!-- 7. Contract from template -->
+    <div class="tile c4 reveal">
+      <h3>Contracts from your templates</h3>
+      <p class="body">Generated from the record, so the figures in the contract are the figures in the file.</p>
+      <div class="doc" role="img" aria-label="A contract template whose blanks fill from the loan record">
+        <span class="ln w1"></span>
+        <span class="ln w3"></span>
+        <span class="fill f1"><i>Client</i>Agrokultura Sh.p.k.</span>
+        <span class="ln w2"></span>
+        <span class="fill f2"><i>Amount</i>€120,000</span>
+        <span class="fill f3"><i>Term</i>36 months</span>
+        <span class="ln w3"></span>
+        <span class="stamp">Generated from template</span>
+      </div>
+    </div>
+
+    <!-- 8. Deployment placeholder -->
+    <div class="tile c4 reveal plain">
+      <h3>[Deployment and certification]</h3>
+      <p class="body">[On-premise in your data centre? ISO 27001? Confirm before publishing.]</p>
+    </div>
+
+    <!-- CTA tile -->
+    <div class="tile c8 reveal cta">
+      <div>
+        <h3>See these controls on your own loan process.</h3>
+        <p class="body">45 minutes with the team that builds Leaf. We reply within one working day.</p>
+      </div>
+      <a class="btn" href="#demo">Book a 45-minute demo</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Audit trail keeps appending lines. New lines fade in through @starting-style; the oldest is removed.
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const list = document.querySelector<HTMLUListElement>('[data-audit]');
+  if (list && !reduce) {
+    const pool = [
+      ['09:47', 'Contract generated from SME template'],
+      ['09:51', 'Collateral: mortgage registered, €210,000'],
+      ['09:53', 'E. Hoxha scheduled disbursement, tranche 1'],
+      ['09:58', 'Revaluation review set for 12 Mar 2027'],
+      ['10:02', 'Core banking: account LN-2026-0418 opened'],
+      ['10:06', 'A. Krasniqi added special condition'],
+    ];
+    let i = 0;
+    const tick = () => {
+      if (document.hidden) return;
+      const [t, s] = pool[i++ % pool.length];
+      // Clone an existing line so the new one keeps Astro's scoped-style attribute.
+      const li = list.firstElementChild!.cloneNode(true) as HTMLLIElement;
+      (li.children[0] as HTMLElement).textContent = t;
+      (li.children[1] as HTMLElement).textContent = s;
+      list.prepend(li);
+      while (list.children.length > 7) list.lastElementChild?.remove();
+    };
+    setInterval(tick, 2800);
+  }
+</script>
+
+<style>
+  .tile.plain {
+    background: var(--surface-2);
+    box-shadow: none;
+  }
+
+  .tile.cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 32px;
+    background: var(--accent-soft);
+    border-color: transparent;
+  }
+
+  .tile.cta h3 {
+    font-size: 22px;
+  }
+
+  /* ---- 1. Route ---- */
+  .route {
+    width: 100%;
+    height: auto;
+    margin-top: 18px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    overflow: visible;
+  }
+
+  .route .line {
+    stroke: var(--line-strong);
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .route .ring {
+    fill: var(--surface);
+    stroke: var(--line-strong);
+    stroke-width: 1.5;
+  }
+
+  .route .core {
+    fill: var(--line-strong);
+  }
+
+  .route text {
+    fill: var(--ink-2);
+    font-weight: 500;
+  }
+
+  .route text.sub {
+    fill: var(--ink-3);
+    font-weight: 400;
+    font-size: 11px;
+  }
+
+  /* The SVG scales with the tile; bump user-unit font sizes on narrow screens so labels stay legible. */
+  @media (max-width: 719px) {
+    .route {
+      font-size: 19px;
+    }
+    .route text.sub {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .route {
+      font-size: 25px;
+    }
+    .route text.sub {
+      font-size: 18px;
+    }
+  }
+
+  .route .traveller circle {
+    fill: var(--accent);
+  }
+
+  /* Finished state: the application has stopped at Risk (within risk limit). */
+  .route .n1 .core,
+  .route .n2 .core {
+    fill: var(--accent);
+  }
+
+  .route .n2 .ring {
+    stroke: var(--accent);
+  }
+
+  .route .traveller {
+    transform: translate(260px, 75px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .route .traveller {
+      animation: travel 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .route .n1 .core {
+      animation: lit 7s step-end infinite;
+      --on: 10%;
+    }
+    .route .n2 .core {
+      animation: lit 7s step-end infinite;
+      --on: 48%;
+    }
+    .route .n2 .ring {
+      animation: ringlit 7s step-end infinite;
+    }
+  }
+
+  @keyframes travel {
+    0% { transform: translate(60px, 75px); opacity: 0; }
+    6% { opacity: 1; }
+    12% { transform: translate(60px, 75px); }
+    30% { transform: translate(160px, 75px); }
+    44% { transform: translate(260px, 75px); }
+    74% { transform: translate(260px, 75px); opacity: 1; }
+    80% { opacity: 0; }
+    100% { transform: translate(260px, 75px); opacity: 0; }
+  }
+
+  @keyframes lit {
+    0% { fill: var(--line-strong); }
+    10% { fill: var(--accent); }
+    80% { fill: var(--line-strong); }
+  }
+
+  @keyframes ringlit {
+    0% { stroke: var(--line-strong); }
+    48% { stroke: var(--accent); }
+    80% { stroke: var(--line-strong); }
+  }
+
+  /* ---- 2. Audit ---- */
+  .audit {
+    margin-top: 18px;
+    font-size: 13px;
+  }
+
+  .audit li {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .audit li:first-child {
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @starting-style {
+      .audit li {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+    }
+  }
+
+  .audit .t {
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- 3. Permissions ---- */
+  .perm {
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .perm-head,
+  .perm-row {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(4, 1fr);
+    align-items: center;
+    gap: 6px;
+  }
+
+  .perm-head span {
+    text-align: center;
+    padding-bottom: 6px;
+  }
+
+  .perm-rows {
+    position: relative;
+  }
+
+  .perm-row {
+    position: relative;
+    height: 30px;
+  }
+
+  .role {
+    color: var(--ink-2);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cell {
+    justify-self: center;
+    width: 20px;
+    height: 12px;
+    border-radius: 4px;
+    border: 1px solid var(--line-strong);
+  }
+
+  .cell.edit {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .cell.view {
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+  }
+
+  .perm-hl {
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: 0;
+    height: 30px;
+    border-radius: 8px;
+    background: var(--surface-2);
+    transform: translateY(60px);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .perm-hl {
+      animation: hl 6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes hl {
+    0%, 28% { transform: translateY(0); }
+    33%, 61% { transform: translateY(30px); }
+    66%, 94% { transform: translateY(60px); }
+    100% { transform: translateY(0); }
+  }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .legend .cell {
+    width: 14px;
+    height: 9px;
+    margin-left: 6px;
+  }
+
+  .legend .cell:first-child {
+    margin-left: 0;
+  }
+
+  /* ---- 4. Scorecard ---- */
+  .score {
+    margin-top: 18px;
+    font-size: 12px;
+  }
+
+  .bar {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+    color: var(--ink-2);
+  }
+
+  .bar i {
+    display: block;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    transform: scaleX(var(--w));
+    transform-origin: left center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar i {
+      animation: settle 6s cubic-bezier(0.34, 1.4, 0.64, 1) infinite;
+    }
+    .bar:nth-child(2) i { animation-delay: 0.15s; }
+    .bar:nth-child(3) i { animation-delay: 0.3s; }
+    .bar:nth-child(4) i { animation-delay: 0.45s; }
+    .grade b {
+      animation: appear 6s ease infinite;
+    }
+  }
+
+  @keyframes settle {
+    0% { transform: scaleX(0); }
+    20%, 85% { transform: scaleX(var(--w)); }
+    95%, 100% { transform: scaleX(0); }
+  }
+
+  @keyframes appear {
+    0%, 18% { opacity: 0; transform: translateY(4px); }
+    28%, 85% { opacity: 1; transform: none; }
+    95%, 100% { opacity: 0; }
+  }
+
+  .grade {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-3);
+  }
+
+  .grade b {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+  }
+
+  .grade em {
+    font-style: normal;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ---- 5. Import ---- */
+  .import {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 14px;
+    font-size: 12px;
+  }
+
+  .col p {
+    color: var(--ink-3);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .rowline {
+    display: block;
+    height: 22px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+  }
+
+  .src .rowline {
+    background: var(--surface-2);
+    border: 1px dashed var(--line-strong);
+  }
+
+  .dst .rowline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 8px;
+    background: var(--accent-soft);
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dst .rowline i {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dst .rowline {
+      animation: arrive 6s ease-out infinite;
+    }
+    .dst .i2 { animation-delay: 0.35s; }
+    .dst .i3 { animation-delay: 0.7s; }
+  }
+
+  @keyframes arrive {
+    0% { transform: translateX(-60%); opacity: 0; }
+    15%, 85% { transform: none; opacity: 1; }
+    95%, 100% { transform: translateX(-60%); opacity: 0; }
+  }
+
+  /* ---- 6. Early warning ---- */
+  .warn {
+    margin-top: 18px;
+    font-size: 12px;
+  }
+
+  .cal p {
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .days span {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .days .due {
+    background: var(--warn);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .days .due::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    border: 2px solid var(--warn);
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .days .due::after {
+      animation: ping 2.4s ease-out infinite;
+    }
+    .pulse::after {
+      animation: ping 2.4s ease-out infinite;
+    }
+  }
+
+  @keyframes ping {
+    0% { transform: scale(1); opacity: 0.8; }
+    70%, 100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .warn-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--warn);
+    font-weight: 500;
+  }
+
+  .pulse {
+    position: relative;
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+  }
+
+  .pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--warn);
+    opacity: 0;
+  }
+
+  /* ---- 7. Contract ---- */
+  .doc {
+    position: relative;
+    margin-top: 18px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-size: 12px;
+    overflow: hidden;
+  }
+
+  .ln {
+    display: block;
+    height: 6px;
+    margin: 8px 0;
+    border-radius: 3px;
+    background: var(--line);
+  }
+
+  .w1 { width: 40%; }
+  .w2 { width: 85%; }
+  .w3 { width: 70%; }
+
+  .fill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 6px 4px 0;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .fill i {
+    font-style: normal;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+
+  .stamp {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 3px 8px;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 11px;
+    transform: rotate(-6deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fill { animation: fillin 7s ease infinite; }
+    .f2 { animation-delay: 0.5s; }
+    .f3 { animation-delay: 1s; }
+    .stamp { animation: stampin 7s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+  }
+
+  @keyframes fillin {
+    0%, 10% { opacity: 0.25; transform: translateY(3px); }
+    20%, 85% { opacity: 1; transform: none; }
+    95%, 100% { opacity: 0.25; }
+  }
+
+  @keyframes stampin {
+    0%, 32% { opacity: 0; transform: rotate(-6deg) scale(1.6); }
+    40%, 85% { opacity: 1; transform: rotate(-6deg) scale(1); }
+    95%, 100% { opacity: 0; transform: rotate(-6deg) scale(1); }
+  }
+</style>

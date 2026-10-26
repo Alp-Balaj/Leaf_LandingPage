@@ -1,0 +1,72 @@
+---
+const borrowers = [
+  {
+    title: 'Individuals',
+    body: 'Income and expense analysis, co-borrowers and guarantors, payroll-linked loans created automatically.',
+  },
+  {
+    title: 'Micro and SME',
+    body: 'Balance sheet and P&L over three periods, declared against assumed figures, and credit limits that open new applications.',
+  },
+  {
+    title: 'Corporate',
+    body: 'Full financial-statement analysis, legal opinion, mortgages and movable collateral kept with their history.',
+  },
+];
+---
+
+<section id="borrowers" class="section">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="section-num">04</p>
+      <p class="section-label">Borrowers. Individuals, micro, SME and corporate in one place.</p>
+    </div>
+
+    <div class="cols borrowers">
+      {
+        borrowers.map((b) => (
+          <div class="col" data-reveal>
+            <h3 class="display">{b.title}</h3>
+            <p>{b.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .col {
+    grid-column: span 4;
+    padding-top: 14px;
+    border-top: 1px solid var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  h3 {
+    font-size: clamp(26px, 2.8vw, 40px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .col p {
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 34ch;
+  }
+
+  @media (max-width: 900px) {
+    .col {
+      grid-column: span 6;
+      margin-bottom: 32px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .col {
+      grid-column: span 4;
+    }
+  }
+</style>

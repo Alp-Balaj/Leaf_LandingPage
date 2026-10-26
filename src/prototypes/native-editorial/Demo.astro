@@ -1,0 +1,86 @@
+---
+const roles = [
+  'Retail or SME lending',
+  'Credit risk',
+  'Operations',
+  'IT',
+  'Compliance',
+  'Management board',
+];
+---
+
+<section id="demo" class="sec sec-demo">
+  <div class="wrap">
+    <div class="runhead" data-reveal>
+      <span>Live demo</span>
+    </div>
+    <div class="demo">
+      <div class="demo-pitch" data-reveal>
+        <h2 class="sec-title">See your own loan process in Leaf.</h2>
+        <p class="demo-lede">45 minutes with the team that builds it. Bring your credit and risk leads.</p>
+        <p class="demo-contact">
+          Or call <a href="tel:+38338229170">+383 38 229 170</a><br />
+          <a href="https://interadria-ks.com">interadria-ks.com</a>
+        </p>
+      </div>
+
+      <div class="demo-card" data-reveal>
+        <div class="demo-thanks" hidden>
+          <p class="demo-thanks-title" tabindex="-1">Thank you.</p>
+          <p class="demo-thanks-body">
+            We will contact you within one working day to set a time.
+          </p>
+        </div>
+
+        <!-- TODO: point action at the real endpoint that receives demo requests. -->
+        <form class="demo-form" method="post" action="#">
+          <div class="field">
+            <label for="ne-name">Full name</label>
+            <input id="ne-name" name="name" type="text" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="ne-bank">Bank</label>
+            <input id="ne-bank" name="bank" type="text" autocomplete="organization" required />
+          </div>
+          <div class="field">
+            <label for="ne-role">Your role</label>
+            <select id="ne-role" name="role">
+              {roles.map((r) => <option>{r}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="ne-email">Work email</label>
+            <input id="ne-email" name="email" type="email" autocomplete="email" required />
+          </div>
+          <button type="submit" class="btn demo-submit">Request a demo</button>
+          <p class="demo-privacy">
+            We use these details only to arrange the demo. [Link to privacy notice]
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#demo .demo-form')!;
+  const thanks = document.querySelector<HTMLElement>('#demo .demo-thanks')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function swap() {
+    form.hidden = true;
+    thanks.hidden = false;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const focusThanks = () => thanks.querySelector<HTMLElement>('.demo-thanks-title')!.focus();
+    if (!reduce && 'startViewTransition' in document) {
+      const t = (document as any).startViewTransition(swap);
+      t.finished.then(focusThanks, focusThanks);
+    } else {
+      swap();
+      focusThanks();
+    }
+  });
+</script>

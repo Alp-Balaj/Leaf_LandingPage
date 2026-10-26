@@ -1,0 +1,82 @@
+---
+const controls = [
+  {
+    title: 'Permissions by role and module',
+    body: 'Each user sees and does only what their role allows.',
+  },
+  {
+    title: 'Approval limits per branch and product',
+    body: 'Applications route to the right authority by your rules.',
+  },
+  {
+    title: 'Full audit trail',
+    body: 'Who changed what, and when, on every application.',
+  },
+  {
+    title: 'Credit registry and core banking',
+    body: 'Exposure imported from the registry; accounts and payments read from your core system.',
+  },
+  {
+    title: 'Your own scorecards',
+    body: 'Internal rating models with knock-out and adjustment criteria.',
+  },
+  {
+    title: '[Deployment and certification]',
+    body: '[On-premise in your data centre? ISO 27001? Confirm before publishing.]',
+  },
+];
+---
+
+<section id="controls" class="section">
+  <div class="wrap ledger" data-reveal>
+    <div>
+      <h2 class="section-title">Built to pass your risk and compliance review.</h2>
+      <p class="section-intro">
+        Limits, roles and the audit trail are part of the record, not a report run afterwards.
+      </p>
+    </div>
+
+    <ul class="controls">
+      {
+        controls.map((c) => (
+          <li>
+            <h3>{c.title}</h3>
+            <p>{c.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 40px;
+  }
+
+  .controls li {
+    padding: 18px 0 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  h3 {
+    font-size: 16.5px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .controls p {
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 600px) {
+    .controls {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

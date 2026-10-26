@@ -1,0 +1,88 @@
+<footer class="foot">
+  <div class="wrap">
+    <div class="brand">
+      <span class="ia" aria-hidden="true"></span>
+      <p>Leaf is built and supported by iA.</p>
+    </div>
+    <dl class="details">
+      <div><dt>Company</dt><dd>iA, Inter Adria, Prishtina, Kosovo</dd></div>
+      <div><dt>Address</dt><dd>[Street address, postcode]</dd></div>
+      <div><dt>Registration</dt><dd>[Business registration number]</dd></div>
+      <div><dt>Contact</dt><dd><a href="tel:+38338229170">+383 38 229 170</a>, <a href="https://interadria-ks.com">interadria-ks.com</a></dd></div>
+    </dl>
+    <p class="legal">© 2026 iA. [Link to privacy notice]</p>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    border-top: 1px solid var(--rule);
+    background: var(--paper-deep);
+  }
+
+  .foot .wrap {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 24px 72px;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink);
+  }
+
+  .ia {
+    width: 20px;
+    height: 23px;
+    background: var(--ink);
+    -webkit-mask: url('/ia.svg') no-repeat center / contain;
+    mask: url('/ia.svg') no-repeat center / contain;
+  }
+
+  .details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 32px;
+  }
+
+  .details div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  dt {
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
+
+  dd {
+    color: var(--ink-2);
+  }
+
+  .legal {
+    grid-column: 1 / -1;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 860px) {
+    .foot .wrap {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .details {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

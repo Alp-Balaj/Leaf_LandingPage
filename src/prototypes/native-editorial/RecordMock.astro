@@ -1,0 +1,90 @@
+---
+/* Illustrative Leaf loan record. All values are sample data, not claims. */
+const stages = [
+  { name: 'Apply', date: '3 Sep' },
+  { name: 'Score', date: '9 Sep' },
+  { name: 'Approve', date: '14 Sep' },
+  { name: 'Disburse', date: '22 Sep' },
+  { name: 'Monitor', date: 'now' },
+  { name: 'Collect', date: '' },
+];
+const active = 4;
+---
+
+<div
+  class="rec"
+  role="img"
+  aria-label="Illustrative Leaf loan record: client header, six-stage timeline with Monitor active, approvals with approver, limit and timestamp, collateral, and audit trail."
+>
+  <div class="rec-bar">
+    <span class="rec-logo"><img src="/leaf.svg" alt="" width="14" height="13" /> Leaf</span>
+    <span class="rec-crumb">Loans / LF-2026-0418</span>
+    <span class="rec-user">Credit administration</span>
+  </div>
+
+  <div class="rec-head">
+    <div class="rec-client">
+      <p class="rec-name">Example Trading Sh.p.k.</p>
+      <p class="rec-sub">SME, client since 2021. Branch Prishtina 2. Relationship officer: branch officer.</p>
+    </div>
+    <dl class="rec-facts">
+      <div><dt>Product</dt><dd>Working-capital loan</dd></div>
+      <div><dt>Amount</dt><dd>EUR 120,000</dd></div>
+      <div><dt>Term</dt><dd>36 months</dd></div>
+      <div><dt>Status</dt><dd><span class="rec-chip">In monitoring</span></dd></div>
+    </dl>
+  </div>
+
+  <ol class="rec-tl">
+    {
+      stages.map((s, i) => (
+        <li class:list={[{ done: i < active, active: i === active }]}>
+          <span class="rec-tl-dot" />
+          <span class="rec-tl-name">{s.name}</span>
+          <span class="rec-tl-date">{s.date}</span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="rec-body">
+    <div class="rec-panel rec-panel-wide">
+      <p class="rec-h">Approvals</p>
+      <table class="rec-table">
+        <thead>
+          <tr><th>Approver</th><th>Limit</th><th>Decision</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Branch manager</td><td>to EUR 50,000</td><td>Recommended</td><td>12 Sep, 09:41</td></tr>
+          <tr><td>Risk department</td><td>to EUR 150,000</td><td>Approved</td><td>13 Sep, 16:05</td></tr>
+          <tr><td>Credit committee</td><td>above EUR 150,000</td><td>Not required</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rec-panel">
+      <p class="rec-h">Collateral</p>
+      <ul class="rec-list">
+        <li>
+          <span>Mortgage, commercial premises</span>
+          <span class="rec-dim">Valued 2 Sep. Next revaluation 2 Sep 2027.</span>
+        </li>
+        <li>
+          <span>Movable pledge, delivery vehicle</span>
+          <span class="rec-dim">Registered 20 Sep. Insurance on file.</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rec-panel">
+      <p class="rec-h">Audit trail</p>
+      <ul class="rec-audit">
+        <li><span class="rec-dim">22 Sep, 11:20</span><span>Disbursement released, tranche 1 of 1</span></li>
+        <li><span class="rec-dim">22 Sep, 10:02</span><span>Contract generated from template SME-WC v3</span></li>
+        <li><span class="rec-dim">13 Sep, 16:05</span><span>Approved within limit, risk department</span></li>
+        <li><span class="rec-dim">9 Sep, 14:37</span><span>Scorecard applied, 0 knock-outs, 2 adjustments</span></li>
+        <li><span class="rec-dim">9 Sep, 14:30</span><span>Registry exposure imported</span></li>
+      </ul>
+    </div>
+  </div>
+</div>

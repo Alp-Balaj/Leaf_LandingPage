@@ -1,0 +1,53 @@
+---
+const controls = [
+  {
+    title: 'Permissions by role and module',
+    body: 'Each user sees and does only what their role allows.',
+  },
+  {
+    title: 'Approval limits per branch and product',
+    body: 'Applications route to the right authority by your rules.',
+  },
+  {
+    title: 'Full audit trail',
+    body: 'Who changed what, and when, on every application.',
+  },
+  {
+    title: 'Credit registry and core banking',
+    body: 'Exposure imported from the registry; accounts and payments read from your core system.',
+  },
+  {
+    title: 'Your own scorecards',
+    body: 'Internal rating models with knock-out and adjustment criteria.',
+  },
+  {
+    title: '[Deployment and certification]',
+    body: '[On-premise in your data centre? ISO 27001? Confirm before publishing.]',
+  },
+];
+---
+
+<section id="controls" class="sec">
+  <div class="wrap">
+    <div class="runhead" data-reveal>
+      <span>Controls</span>
+    </div>
+    <div class="sec-head" data-reveal>
+      <h2 class="sec-title">Built to pass your risk and compliance review.</h2>
+      <p class="sec-intro">
+        The record is the control. Limits, roles and the audit trail are part of how a file moves,
+        not reports written afterwards.
+      </p>
+    </div>
+    <dl class="ctl-grid">
+      {
+        controls.map((c) => (
+          <div class="ctl" data-reveal>
+            <dt>{c.title}</dt>
+            <dd>{c.body}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

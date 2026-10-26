@@ -1,0 +1,80 @@
+<header class="nav-bar">
+  <nav class="wrap nav" aria-label="Page">
+    <a class="brand" href="/prototypes/swiss-grid" aria-label="Leaf home">
+      <img src="/leaf.svg" alt="" width="22" height="21" />
+      <span class="display">Leaf</span>
+    </a>
+    <ol class="index display" aria-label="Sections">
+      <li><a href="#builder"><span>01</span>Builder</a></li>
+      <li><a href="#lifecycle"><span>02</span>Lifecycle</a></li>
+      <li><a href="#controls"><span>03</span>Controls</a></li>
+      <li><a href="#borrowers"><span>04</span>Borrowers</a></li>
+      <li><a href="#demo"><span>05</span>Demo</a></li>
+    </ol>
+    <a class="btn" href="#demo">Book a 45-minute demo</a>
+  </nav>
+</header>
+
+<style>
+  .nav-bar {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--line-strong);
+    background: var(--paper);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 64px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+  }
+
+  .brand img {
+    filter: invert(1);
+  }
+
+  .index {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+  }
+
+  .index a {
+    text-decoration: none;
+  }
+
+  .index span {
+    margin-right: 8px;
+    color: var(--ink-muted);
+  }
+
+  .nav .btn {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 1000px) {
+    .index {
+      display: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .nav .btn {
+      padding: 0 12px;
+    }
+  }
+</style>

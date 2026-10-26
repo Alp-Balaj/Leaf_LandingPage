@@ -1,0 +1,206 @@
+---
+const roles = [
+  'Retail or SME lending',
+  'Credit risk',
+  'Operations',
+  'IT',
+  'Compliance',
+  'Management board',
+];
+---
+
+<section id="demo" class="wrap section">
+  <div class="bento">
+    <div class="tile c6 reveal intro">
+      <h2>See your own loan process in Leaf.</h2>
+      <p class="pitch">45 minutes with the team that builds it. Bring your credit and risk leads.</p>
+      <ul class="covers">
+        <li>A live Leaf instance, not slides</li>
+        <li>Your products, limits and approval routes</li>
+        <li>Integration questions answered by the people who build it</li>
+      </ul>
+      <p class="contact">
+        Or call <a href="tel:+38338229170">+383 38 229 170</a><br />
+        <a href="https://interadria-ks.com">interadria-ks.com</a>
+      </p>
+    </div>
+
+    <div class="tile c6 reveal form-tile" data-demo>
+      <div class="thanks" hidden>
+        <p class="thanks-title" tabindex="-1">Thank you.</p>
+        <p class="thanks-body">We will contact you within one working day to set a time.</p>
+      </div>
+
+      <!-- TODO: point action at the real endpoint that receives demo requests. -->
+      <form class="demo-form" method="post" action="#">
+        <div class="field">
+          <label for="f-name">Full name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="f-bank">Bank</label>
+          <input id="f-bank" name="bank" type="text" autocomplete="organization" required />
+        </div>
+        <div class="field">
+          <label for="f-role">Your role</label>
+          <select id="f-role" name="role">
+            {roles.map((r) => <option>{r}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-email">Work email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <button type="submit" class="btn submit">Request a demo</button>
+        <p class="privacy">We use these details only to arrange the demo. [Link to privacy notice]</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const tile = document.querySelector<HTMLElement>('[data-demo]')!;
+  const form = tile.querySelector<HTMLFormElement>('.demo-form')!;
+  const thanks = tile.querySelector<HTMLElement>('.thanks')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const swap = () => {
+    form.hidden = true;
+    thanks.hidden = false;
+  };
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+    if (d.startViewTransition && !reduce) {
+      d.startViewTransition(swap).finished.then(() => thanks.querySelector<HTMLElement>('.thanks-title')!.focus());
+    } else {
+      swap();
+      thanks.querySelector<HTMLElement>('.thanks-title')!.focus();
+    }
+  });
+</script>
+
+<style>
+  .intro h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(28px, 3.4vw, 36px);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .pitch {
+    margin-top: 12px;
+    color: var(--ink-2);
+  }
+
+  .covers {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .covers li {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+  }
+
+  .covers li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    translate: 0 -1px;
+  }
+
+  .contact {
+    margin-top: 22px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--ink-2);
+  }
+
+  .form-tile {
+    view-transition-name: demo-card;
+  }
+
+  .thanks {
+    padding: 8px 0;
+  }
+
+  .thanks-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 28px;
+    outline: none;
+  }
+
+  .thanks-body {
+    margin-top: 10px;
+    color: var(--ink-2);
+  }
+
+  .demo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .demo-form[hidden] {
+    display: none;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  input,
+  select {
+    min-height: 46px;
+    padding: 0 12px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+  }
+
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    border-color: var(--accent);
+  }
+
+  .submit {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  .privacy {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  ::view-transition-old(demo-card),
+  ::view-transition-new(demo-card) {
+    animation-duration: 0.35s;
+  }
+</style>
