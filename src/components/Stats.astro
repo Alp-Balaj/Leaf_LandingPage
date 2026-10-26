@@ -1,0 +1,87 @@
+---
+const secondary = [
+  { value: '[X] days', label: 'from application to disbursement' },
+  { value: '[X]%', label: 'of files decided without re-keying data' },
+];
+---
+
+<section class="section">
+  <div class="wrap split">
+    <div>
+      <p class="eyebrow">WHAT CHANGES</p>
+      <p class="big">25%</p>
+      <div class="accent-rule" aria-hidden="true"></div>
+      <p class="claim">less time spent handling each loan.</p>
+      <p class="source">Measured at [client bank], [period], across [number] loan files.</p>
+    </div>
+
+    <div class="secondary">
+      {
+        secondary.map((s) => (
+          <div class="row">
+            <p class="value">{s.value}</p>
+            <p class="label">{s.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    align-items: flex-end;
+  }
+
+  .big {
+    margin-top: 28px;
+    font-size: clamp(96px, 14vw, 148px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+
+  .accent-rule {
+    margin-top: 22px;
+  }
+
+  .claim {
+    margin-top: 18px;
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .source {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--ink-muted);
+  }
+
+  .secondary {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 26px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .row {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+
+  .value {
+    width: 132px;
+    flex-shrink: 0;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .label {
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--ink-muted);
+  }
+</style>

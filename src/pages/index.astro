@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import Lifecycle from '../components/Lifecycle.astro';
+import Borrowers from '../components/Borrowers.astro';
+import Controls from '../components/Controls.astro';
+import Demo from '../components/Demo.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Leaf — loan management for banks"
+  description="Leaf is the loan management system your credit, risk and compliance teams share, from the first application to the last repayment."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Stats />
+    <Lifecycle />
+    <Borrowers />
+    <Controls />
+    <Demo />
+  </main>
+  <Footer />
+</Layout>
