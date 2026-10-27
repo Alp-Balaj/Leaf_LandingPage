@@ -2,13 +2,19 @@
    Tokens and motion follow valzazhushi.com; Leaf red replaces the bronze accent. */
 
 :root {
+  /* Raw colours. --stone stays light and --ink stays dark in every theme. */
   --stone: #e9e4da;
   --stone-deep: #d9d0c1;
   --paper: #f7f4ee;
   --ink: #1c1a17;
-  --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--stone));
+
+  /* Page roles; the dark theme swaps these. */
+  --bg: var(--stone);
+  --bg-deep: var(--stone-deep);
+  --fg: var(--ink);
+  --ink-soft: color-mix(in srgb, var(--fg) 62%, var(--bg));
   --accent: #b23c34;
-  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+  --rule: color-mix(in srgb, var(--fg) 14%, transparent);
 
   --font-display: 'Marcellus', Georgia, serif;
   --font-body: 'Figtree', system-ui, sans-serif;
@@ -28,6 +34,15 @@
   color-scheme: light;
 }
 
+:root[data-theme='dark'] {
+  --bg: #0f0e0c;
+  --bg-deep: #181613;
+  --fg: var(--stone);
+  --ink-soft: color-mix(in srgb, var(--fg) 58%, var(--bg));
+  --accent: #cf5149;
+  color-scheme: dark;
+}
+
 *,
 *::before,
 *::after {
@@ -35,15 +50,15 @@
 }
 
 html {
-  background: var(--stone);
+  background: var(--bg);
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--stone);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--fg);
   font: 400 1rem/1.65 var(--font-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -198,8 +213,8 @@ a {
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
-  color: var(--ink);
-  background-color: color-mix(in srgb, var(--stone) calc(var(--solid) * 92%), transparent);
+  color: var(--fg);
+  background-color: color-mix(in srgb, var(--bg) calc(var(--solid) * 92%), transparent);
   -webkit-backdrop-filter: blur(calc(var(--solid) * 10px));
   backdrop-filter: blur(calc(var(--solid) * 10px));
   transition:
@@ -260,7 +275,7 @@ a {
 
 .header-cta {
   padding-left: clamp(20px, 2.6vw, 36px);
-  border-left: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-left: 1px solid var(--accent);
   background-position: clamp(20px, 2.6vw, 36px) 100%;
 }
 
@@ -294,7 +309,7 @@ a {
   justify-content: space-between;
   padding-top: calc(var(--header-h) + 48px);
   padding-bottom: 32px;
-  background: color-mix(in srgb, var(--stone) 92%, transparent);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   opacity: 0;
@@ -417,6 +432,7 @@ a {
   display: table;
   margin-top: 10px;
   color: var(--stone);
+  background-image: linear-gradient(var(--accent), var(--accent));
   background-size: 100% 1px;
 }
 
@@ -431,7 +447,7 @@ a {
   width: 1px;
   height: 28px;
   margin-left: 12px;
-  background: currentColor;
+  background: var(--accent);
   transform-origin: top;
   animation: drip 2.4s var(--ease) infinite;
 }
@@ -483,9 +499,18 @@ a {
 
 /* Loan record mock ----------------------------------------------------- */
 
+/* Everything printed on paper keeps dark ink, whatever the page theme. */
+.rec,
+.pane,
+.work-pane,
+.stage-pane {
+  color: var(--ink);
+  --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
 .rec {
   background: var(--paper);
-  color: var(--ink);
   border-radius: 6px;
   font-size: 13px;
   line-height: 1.45;
@@ -696,7 +721,7 @@ a {
 
 .pane-a {
   inset: 0 0 18% 14%;
-  background: var(--stone-deep);
+  background: var(--bg-deep);
 }
 
 .pane-a .pane-in {
@@ -889,9 +914,6 @@ a {
   flex-direction: column;
   padding: clamp(24px, 3vw, 40px);
   background: var(--paper);
-  color: var(--ink);
-  --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
-  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
   opacity: 0;
   transform: scale(1.06);
   transition:
@@ -994,7 +1016,7 @@ a {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: var(--stone-deep);
+  background: var(--bg-deep);
 }
 
 .work-pane {
@@ -1152,7 +1174,7 @@ a {
 /* Demo ---------------------------------------------------------------------- */
 
 .demo-sec {
-  background: var(--stone-deep);
+  background: var(--bg-deep);
 }
 
 .demo {
@@ -1212,9 +1234,9 @@ a {
   padding: 10px 0;
   background: transparent;
   border: 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 30%, transparent);
   border-radius: 0;
-  color: var(--ink);
+  color: var(--fg);
   font: 400 1.0625rem/1.4 var(--font-body);
   transition: border-color 0.5s var(--ease);
 }
@@ -1222,7 +1244,7 @@ a {
 .field input:focus,
 .field select:focus {
   outline: none;
-  border-color: var(--ink);
+  border-color: var(--fg);
 }
 
 .submit {
@@ -1231,8 +1253,8 @@ a {
   align-items: center;
   gap: 16px;
   padding: 16px 28px;
-  background: var(--ink);
-  color: var(--stone);
+  background: var(--fg);
+  color: var(--bg);
   border: 0;
   border-radius: 999px;
   font: 500 var(--t-sm) / 1 var(--font-body);
@@ -1252,6 +1274,7 @@ a {
 .submit:hover,
 .submit:focus-visible {
   background: var(--accent);
+  color: var(--stone);
 }
 
 .submit:hover::after,
@@ -1414,6 +1437,62 @@ a {
     width: 9px;
     background: #ffffff6b;
   }
+}
+
+/* Dark ground ---------------------------------------------------------------- */
+
+/* The hero and quote fade into the page instead of sitting on their own ground. */
+[data-theme='dark'] .hero,
+[data-theme='dark'] .quote {
+  background: var(--bg);
+}
+
+[data-theme='dark'] .hero-shade {
+  background:
+    linear-gradient(#0f0e0c99 0%, #0f0e0c00 22%),
+    linear-gradient(#0f0e0c00 10%, #0f0e0ccc 40%, var(--bg) 78%);
+}
+
+/* Animated lifecycle loops sit on black and only darken toward the headline. */
+.hero:not([data-hero-bg='record']) {
+  background: #000;
+}
+
+.hero:not([data-hero-bg='record']) .hero-shade {
+  z-index: 2;
+  background: linear-gradient(#0000 45%, #000c 72%, var(--bg) 96%);
+}
+
+/* The title always sits above the loop layers (ring 1, word 2 in the orbit). */
+.hero:not([data-hero-bg='record']) .hero-content {
+  z-index: 3;
+}
+
+/* On a phone the loop fills the top ~60%, so the fade starts just above the title. */
+@media (width <= 720px) {
+  .hero:not([data-hero-bg='record']) .hero-shade {
+    background: linear-gradient(#0000 52%, #000c 66%, var(--bg) 96%);
+  }
+}
+
+[data-theme='dark'] .quote-shade {
+  background: linear-gradient(var(--bg), #0f0e0cb3 30%, #0f0e0cb3 70%, var(--bg));
+}
+
+/* Lifted surfaces read as the band and footer once the page itself is dark. */
+[data-theme='dark'] .band {
+  border-block: 1px solid var(--rule);
+}
+
+[data-theme='dark'] .foot {
+  background: #0a0908;
+  border-top: 1px solid color-mix(in srgb, var(--stone) 10%, transparent);
+}
+
+[data-theme='dark'] .pane,
+[data-theme='dark'] .work-pane,
+[data-theme='dark'] .rec {
+  box-shadow: 0 30px 80px #00000080;
 }
 
 /* Reveals ------------------------------------------------------------------- */

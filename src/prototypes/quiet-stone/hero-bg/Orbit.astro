@@ -1,0 +1,63 @@
+---
+// The hero loop: the lifecycle ring on the right of the page grid, traced stage
+// by stage, and the stage word sweeping in from the left and running into the
+// ring. Both share one step so the arc head and the word change together.
+// Stacking: ring, then word, then the title (set in styles.css).
+import Ring from './Ring.astro';
+import Words from './Words.astro';
+---
+
+<div class="orbit wrap" aria-hidden="true">
+  <div class="stage"><Ring /></div>
+  <div class="word-layer"><Words /></div>
+</div>
+
+<style>
+  .orbit {
+    --step: 2.8s;
+    --cycle: calc(var(--step) * 6);
+    /* The ring's box; the circle itself starts 9% in and ends 85% across. */
+    --stage-w: min(76vh, 760px, 62vw);
+    position: absolute;
+    inset: var(--header-h) 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1;
+  }
+
+  .stage {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    width: var(--stage-w);
+    aspect-ratio: 680 / 640;
+  }
+
+  /* The word layer ends 74% of the way back across the stage, about a quarter of
+     the way into the circle, so every word overlaps the ring by the same amount. */
+  .word-layer {
+    position: absolute;
+    z-index: 2;
+    inset: 0 calc(var(--gutter) + var(--stage-w) * 0.74) 0 var(--gutter);
+  }
+
+  /* Phone: the ring fills the space between the header and the headline (which
+     takes about 300px at the bottom), its circle pushed against the right gutter.
+     The word starts on the left gutter and overlaps the circle's left side. */
+  @media (width <= 720px) {
+    .orbit {
+      --room: calc(max(100svh, 600px) - var(--header-h) - 300px);
+      --stage-w: min(100vw, var(--room) * 1.0625);
+      height: var(--room);
+      align-items: center;
+    }
+
+    .stage {
+      margin-right: calc(var(--stage-w) * -0.147);
+    }
+
+    .word-layer {
+      inset: 0 var(--gutter);
+    }
+  }
+</style>

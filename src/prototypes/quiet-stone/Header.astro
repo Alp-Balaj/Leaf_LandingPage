@@ -4,11 +4,12 @@ const links = [
   { href: '#borrowers', label: 'Borrowers' },
   { href: '#controls', label: 'Controls' },
 ];
+const home = Astro.url.pathname;
 ---
 
 <header class="header" data-header data-overlay>
   <div class="header-in wrap">
-    <a class="brand" href="/prototypes/quiet-stone" aria-label="Leaf home">
+    <a class="brand" href={home} aria-label="Leaf home">
       <span class="mark mark-leaf" aria-hidden="true"></span>
       <span class="brand-word">Leaf</span>
     </a>
@@ -28,7 +29,7 @@ const links = [
     <a href="#demo" data-menu-close>Book a demo</a>
   </nav>
   <p class="panel-foot wrap">
-    <a href="tel:+38338229170">+383 38 229 170</a>
+    <a href="tel:+38338246375">+383 38 246 375</a>
     <span>Built by iA, Prishtina</span>
   </p>
 </div>

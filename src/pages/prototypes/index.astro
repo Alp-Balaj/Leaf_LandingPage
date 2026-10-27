@@ -1,69 +1,25 @@
 ---
 const prototypes = [
   {
-    slug: 'native-editorial',
-    title: 'Dark editorial, native motion',
+    slug: 'quiet-stone-dark',
+    title: 'Quiet stone, dark ground',
     oneLiner:
-      'The current dark Leaf look finished as an editorial page: oversized headline, a light loan-record mock under it, running-head rules, and an accordion that drives the record’s timeline, all animated with platform-only CSS and a single IntersectionObserver.',
+      'Leaf paced like an architecture studio site on a near-black ground: a full-height hero over the loan record, slow mask reveals, a stage band where hovering a stage swaps the record panel, and a footer-sized wordmark. The light record panels are the brightest objects on the page.',
     design:
-      'Evolves the existing dark look (ground #0a0a0b, off-white ink, accent #c8463f, Outfit + Futura LT) with a left-aligned asymmetric editorial grid: hero h1 at up to 104px beside the lede, then a full-width light paper loan-record mock. Each later section opens with a running-head rule row; Lifecycle is a numbered accordion with a sticky compact record that follows the open stage. Order: Nav, Hero + mock, Credibility, Lifecycle, Controls, Borrowers, Demo, Footer.',
+      'Modelled on valzazhushi.com (notes in docs/research/valzazhushi-inspiration.md). Ground #0f0e0c with warm stone ink and Leaf red (#cf5149) only on hover, active states and selection. Marcellus for display, Figtree for body, letter-spaced uppercase labels and hairline rules instead of cards; sections breathe at 96–200px. The hero and quote fade into the page, the lifecycle band is a lifted surface edged with hairlines, record panes stay on paper with dark ink. Order: glass header, hero, statement with the 25% stat, lifecycle band, borrowers as alternating panels, quote, controls, demo, footer.',
     animation:
-      'Hero words rise with CSS keyframes and per-word delays; one IntersectionObserver reveals sections and starts the 25% count-up, with a 1.5s safety timer. Accordion panels transition grid-template-rows; the demo form swaps to the thank-you inside document.startViewTransition. All hidden state is gated on html.js and prefers-reduced-motion disables everything.',
+      'Platform only, one easing (cubic-bezier(.22,1,.36,1)) and long durations. Hero record settles from scale 1.12 over 2.8s while the headline rises; one IntersectionObserver drives fade-up and clip-path mask reveals with --d staggers. Smart glass header hides on scroll down and returns on scroll up; light parallax; custom glass scrollbar on fine pointers; stage rows crossfade the sticky panel on hover, focus or press. All gated by prefers-reduced-motion.',
     deps: [],
   },
   {
-    slug: 'paper-ledger',
-    title: 'Paper Ledger',
+    slug: 'hero/split',
+    title: 'Hero loop: the word meets the ring',
     oneLiner:
-      'A light, Stripe-register ledger page whose centrepiece is a working loan-record mock with six stage tabs that change the record’s state.',
+      'The lifecycle ring is traced on the right of the page grid while the huge stage word sweeps in from the left and runs into the ring’s left side. The headline sits on top of both.',
     design:
-      'Warm off-white paper (#f6f5f1) with near-black ink and a single muted brand red (#b3382f) for small accents only. One typeface, IBM Plex Sans with tabular numerals, plus Futura LT for the wordmark. Ledger devices carry the identity: dotted leaders, hairline row rules, numbers only where content is a sequence. Sticky blurred nav, 1120px measure, product mock peeking into the first viewport, white borrower cards, demo form with a “what to expect” leader list, bracketed FAQ.',
+      'Black ground. Ring right-aligned to the grid, each word ending a quarter of the way into the circle; stacking is ring, then word, then the title. On phones the ring fills the space above the headline against the right gutter, labels drop out, and the word starts on the left gutter.',
     animation:
-      'Motion mini build: staggered hero entrance, one inView reveal per section with safety nets (above-the-fold sweep, beforeprint, navigator.webdriver, 2.5s fallback). Record tabs are aria-expanded buttons with arrow-key navigation that crossfade the panel and update the timeline pips and status pill; borrower cards lift with an overshoot bezier; FAQ panels animate height; the form fades to a thank-you. Everything is behind a prefers-reduced-motion guard.',
-    deps: ['motion'],
-  },
-  {
-    slug: 'scroll-story',
-    title: 'Cinematic scroll story',
-    oneLiner:
-      'A dark, product-driven page where one loan record stays pinned and fills in stage by stage as the six lifecycle steps scroll past.',
-    design:
-      'Green-black ground (#070a08) with off-white ink, a single red accent and a paper-coloured demo section so the ask reads like a contract. Futura LT (Jost fallback) for display, IBM Plex Sans for body and the record UI. The hero shows the full record; the lifecycle section pins the same record on the left while stage copy scrolls on the right beside a red progress rail; then credibility strip, checklist controls, borrowers, paper demo form, footer.',
-    animation:
-      'GSAP 3.15 with ScrollTrigger and SplitText inside gsap.matchMedia (motion allowed, min-width 900px). Hero words split and rise; ScrollTrigger pins the record and a scrubbed rail tracks progress while per-stage triggers set data-stage on the record; the 25% stat is a tweened count-up; later sections reveal via ScrollTrigger.batch. Reduced motion, no JS or narrow screens get the static, fully populated layout.',
-    deps: ['gsap'],
-  },
-  {
-    slug: 'swiss-grid',
-    title: 'Swiss typographic grid',
-    oneLiner:
-      'Light grey paper, black ink, a visible 12-column grid, oversized section numbers 01–06, a wireframe loan-record card with a red current-stage marker and a stage ticker under the hero.',
-    design:
-      'Rigorous modernist layout: a fixed overlay of faint column lines (12, 6 or 4) that every section aligns to, flush-left asymmetric compositions, a strict two-colour palette (#ececea paper, #000 ink, #5a5a57 muted) with brand red reserved for one rule, the active-stage marker and the CTA. Futura LT 500 (Jost fallback) for display and labels, Archivo for body. Sections 01 Who builds it, 02 Lifecycle (numbered ladder with a large stage word), 03 Controls spec sheet, 04 Borrowers, 05 Demo, 06 Footer.',
-    animation:
-      'Anime.js v4 inside createScope with a reduceMotion media query. Hero h1 split by lines and words with splitText, staggered slide-up inside clipped lines; sections reveal with onScroll but are only armed after the first real scroll so an unscrolled page shows everything. Ladder rungs stagger in and the stage word slides up inside its clip on hover, focus or click. The ticker is a pure CSS marquee, paused on hover and static under reduced motion.',
-    deps: ['animejs'],
-  },
-  {
-    slug: 'bento-product',
-    title: 'Bento product grid',
-    oneLiner:
-      'Product-first bento layout where every control tile is a living CSS/SVG micro-demo of the feature, with automatic light and dark themes.',
-    design:
-      'Friendly, product-first bento grid. The hero puts a hand-built loan record beside a short headline and two CTAs; Lifecycle is six compact numbered cards; Controls is a mixed-size bento (route diagram, audit trail, permissions matrix, scorecard, registry import, early-warning calendar, contract from template, CTA tile). Tokens on :root with a prefers-color-scheme dark set, one green accent with brand red kept for warnings, Bricolage Grotesque + Instrument Sans, 18px tiles with 1px borders and soft shadows.',
-    animation:
-      'Platform only. Tile entry is scroll-driven with animation-timeline: view() (IntersectionObserver fallback) and fill-mode forwards so nothing stays hidden. Each tile runs a CSS keyframe micro-illustration on transform and opacity (route traveller, scorecard bars, registry rows, permission highlight, early-warning ping, contract stamp) and the audit trail appends a line every 2.8s via @starting-style. Every loop parks at its finished state under reduced motion; the form uses document.startViewTransition.',
-    deps: [],
-  },
-  {
-    slug: 'quiet-stone',
-    title: 'Quiet stone, architectural pacing',
-    oneLiner:
-      'Leaf paced like an architecture studio site: a full-height hero over the loan record, slow mask reveals, a dark stage band where hovering a stage swaps the record panel, and a footer-sized wordmark.',
-    design:
-      'Modelled on valzazhushi.com (notes in docs/research/valzazhushi-inspiration.md). Warm stone ground (#e9e4da) with near-black ink, one dark band and a dark footer; Leaf red only on hover, active states and selection. Marcellus for display, Figtree for body, 12px letter-spaced uppercase labels and hairline rules instead of cards. Sections breathe at 96–200px. Order: glass header, hero, statement with overlapping record panes and the 25% stat, lifecycle band, borrowers as alternating “selected work”, quote over the blurred record, controls with roman numerals, demo, footer.',
-    animation:
-      'Platform only, one easing (cubic-bezier(.22,1,.36,1)) and long durations. Hero record settles from scale 1.12 over 2.8s while the headline and footer rule rise; a 1px scroll cue drips. One IntersectionObserver adds is-in to data-reveal (fade up 28px, 1.3s) or data-reveal="mask" (clip-path wipe, 1.6s) with --d staggers. Smart glass header hides on scroll down and returns on scroll up; light parallax on panes; custom glass scrollbar on fine pointers. Stage rows crossfade the sticky panel on hover, focus or press. All gated by prefers-reduced-motion.',
+      'Pure CSS on one shared 2.8s step (16.8s loop), so the arc head and the word change stage together. The word reveals with a left-to-right clip-path while easing in from -6% on x.',
     deps: [],
   },
 ];
@@ -74,7 +30,7 @@ const prototypes = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Six landing-page prototypes for Leaf, each with its own design direction and animation approach." />
+    <meta name="description" content="The Leaf landing-page prototype in progress: Quiet stone on a dark ground." />
     <meta name="theme-color" content="#0a0a0b" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -90,8 +46,8 @@ const prototypes = [
       <a class="back" href="/">&larr; Current page</a>
       <h1>Leaf prototypes</h1>
       <p class="intro">
-        Six takes on the Leaf landing page. Each one keeps the same copy, stages and placeholders
-        but has its own design direction and animation approach. Open one to see it at full size.
+        The direction chosen for the Leaf landing page, now being developed. Open it to see it at
+        full size.
       </p>
     </header>
 

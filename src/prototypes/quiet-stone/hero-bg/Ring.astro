@@ -1,0 +1,207 @@
+---
+// The lifecycle drawn as a closed ring. An arc traces it stage by stage behind a
+// red head and the stage at the head lights. Fills its parent box; timing comes
+// from --step and --cycle on the parent.
+import { stages } from './stages';
+
+const r = 240;
+const labelR = r + 34;
+const points = stages.map((s, i) => {
+  const a = (i / stages.length) * Math.PI * 2;
+  const sin = Math.sin(a);
+  const cos = Math.cos(a);
+  return {
+    ...s,
+    x: 300 + r * sin,
+    y: 300 - r * cos,
+    lx: 300 + labelR * sin,
+    ly: 300 - labelR * cos + 4,
+    anchor: Math.abs(sin) < 0.1 ? 'middle' : sin > 0 ? 'start' : 'end',
+  };
+});
+---
+
+<svg class="ring" viewBox="-40 -20 680 640" aria-hidden="true">
+  <circle class="base" cx="300" cy="300" r={r} />
+  <circle class="arc" cx="300" cy="300" r={r} pathLength="1" />
+  <g class="head">
+    <circle cx="300" cy={300 - r} r="4.5" />
+  </g>
+  {
+    points.map((p, i) => (
+      <g class="stop" style={`--i: ${i}`}>
+        <circle class="tick" cx={p.x} cy={p.y} r="4" />
+        <text x={p.lx} y={p.ly} text-anchor={p.anchor}>
+          {p.name.toUpperCase()}
+        </text>
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  .ring {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    color: var(--stone);
+  }
+
+  circle {
+    fill: none;
+  }
+
+  /* Hairlines stay 1px however far the ring is scaled down. Not on the arc:
+     non-scaling-stroke breaks its pathLength dash maths in Chromium. */
+  .base,
+  .tick {
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .arc {
+    stroke-width: 1;
+  }
+
+  .base {
+    stroke: color-mix(in srgb, var(--stone) 12%, transparent);
+  }
+
+  /* pathLength=1 lets the dash offset count stages in sixths of the ring. */
+  .arc {
+    stroke: color-mix(in srgb, var(--stone) 55%, transparent);
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transform: rotate(-90deg);
+    transform-origin: 300px 300px;
+    animation: arc var(--cycle) var(--ease) infinite;
+  }
+
+  .head {
+    transform-origin: 300px 300px;
+    animation: head var(--cycle) var(--ease) infinite;
+  }
+
+  .head circle {
+    fill: var(--accent);
+    filter: drop-shadow(0 0 6px var(--accent));
+  }
+
+  .tick {
+    fill: #000;
+    stroke: currentColor;
+  }
+
+  .stop {
+    opacity: 0.3;
+    animation: lit var(--cycle) var(--ease) calc(var(--i) * var(--step)) infinite both;
+  }
+
+  text {
+    fill: currentColor;
+    font: 500 11px var(--font-body);
+    letter-spacing: 0.18em;
+  }
+
+  @keyframes arc {
+    0%,
+    13.3% {
+      stroke-dashoffset: 1;
+      opacity: 1;
+    }
+    16.7%,
+    30% {
+      stroke-dashoffset: 0.8333;
+    }
+    33.3%,
+    46.7% {
+      stroke-dashoffset: 0.6667;
+    }
+    50%,
+    63.3% {
+      stroke-dashoffset: 0.5;
+    }
+    66.7%,
+    80% {
+      stroke-dashoffset: 0.3333;
+    }
+    83.3%,
+    95% {
+      stroke-dashoffset: 0.1667;
+      opacity: 1;
+    }
+    100% {
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+  }
+
+  @keyframes head {
+    0%,
+    13.3% {
+      transform: rotate(0deg);
+    }
+    16.7%,
+    30% {
+      transform: rotate(60deg);
+    }
+    33.3%,
+    46.7% {
+      transform: rotate(120deg);
+    }
+    50%,
+    63.3% {
+      transform: rotate(180deg);
+    }
+    66.7%,
+    80% {
+      transform: rotate(240deg);
+    }
+    83.3%,
+    95% {
+      transform: rotate(300deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes lit {
+    0% {
+      opacity: 0.3;
+    }
+    3%,
+    15% {
+      opacity: 1;
+    }
+    19%,
+    100% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Scaled to a phone the labels would be ~6px; the word already names the stage. */
+  @media (width <= 720px) {
+    text {
+      display: none;
+    }
+
+    /* The ring renders at ~0.55x here; this keeps the arc near 1px. */
+    .arc {
+      stroke-width: 1.8;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arc,
+    .head,
+    .stop {
+      animation: none;
+    }
+
+    .stop {
+      opacity: 0.6;
+    }
+  }
+</style>

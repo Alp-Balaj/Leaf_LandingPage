@@ -1,13 +1,28 @@
 ---
 import RecordMock from './RecordMock.astro';
+import Orbit from './hero-bg/Orbit.astro';
+
+export type HeroBackground = 'record' | 'loop';
+
+interface Props {
+  background?: HeroBackground;
+}
+
+const { background = 'record' } = Astro.props;
 ---
 
-<header class="hero" data-hero>
-  <div class="hero-frame">
-    <div class="hero-img">
-      <RecordMock decorative />
-    </div>
-  </div>
+<header class="hero" data-hero data-hero-bg={background}>
+  {
+    background === 'loop' ? (
+      <Orbit />
+    ) : (
+      <div class="hero-frame">
+        <div class="hero-img">
+          <RecordMock decorative />
+        </div>
+      </div>
+    )
+  }
   <div class="hero-shade"></div>
 
   <div class="hero-content wrap">
