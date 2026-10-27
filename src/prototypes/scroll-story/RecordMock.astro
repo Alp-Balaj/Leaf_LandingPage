@@ -1,0 +1,146 @@
+---
+/**
+ * A believable Leaf loan record, built in HTML/CSS. All figures are sample data
+ * for one fictitious SME file; the chrome says so.
+ *
+ * `data-stage` (0–5) controls which parts of the record are populated:
+ *   [data-from="n"]  visible from stage n onwards
+ *   [data-only="n"]  visible only at stage n
+ * The static default is stage 5 (everything shown) so the record reads in
+ * full without JavaScript, under reduced motion, and on narrow screens.
+ */
+interface Props {
+  variant: 'hero' | 'story';
+}
+const { variant } = Astro.props;
+
+const steps = ['Apply', 'Score', 'Approve', 'Disburse', 'Monitor', 'Collect'];
+const approvals = [
+  { who: 'Branch manager, Prishtina 2', limit: '€50,000', when: '2 Feb 2026, 09:51', note: 'Above limit, escalated' },
+  { who: 'Risk department', limit: '€100,000', when: '2 Feb 2026, 14:20', note: 'Above limit, escalated' },
+  { who: 'Credit committee', limit: '€250,000', when: '3 Feb 2026, 16:05', note: 'Approved' },
+];
+const audit = [
+  { from: 0, when: '28 Jan 09:14', text: 'Application created, guarantor added', who: 'A. Gashi' },
+  { from: 1, when: '29 Jan 11:40', text: 'Scorecard applied, no knock-out hit', who: 'System' },
+  { from: 2, when: '3 Feb 16:05', text: 'Approved at committee within €250,000 limit', who: 'V. Hoxha' },
+  { from: 3, when: '6 Feb 10:22', text: 'Contract signed, mortgage registered, €120,000 disbursed', who: 'E. Rama' },
+  { from: 4, when: '1 Feb 2027', text: 'Early warning raised: collateral revaluation due', who: 'System' },
+  { from: 5, when: '4 May 2027', text: 'Instalment 14 overdue 31 days, file assigned to collector', who: 'System' },
+];
+---
+
+<article class={`record record-${variant}`} data-stage="5" aria-label="Sample loan record in Leaf">
+  <div class="rec-chrome">
+    <img src="/leaf.svg" alt="" width="14" height="13" />
+    <span class="rec-crumb">Loans</span>
+    <span class="rec-crumb">File 2026-0418</span>
+    <span class="rec-sample">Sample record</span>
+  </div>
+
+  <header class="rec-client">
+    <div>
+      <p class="rec-name">Drini Trade L.L.C.</p>
+      <p class="rec-meta">
+        <span>SME</span>
+        <span>Working-capital loan</span>
+        <span>Prishtina branch</span>
+      </p>
+    </div>
+    <p class="rec-status">
+      <span class="chip chip-grey" data-only="0">In application</span>
+      <span class="chip chip-grey" data-only="1">Scored</span>
+      <span class="chip chip-green" data-only="2">Approved</span>
+      <span class="chip chip-green" data-only="3">Disbursed</span>
+      <span class="chip chip-amber" data-only="4">Under review</span>
+      <span class="chip chip-red" data-only="5">In arrears</span>
+    </p>
+  </header>
+
+  <ol class="rec-tl" aria-label="Lifecycle">
+    {steps.map((s, i) => (
+      <li data-step={i}>
+        <span class="tl-dot" aria-hidden="true"></span>
+        <span class="tl-label">{s}</span>
+      </li>
+    ))}
+  </ol>
+
+  <section class="rec-block" data-from="0">
+    <h4>Application</h4>
+    <dl class="kv">
+      <div><dt>Amount</dt><dd>€120,000</dd></div>
+      <div><dt>Term</dt><dd>48 months</dd></div>
+      <div><dt>Purpose</dt><dd>Stock purchase</dd></div>
+      <div><dt>Guarantor</dt><dd>B. Krasniqi</dd></div>
+    </dl>
+  </section>
+
+  <section class="rec-block" data-from="1">
+    <h4>Scoring</h4>
+    <dl class="kv">
+      <div><dt>Score, of 100</dt><dd><strong class="score">72</strong>, grade B</dd></div>
+      <div><dt>Registry exposure</dt><dd>€38,400</dd></div>
+      <div><dt>Knock-out criteria</dt><dd>None hit</dd></div>
+      <div><dt>Adjustment</dt><dd>+3 (audited accounts)</dd></div>
+    </dl>
+  </section>
+
+  <section class="rec-block" data-from="2">
+    <h4>Approvals</h4>
+    <table class="appr">
+      <thead>
+        <tr><th>Approver</th><th>Limit</th><th>Decision</th><th>Time</th></tr>
+      </thead>
+      <tbody>
+        {approvals.map((a) => (
+          <tr>
+            <td>{a.who}</td>
+            <td class="num">{a.limit}</td>
+            <td>{a.note}</td>
+            <td class="num">{a.when}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="rec-block" data-from="3">
+    <h4>Disbursement and collateral</h4>
+    <ul class="docs">
+      <li>
+        <span class="doc-ico" aria-hidden="true"></span>
+        <span>Contract LN-2026-0418 from template “SME working capital v4”, signed 6 Feb 2026</span>
+      </li>
+      <li>
+        <span class="doc-ico doc-ico-col" aria-hidden="true"></span>
+        <span>Mortgage on commercial premises, Prishtina, valued €210,000 on 20 Jan 2026</span>
+      </li>
+      <li>
+        <span class="doc-ico doc-ico-pay" aria-hidden="true"></span>
+        <span>€120,000 disbursed to account ending 4471, one tranche</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="rec-block rec-flag rec-flag-amber" data-from="4">
+    <p><strong>Early warning.</strong> Collateral revaluation due 1 Mar 2027. Assigned to the monitoring team.</p>
+  </section>
+
+  <section class="rec-block rec-flag rec-flag-red" data-from="5">
+    <p><strong>Arrears, 31 to 60 days.</strong> Instalment 14, €2,860 overdue. Handed to collector D. Shala.</p>
+  </section>
+
+  <section class="rec-block rec-audit">
+    <h4>Audit trail</h4>
+    <ul>
+      {audit.map((a) => (
+        <li data-from={a.from}>
+          <span class="au-when num">{a.when}</span>
+          <span class="au-text">{a.text}</span>
+          <span class="au-who">{a.who}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</article>

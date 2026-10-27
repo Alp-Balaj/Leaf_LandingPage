@@ -1,0 +1,347 @@
+---
+const prototypes = [
+  {
+    slug: 'native-editorial',
+    title: 'Dark editorial, native motion',
+    oneLiner:
+      'The current dark Leaf look finished as an editorial page: oversized headline, a light loan-record mock under it, running-head rules, and an accordion that drives the record’s timeline, all animated with platform-only CSS and a single IntersectionObserver.',
+    design:
+      'Evolves the existing dark look (ground #0a0a0b, off-white ink, accent #c8463f, Outfit + Futura LT) with a left-aligned asymmetric editorial grid: hero h1 at up to 104px beside the lede, then a full-width light paper loan-record mock. Each later section opens with a running-head rule row; Lifecycle is a numbered accordion with a sticky compact record that follows the open stage. Order: Nav, Hero + mock, Credibility, Lifecycle, Controls, Borrowers, Demo, Footer.',
+    animation:
+      'Hero words rise with CSS keyframes and per-word delays; one IntersectionObserver reveals sections and starts the 25% count-up, with a 1.5s safety timer. Accordion panels transition grid-template-rows; the demo form swaps to the thank-you inside document.startViewTransition. All hidden state is gated on html.js and prefers-reduced-motion disables everything.',
+    deps: [],
+  },
+  {
+    slug: 'paper-ledger',
+    title: 'Paper Ledger',
+    oneLiner:
+      'A light, Stripe-register ledger page whose centrepiece is a working loan-record mock with six stage tabs that change the record’s state.',
+    design:
+      'Warm off-white paper (#f6f5f1) with near-black ink and a single muted brand red (#b3382f) for small accents only. One typeface, IBM Plex Sans with tabular numerals, plus Futura LT for the wordmark. Ledger devices carry the identity: dotted leaders, hairline row rules, numbers only where content is a sequence. Sticky blurred nav, 1120px measure, product mock peeking into the first viewport, white borrower cards, demo form with a “what to expect” leader list, bracketed FAQ.',
+    animation:
+      'Motion mini build: staggered hero entrance, one inView reveal per section with safety nets (above-the-fold sweep, beforeprint, navigator.webdriver, 2.5s fallback). Record tabs are aria-expanded buttons with arrow-key navigation that crossfade the panel and update the timeline pips and status pill; borrower cards lift with an overshoot bezier; FAQ panels animate height; the form fades to a thank-you. Everything is behind a prefers-reduced-motion guard.',
+    deps: ['motion'],
+  },
+  {
+    slug: 'scroll-story',
+    title: 'Cinematic scroll story',
+    oneLiner:
+      'A dark, product-driven page where one loan record stays pinned and fills in stage by stage as the six lifecycle steps scroll past.',
+    design:
+      'Green-black ground (#070a08) with off-white ink, a single red accent and a paper-coloured demo section so the ask reads like a contract. Futura LT (Jost fallback) for display, IBM Plex Sans for body and the record UI. The hero shows the full record; the lifecycle section pins the same record on the left while stage copy scrolls on the right beside a red progress rail; then credibility strip, checklist controls, borrowers, paper demo form, footer.',
+    animation:
+      'GSAP 3.15 with ScrollTrigger and SplitText inside gsap.matchMedia (motion allowed, min-width 900px). Hero words split and rise; ScrollTrigger pins the record and a scrubbed rail tracks progress while per-stage triggers set data-stage on the record; the 25% stat is a tweened count-up; later sections reveal via ScrollTrigger.batch. Reduced motion, no JS or narrow screens get the static, fully populated layout.',
+    deps: ['gsap'],
+  },
+  {
+    slug: 'swiss-grid',
+    title: 'Swiss typographic grid',
+    oneLiner:
+      'Light grey paper, black ink, a visible 12-column grid, oversized section numbers 01–06, a wireframe loan-record card with a red current-stage marker and a stage ticker under the hero.',
+    design:
+      'Rigorous modernist layout: a fixed overlay of faint column lines (12, 6 or 4) that every section aligns to, flush-left asymmetric compositions, a strict two-colour palette (#ececea paper, #000 ink, #5a5a57 muted) with brand red reserved for one rule, the active-stage marker and the CTA. Futura LT 500 (Jost fallback) for display and labels, Archivo for body. Sections 01 Who builds it, 02 Lifecycle (numbered ladder with a large stage word), 03 Controls spec sheet, 04 Borrowers, 05 Demo, 06 Footer.',
+    animation:
+      'Anime.js v4 inside createScope with a reduceMotion media query. Hero h1 split by lines and words with splitText, staggered slide-up inside clipped lines; sections reveal with onScroll but are only armed after the first real scroll so an unscrolled page shows everything. Ladder rungs stagger in and the stage word slides up inside its clip on hover, focus or click. The ticker is a pure CSS marquee, paused on hover and static under reduced motion.',
+    deps: ['animejs'],
+  },
+  {
+    slug: 'bento-product',
+    title: 'Bento product grid',
+    oneLiner:
+      'Product-first bento layout where every control tile is a living CSS/SVG micro-demo of the feature, with automatic light and dark themes.',
+    design:
+      'Friendly, product-first bento grid. The hero puts a hand-built loan record beside a short headline and two CTAs; Lifecycle is six compact numbered cards; Controls is a mixed-size bento (route diagram, audit trail, permissions matrix, scorecard, registry import, early-warning calendar, contract from template, CTA tile). Tokens on :root with a prefers-color-scheme dark set, one green accent with brand red kept for warnings, Bricolage Grotesque + Instrument Sans, 18px tiles with 1px borders and soft shadows.',
+    animation:
+      'Platform only. Tile entry is scroll-driven with animation-timeline: view() (IntersectionObserver fallback) and fill-mode forwards so nothing stays hidden. Each tile runs a CSS keyframe micro-illustration on transform and opacity (route traveller, scorecard bars, registry rows, permission highlight, early-warning ping, contract stamp) and the audit trail appends a line every 2.8s via @starting-style. Every loop parks at its finished state under reduced motion; the form uses document.startViewTransition.',
+    deps: [],
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Five landing-page prototypes for Leaf, each with its own design direction and animation approach." />
+    <meta name="theme-color" content="#0a0a0b" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Leaf prototypes</title>
+  </head>
+  <body>
+    <header class="top">
+      <a class="back" href="/">&larr; Current page</a>
+      <h1>Leaf prototypes</h1>
+      <p class="intro">
+        Five takes on the Leaf landing page. Each one keeps the same copy, stages and placeholders
+        but has its own design direction and animation approach. Open one to see it at full size.
+      </p>
+    </header>
+
+    <main>
+      <ol class="grid">
+        {
+          prototypes.map((p, i) => (
+            <li class="card">
+              <a class="card-link" href={`/prototypes/${p.slug}`}>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <h2>{p.title}</h2>
+                <p class="one">{p.oneLiner}</p>
+              </a>
+              <dl>
+                <div>
+                  <dt>Design direction</dt>
+                  <dd>{p.design}</dd>
+                </div>
+                <div>
+                  <dt>Animation approach</dt>
+                  <dd>{p.animation}</dd>
+                </div>
+                <div>
+                  <dt>Dependencies</dt>
+                  <dd>
+                    {p.deps.length ? (
+                      p.deps.map((d) => <code>{d}</code>)
+                    ) : (
+                      <span class="none">no dependencies</span>
+                    )}
+                  </dd>
+                </div>
+              </dl>
+              <a class="open" href={`/prototypes/${p.slug}`}>
+                Open /prototypes/{p.slug} &rarr;
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+
+    <footer class="bottom">
+      <a class="back" href="/">&larr; Back to the current page</a>
+    </footer>
+  </body>
+</html>
+
+<style>
+  :root {
+    --ground: #0a0a0b;
+    --surface: #121214;
+    --ink: #f2f1ee;
+    --muted: #a8a6a1;
+    --rule: #2a2a2c;
+    --accent: #c8463f;
+    color-scheme: dark;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--ground);
+  }
+
+  body {
+    margin: 0;
+    padding: 0 16px;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .top,
+  main,
+  .bottom {
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+
+  .top {
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .back {
+    display: inline-block;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .back:hover,
+  .back:focus-visible {
+    color: var(--ink);
+    border-color: var(--ink);
+    outline: none;
+  }
+
+  h1 {
+    margin: 32px 0 12px;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .intro {
+    margin: 0;
+    max-width: 60ch;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 40px 0 56px;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 760px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    min-width: 0;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: #4a4a4d;
+  }
+
+  .card-link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .card-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+    border-radius: 4px;
+  }
+
+  .num {
+    display: block;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    margin: 0 0 10px;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .card-link:hover h2 {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  .one {
+    margin: 0;
+    color: var(--ink);
+    font-size: 16px;
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    gap: 16px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+
+  dt {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 15px;
+    color: #d6d4cf;
+    overflow-wrap: anywhere;
+  }
+
+  dd code {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    padding: 2px 8px;
+    margin-right: 6px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink);
+  }
+
+  .none {
+    color: var(--muted);
+  }
+
+  .open {
+    margin-top: auto;
+    align-self: flex-start;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 15px;
+    border-bottom: 1px solid var(--muted);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
+  }
+
+  .open:hover,
+  .open:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+  }
+
+  .bottom {
+    padding: 24px 0 48px;
+    border-top: 1px solid var(--rule);
+  }
+</style>

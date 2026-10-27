@@ -1,0 +1,33 @@
+---
+import Layout from '../../prototypes/swiss-grid/Layout.astro';
+import Nav from '../../prototypes/swiss-grid/Nav.astro';
+import Hero from '../../prototypes/swiss-grid/Hero.astro';
+import Ticker from '../../prototypes/swiss-grid/Ticker.astro';
+import Credibility from '../../prototypes/swiss-grid/Credibility.astro';
+import Lifecycle from '../../prototypes/swiss-grid/Lifecycle.astro';
+import Controls from '../../prototypes/swiss-grid/Controls.astro';
+import Borrowers from '../../prototypes/swiss-grid/Borrowers.astro';
+import Demo from '../../prototypes/swiss-grid/Demo.astro';
+import Footer from '../../prototypes/swiss-grid/Footer.astro';
+---
+
+<Layout
+  title="Leaf — loan management for banks"
+  description="Leaf is the loan management system your credit, risk and compliance teams share, from the first application to the last repayment."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Ticker />
+    <Credibility />
+    <Lifecycle />
+    <Controls />
+    <Borrowers />
+    <Demo />
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import '../../prototypes/swiss-grid/motion';
+</script>

@@ -1,0 +1,158 @@
+---
+const controls = [
+  {
+    title: 'Permissions by role and module',
+    body: 'Each user sees and does only what their role allows.',
+    scope: 'Every module',
+  },
+  {
+    title: 'Approval limits per branch and product',
+    body: 'Applications route to the right authority by your rules.',
+    scope: 'Approve',
+  },
+  {
+    title: 'Full audit trail',
+    body: 'Who changed what, and when, on every application.',
+    scope: 'Every record',
+  },
+  {
+    title: 'Credit registry and core banking',
+    body: 'Exposure imported from the registry; accounts and payments read from your core system.',
+    scope: 'Integrations',
+  },
+  {
+    title: 'Your own scorecards',
+    body: 'Internal rating models with knock-out and adjustment criteria.',
+    scope: 'Score',
+  },
+  {
+    title: '[Deployment and certification]',
+    body: '[On-premise in your data centre? ISO 27001? Confirm before publishing.]',
+    scope: '[Confirm]',
+  },
+];
+---
+
+<section id="controls" class="section">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="section-num">03</p>
+      <p class="section-label">Controls. Built to pass your risk and compliance review.</p>
+    </div>
+
+    <table class="spec" data-reveal>
+      <thead>
+        <tr>
+          <th class="label muted" scope="col">No.</th>
+          <th class="label muted" scope="col">Control</th>
+          <th class="label muted" scope="col">What it means</th>
+          <th class="label muted" scope="col">Where</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          controls.map((c, i) => (
+            <tr>
+              <td class="display num">3.{i + 1}</td>
+              <th scope="row" class="display ctl">
+                {c.title}
+              </th>
+              <td class="what">{c.body}</td>
+              <td class="where">{c.scope}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .spec {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    border-top: 1px solid var(--ink);
+  }
+
+  th,
+  td {
+    padding: 14px 24px 14px 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+    font-weight: 400;
+  }
+
+  thead th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .num {
+    width: 8%;
+    font-size: 15px;
+    color: var(--ink-muted);
+  }
+
+  .ctl {
+    width: 32%;
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.15;
+  }
+
+  .what {
+    width: 44%;
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 48ch;
+  }
+
+  .where {
+    width: 16%;
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  @media (max-width: 700px) {
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    tr {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th,
+    td {
+      padding: 0;
+      border: 0;
+    }
+
+    .num {
+      grid-row: 1 / span 3;
+    }
+
+    .ctl,
+    .what,
+    .where {
+      width: auto;
+      grid-column: 2;
+    }
+
+    .what {
+      margin-top: 6px;
+    }
+
+    .where {
+      margin-top: 6px;
+    }
+  }
+</style>

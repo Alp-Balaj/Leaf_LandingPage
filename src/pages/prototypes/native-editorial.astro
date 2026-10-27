@@ -1,0 +1,75 @@
+---
+import Layout from '../../prototypes/native-editorial/Layout.astro';
+import Nav from '../../prototypes/native-editorial/Nav.astro';
+import Hero from '../../prototypes/native-editorial/Hero.astro';
+import Credibility from '../../prototypes/native-editorial/Credibility.astro';
+import Lifecycle from '../../prototypes/native-editorial/Lifecycle.astro';
+import Controls from '../../prototypes/native-editorial/Controls.astro';
+import Borrowers from '../../prototypes/native-editorial/Borrowers.astro';
+import Demo from '../../prototypes/native-editorial/Demo.astro';
+import Footer from '../../prototypes/native-editorial/Footer.astro';
+---
+
+<Layout
+  title="Leaf — loan management for banks"
+  description="Leaf is the loan management system your credit, risk and compliance teams share, from the first application to the last repayment."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Credibility />
+    <Lifecycle />
+    <Controls />
+    <Borrowers />
+    <Demo />
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function countUp(el: HTMLElement) {
+    const end = Number(el.dataset.count);
+    const dur = reduce ? 0 : 1100;
+    const t0 = performance.now();
+    const tick = (t: number) => {
+      const p = dur ? Math.min(1, (t - t0) / dur) : 1;
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(end * eased) + '%';
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  const targets = document.querySelectorAll<HTMLElement>('[data-reveal], [data-count]');
+  const pending = new Set<HTMLElement>(targets);
+
+  function reveal(el: HTMLElement) {
+    if (!pending.delete(el)) return;
+    el.classList.add('is-in');
+    if (el.dataset.count !== undefined) countUp(el);
+  }
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          io.unobserve(e.target);
+          reveal(e.target as HTMLElement);
+        }
+      },
+      { rootMargin: '0px 0px -10% 0px', threshold: 0.01 }
+    );
+    targets.forEach((el) => io.observe(el));
+
+    // Safety net: anything the observer has not reached 1.5s after load
+    // (print, full-page capture, observers that never fire) is shown anyway.
+    const revealRest = () => pending.forEach((el) => reveal(el));
+    window.setTimeout(revealRest, 1500);
+    window.addEventListener('beforeprint', revealRest);
+  } else {
+    targets.forEach((el) => reveal(el));
+  }
+</script>

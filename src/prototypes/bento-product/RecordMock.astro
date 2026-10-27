@@ -1,0 +1,394 @@
+---
+const stages = ['Apply', 'Score', 'Approve', 'Disburse', 'Monitor', 'Collect'];
+const current = 3; // 0-based: Disburse is in progress
+const audit = [
+  { t: '14 Oct 2026 09:42', who: 'A. Krasniqi', what: 'approved the application within branch limit' },
+  { t: '14 Oct 2026 09:31', who: 'B. Gashi', what: 'completed scorecard, grade B+, no knock-out' },
+  { t: '13 Oct 2026 16:05', who: 'System', what: 'imported credit-registry exposure' },
+  { t: '13 Oct 2026 11:20', who: 'D. Berisha', what: 'uploaded financial statements 2023–2025' },
+];
+---
+
+<figure class="record" aria-label="Illustration of a loan record in Leaf">
+  <div class="chrome">
+    <span class="mark mark-leaf" aria-hidden="true"></span>
+    <span class="crumb">Loans</span>
+    <span class="crumb sep" aria-hidden="true">/</span>
+    <span class="crumb strong">LN-2026-0418</span>
+    <span class="chip">Awaiting disbursement</span>
+  </div>
+
+  <div class="client">
+    <div>
+      <p class="name">Agrokultura Sh.p.k.</p>
+      <p class="meta">SME · Working-capital loan · 36 months · Branch: Prishtina 2</p>
+    </div>
+    <p class="amount"><span>Amount</span>€120,000</p>
+  </div>
+
+  <ol class="timeline" aria-label="Lifecycle">
+    {
+      stages.map((s, i) => (
+        <li class:list={[{ done: i < current, now: i === current }]}>
+          <span class="dot" aria-hidden="true" />
+          <span class="label">{s}</span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="panels">
+    <section class="panel approval">
+      <h3>Approval</h3>
+      <div class="row">
+        <span class="avatar" aria-hidden="true">AK</span>
+        <div class="who">
+          <p>Arta Krasniqi · Branch manager</p>
+          <p class="sub">Limit €150,000 · 14 Oct 2026, 09:42</p>
+        </div>
+        <span class="ok">Approved</span>
+      </div>
+      <p class="route">Route: branch → risk review → branch manager, by product limit</p>
+    </section>
+
+    <section class="panel collateral">
+      <h3>Collateral</h3>
+      <ul>
+        <li>
+          <span>Mortgage · Warehouse, Fushë Kosovë</span>
+          <span class="val">€210,000</span>
+        </li>
+        <li>
+          <span>Movable · 2 vehicles</span>
+          <span class="val">€34,000</span>
+        </li>
+      </ul>
+      <p class="flag">Revaluation due 12 Mar 2027</p>
+    </section>
+
+    <section class="panel audit">
+      <h3>Audit trail</h3>
+      <ul>
+        {
+          audit.map((a) => (
+            <li>
+              <span class="time">{a.t}</span>
+              <span><b>{a.who}</b> {a.what}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  <figcaption>Illustrative record. Names and figures are sample data, not a client.</figcaption>
+</figure>
+
+<style>
+  .record {
+    --mono: 'Instrument Sans', system-ui, sans-serif;
+    position: relative;
+    padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    font-size: 13px;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+    min-width: 0;
+  }
+
+  .chrome {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 4px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-3);
+  }
+
+  .chrome .mark {
+    width: 14px;
+    color: var(--ink);
+  }
+
+  .crumb {
+    white-space: nowrap;
+  }
+
+  .crumb.strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .chip {
+    margin-left: auto;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .client {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 14px 4px 10px;
+  }
+
+  .name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+  }
+
+  .meta {
+    margin-top: 3px;
+    color: var(--ink-3);
+  }
+
+  .amount {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .amount span {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-bottom: 2px;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    margin: 4px 4px 12px;
+    padding: 10px 0 0;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: calc(100% / 12);
+    right: calc(100% / 12);
+    top: 15px;
+    height: 2px;
+    background: var(--line);
+  }
+
+  .timeline li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-3);
+    font-size: 12px;
+  }
+
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--line-strong);
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline li.done .dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .timeline li.done {
+    color: var(--ink-2);
+  }
+
+  .timeline li.now .dot {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .timeline li.now {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .timeline li.done::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: var(--accent);
+  }
+
+  .timeline li:nth-last-child(1).done::after {
+    display: none;
+  }
+
+  /* Panels */
+  .panels {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  @media (min-width: 560px) {
+    .panels {
+      grid-template-columns: 1fr 1fr;
+    }
+    .panel.audit {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .panel {
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+
+  .panel h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--surface-2);
+    color: var(--ink-2);
+    font-weight: 600;
+    font-size: 11px;
+  }
+
+  .who p {
+    font-weight: 500;
+  }
+
+  .who .sub {
+    font-weight: 400;
+    color: var(--ink-3);
+    font-size: 12px;
+  }
+
+  .ok {
+    margin-left: auto;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .route {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    color: var(--ink-3);
+    font-size: 12px;
+  }
+
+  .collateral li {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 4px 0;
+  }
+
+  .val {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .flag {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--line);
+    color: var(--warn);
+    font-weight: 500;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .flag::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+  }
+
+  .audit li {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+    gap: 8px;
+    padding: 4px 0;
+    border-top: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+
+  .audit li:first-child {
+    border-top: 0;
+  }
+
+  .audit .time {
+    color: var(--ink-3);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .audit b {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  @media (max-width: 420px) {
+    .audit li {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+  }
+
+  figcaption {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+</style>

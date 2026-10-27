@@ -1,0 +1,99 @@
+<nav class="nav" aria-label="Primary">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Leaf, back to top">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="word">Leaf</span>
+    </a>
+    <ul class="links">
+      <li><a href="#record">The record</a></li>
+      <li><a href="#lifecycle">How it works</a></li>
+      <li><a href="#controls">Controls</a></li>
+      <li><a href="#borrowers">Borrowers</a></li>
+      <li><a href="#faq">Questions</a></li>
+    </ul>
+    <a class="btn btn-small" href="#demo">Book a demo</a>
+  </div>
+</nav>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.nav')!;
+  const update = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  update();
+  window.addEventListener('scroll', update, { passive: true });
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(246, 245, 241, 0.72);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 200ms ease;
+  }
+
+  .nav.is-scrolled {
+    border-bottom-color: var(--rule);
+  }
+
+  .bar {
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .mark {
+    width: 22px;
+    height: 21px;
+    background: var(--ink);
+    -webkit-mask: url('/leaf.svg') no-repeat center / contain;
+    mask: url('/leaf.svg') no-repeat center / contain;
+  }
+
+  .word {
+    font-family: var(--font-mark);
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    transform: translateY(1px);
+  }
+
+  .links {
+    display: flex;
+    gap: 22px;
+    margin-left: 12px;
+    margin-right: auto;
+  }
+
+  .links a {
+    font-size: 14.5px;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding: 6px 0;
+  }
+
+  .links a:hover {
+    color: var(--ink);
+  }
+
+  .btn-small {
+    margin-left: auto;
+  }
+
+  @media (max-width: 860px) {
+    .links {
+      display: none;
+    }
+  }
+</style>

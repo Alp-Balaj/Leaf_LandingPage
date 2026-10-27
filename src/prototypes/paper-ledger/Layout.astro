@@ -1,0 +1,109 @@
+---
+import './styles.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f5f1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+    <script is:inline>
+      // Mark JS and motion preference before first paint so reveal elements
+      // start hidden only when a script will reveal them.
+      document.documentElement.classList.add('js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reduce');
+      }
+      // If the animation module never runs (blocked or failed request),
+      // drop the pre-paint hidden state so the page is still readable.
+      setTimeout(function () {
+        if (!document.documentElement.classList.contains('motion-ready')) {
+          document.documentElement.classList.remove('js');
+        }
+      }, 2500);
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<script>
+  import { animate } from 'motion/mini';
+  import { inView, stagger } from 'motion';
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+  root.classList.add('motion-ready');
+
+  const heroEls = Array.from(document.querySelectorAll<HTMLElement>('[data-hero]'));
+  const revealEls = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+
+  function showAll() {
+    for (const el of [...heroEls, ...revealEls]) el.style.opacity = '1';
+  }
+
+  // Automated browsers (screenshot and crawl tools) capture the page without
+  // scrolling, so nothing would ever intersect: show the finished state.
+  const automated = navigator.webdriver === true;
+
+  if (reduce || automated || !root.classList.contains('js')) {
+    showAll();
+  } else {
+    // Hero: one orchestrated entrance.
+    if (heroEls.length) {
+      animate(
+        heroEls,
+        { opacity: [0, 1], transform: ['translateY(14px)', 'translateY(0px)'] },
+        { duration: 0.6, delay: stagger(0.08), ease: [0.2, 0.7, 0.2, 1] },
+      );
+    }
+
+    // Sections: a single fade, once, as they enter.
+    const pending = new Set(revealEls);
+    const reveal = (el: HTMLElement) => {
+      if (!pending.has(el)) return;
+      pending.delete(el);
+      animate(
+        el,
+        { opacity: [0, 1], transform: ['translateY(10px)', 'translateY(0px)'] },
+        { duration: 0.45, ease: [0.2, 0.7, 0.2, 1] },
+      );
+    };
+
+    for (const el of revealEls) {
+      inView(el, () => reveal(el), { margin: '0px 0px -8% 0px' });
+    }
+
+    // Safety nets so content can never stay hidden: a viewport that contains
+    // the whole page (print, resized capture), and anything already above the
+    // current scroll position.
+    const sweep = () => {
+      const whole = window.innerHeight >= root.scrollHeight - 2;
+      for (const el of Array.from(pending)) {
+        if (whole || el.getBoundingClientRect().top < window.innerHeight) reveal(el);
+      }
+    };
+    sweep();
+    window.addEventListener('resize', sweep);
+    window.addEventListener('scroll', sweep, { passive: true });
+    window.addEventListener('beforeprint', () => pending.forEach(reveal));
+  }
+</script>

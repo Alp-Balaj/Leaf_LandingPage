@@ -1,0 +1,294 @@
+/* Leaf — bento-product prototype. Self-contained; does not import global.css. */
+
+@font-face {
+  font-family: 'Futura LT';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/futura-lt-medium.ttf') format('truetype');
+}
+
+:root {
+  --bg: #f4f6f2;
+  --surface: #ffffff;
+  --surface-2: #eaefe9;
+  --ink: #17211c;
+  --ink-2: #4b5952;
+  --ink-3: #6b776f;
+  --line: #d8dfd9;
+  --line-strong: #aeb9b1;
+  --accent: #1e7a4b;
+  --accent-soft: #d9efe2;
+  --accent-ink: #ffffff;
+  --warn: #c8463f;
+  --warn-soft: #f8e1df;
+  --shadow: 0 1px 2px rgba(23, 33, 28, 0.04), 0 12px 32px -16px rgba(23, 33, 28, 0.18);
+  --radius: 18px;
+  --radius-sm: 10px;
+
+  --font-display: 'Bricolage Grotesque', 'Futura LT', sans-serif;
+  --font-body: 'Instrument Sans', system-ui, sans-serif;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1412;
+    --surface: #161c19;
+    --surface-2: #1e2622;
+    --ink: #e9ede9;
+    --ink-2: #aab4ad;
+    --ink-3: #8a958d;
+    --line: #273029;
+    --line-strong: #3d4a41;
+    --accent: #5fcf94;
+    --accent-soft: #1b3a2a;
+    --accent-ink: #0f1412;
+    --warn: #e5685f;
+    --warn-soft: #43231f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -20px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (min-width: 720px) {
+  .wrap {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
+
+.section {
+  padding-top: clamp(48px, 7vw, 88px);
+}
+
+.section-head {
+  max-width: 640px;
+  margin-bottom: 28px;
+}
+
+.section-head h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 3.6vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.section-head p {
+  margin-top: 12px;
+  max-width: 52ch;
+  color: var(--ink-2);
+}
+
+/* Marks: both SVGs are white, recoloured through mask-image so they follow currentColor in both themes. */
+.mark {
+  display: inline-block;
+  background: currentColor;
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}
+
+.mark-leaf {
+  --mark: url('/leaf.svg');
+  aspect-ratio: 419 / 403;
+}
+
+.mark-ia {
+  --mark: url('/ia.svg');
+  aspect-ratio: 286 / 321;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: translate 0.2s ease, background-color 0.2s ease;
+}
+
+.btn:hover {
+  translate: 0 -1px;
+}
+
+.btn-quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.btn-quiet:hover {
+  border-color: var(--ink);
+}
+
+/* Bento grid */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tile {
+  grid-column: span 12;
+  position: relative;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: translate 0.25s ease, border-color 0.25s ease;
+  min-width: 0;
+}
+
+.tile:hover {
+  translate: 0 -3px;
+  border-color: var(--accent);
+}
+
+.tile h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.tile .body {
+  margin-top: 6px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+@media (min-width: 720px) {
+  .tile.c6 { grid-column: span 6; }
+  .tile.c4 { grid-column: span 6; }
+  .tile.c8 { grid-column: span 12; }
+}
+
+@media (min-width: 1024px) {
+  .tile.c4 { grid-column: span 4; }
+  .tile.c8 { grid-column: span 8; }
+  .tile.r2 { grid-row: span 2; }
+}
+
+/* Reveal on entry. Native scroll-driven timeline when supported and motion allowed; otherwise JS adds .io-reveal to <html> and toggles .is-in. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* fill-mode forwards, not both: a tile that has not entered yet keeps its natural (visible) state,
+       so nothing below the fold is ever hidden; it only animates while crossing the entry range. */
+    .reveal {
+      animation: rise linear forwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 32%;
+    }
+  }
+
+  .io-reveal .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .io-reveal .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Reduced motion: no entrance, no loops. Each illustration's base state is its finished state. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

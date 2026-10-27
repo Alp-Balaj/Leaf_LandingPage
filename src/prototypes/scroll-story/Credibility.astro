@@ -1,0 +1,74 @@
+<section class="cred" aria-label="About Leaf and iA">
+  <div class="wrap cred-grid">
+    <div class="cred-item" data-reveal>
+      <p class="cred-lead">Built and supported by iA (Inter Adria) in Prishtina, Kosovo.</p>
+      <p class="cred-sub"><a href="https://interadria-ks.com">interadria-ks.com</a></p>
+    </div>
+    <div class="cred-item" data-reveal>
+      <p class="cred-lead"><span class="cred-num" data-count>25%</span> less time spent handling each loan.</p>
+      <p class="cred-sub">Measured at [client bank], [period], across [number] loan files.</p>
+    </div>
+    <div class="cred-item" data-reveal>
+      <p class="cred-lead">In production at [bank name] since [year].</p>
+      <p class="cred-sub">[Confirm the reference bank and date before publishing.]</p>
+    </div>
+    <div class="cred-item" data-reveal>
+      <p class="cred-lead">Every approval is stored with approver, limit and timestamp.</p>
+      <p class="cred-sub">The full history of a file exports for audit.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cred {
+    background: var(--ground-2);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cred-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px 40px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .cred-lead {
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  .cred-num {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--red-text);
+  }
+
+  .cred-sub {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-3);
+  }
+
+  .cred-sub a {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 899px) {
+    .cred-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 599px) {
+    .cred-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+  }
+</style>
