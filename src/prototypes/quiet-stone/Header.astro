@@ -1,0 +1,34 @@
+---
+const links = [
+  { href: '#lifecycle', label: 'How it works' },
+  { href: '#borrowers', label: 'Borrowers' },
+  { href: '#controls', label: 'Controls' },
+];
+---
+
+<header class="header" data-header data-overlay>
+  <div class="header-in wrap">
+    <a class="brand" href="/prototypes/quiet-stone" aria-label="Leaf home">
+      <span class="mark mark-leaf" aria-hidden="true"></span>
+      <span class="brand-word">Leaf</span>
+    </a>
+    <nav class="header-nav" aria-label="Sections">
+      {links.map((l) => <a class="link" href={l.href}>{l.label}</a>)}
+      <a class="link header-cta" href="#demo">Book a demo</a>
+    </nav>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="qs-menu" data-menu-btn>
+      <span class="menu-open-txt">Menu</span><span class="menu-close-txt">Close</span>
+    </button>
+  </div>
+</header>
+
+<div class="panel" id="qs-menu" data-menu aria-hidden="true" inert>
+  <nav class="panel-nav wrap" aria-label="Menu">
+    {links.map((l) => <a href={l.href} data-menu-close>{l.label}</a>)}
+    <a href="#demo" data-menu-close>Book a demo</a>
+  </nav>
+  <p class="panel-foot wrap">
+    <a href="tel:+38338229170">+383 38 229 170</a>
+    <span>Built by iA, Prishtina</span>
+  </p>
+</div>

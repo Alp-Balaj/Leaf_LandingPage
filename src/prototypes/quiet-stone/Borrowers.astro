@@ -1,0 +1,98 @@
+---
+/* Panel figures are illustrative sample data. */
+const borrowers = [
+  {
+    label: 'Retail',
+    title: 'Individuals',
+    body: 'Income and expense analysis, co-borrowers and guarantors, payroll-linked loans created automatically.',
+    panel: 'Income and expenses',
+    rows: [
+      ['Net salary', 'EUR 1,240'],
+      ['Household expenses', 'EUR 610'],
+      ['Existing instalments', 'EUR 180'],
+      ['Disposable income', 'EUR 450'],
+      ['Co-borrower', 'Added'],
+      ['Payroll-linked', 'Yes, created automatically'],
+    ],
+  },
+  {
+    label: 'Business',
+    title: 'Micro and SME',
+    body: 'Balance sheet and P&L over three periods, declared against assumed figures, and credit limits that open new applications.',
+    panel: 'Balance sheet, three periods',
+    table: {
+      head: ['', '2023', '2024', '2025'],
+      rows: [
+        ['Revenue', '410k', '468k', '522k'],
+        ['EBITDA', '61k', '72k', '80k'],
+        ['Total debt', '140k', '128k', '115k'],
+        ['Declared vs assumed', '', '', '−4%'],
+      ],
+    },
+  },
+  {
+    label: 'Business',
+    title: 'Corporate',
+    body: 'Full financial-statement analysis, legal opinion, mortgages and movable collateral kept with their history.',
+    panel: 'Collateral history',
+    rows: [
+      ['Mortgage, warehouse', 'Valued 2 Sep 2026'],
+      ['Previous valuation', '4 Sep 2025'],
+      ['Movable pledge, fleet', 'Registered'],
+      ['Legal opinion', 'On file, 18 Aug'],
+      ['Statements', 'Audited, 3 periods'],
+    ],
+  },
+];
+---
+
+<section id="borrowers" class="sec">
+  <div class="wrap">
+    <div class="runhead" data-reveal>
+      <h2 class="label">Every borrower</h2>
+      <a class="link link-arrow" href="#demo">Book a demo</a>
+    </div>
+    <p class="sec-title" data-reveal style="--d:.1s">Individuals, micro, SME and corporate in one place.</p>
+
+    <div class="works">
+      {
+        borrowers.map((b, i) => (
+          <article class:list={['work', { flip: i % 2 === 1 }]}>
+            <div class="work-media" data-reveal="mask" aria-hidden="true">
+              <div class="work-pane" data-parallax="0.05">
+                <p class="rec-h">{b.panel}</p>
+                {b.rows && (
+                  <dl class="rec-kv">
+                    {b.rows.map(([k, v]) => (
+                      <div>
+                        <dt>{k}</dt>
+                        <dd>{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                {b.table && (
+                  <table class="rec-table">
+                    <thead>
+                      <tr>{b.table.head.map((h) => <th>{h}</th>)}</tr>
+                    </thead>
+                    <tbody>
+                      {b.table.rows.map((r) => (
+                        <tr>{r.map((c) => <td>{c}</td>)}</tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+            <div class="work-copy" data-reveal style="--d:.2s">
+              <p class="label">{b.label}</p>
+              <h3 class="work-title">{b.title}</h3>
+              <p class="work-body">{b.body}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

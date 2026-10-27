@@ -1,0 +1,79 @@
+---
+const roles = [
+  'Retail or SME lending',
+  'Credit risk',
+  'Operations',
+  'IT',
+  'Compliance',
+  'Management board',
+];
+---
+
+<section id="demo" class="sec demo-sec">
+  <div class="wrap demo">
+    <div class="demo-pitch">
+      <p class="label label-mark" data-reveal><span class="mark mark-leaf" aria-hidden="true"></span>Live demo</p>
+      <h2 class="demo-title" data-reveal style="--d:.1s">See your own loan process in Leaf.</h2>
+      <p class="demo-lede" data-reveal style="--d:.2s">
+        45 minutes with the team that builds it. Bring your credit and risk leads.
+      </p>
+      <p data-reveal style="--d:.3s">
+        <a class="demo-phone" href="tel:+38338229170">+383 38 229 170</a>
+      </p>
+    </div>
+
+    <div class="demo-card" data-reveal style="--d:.2s">
+      <div class="demo-thanks" hidden>
+        <p class="demo-thanks-title" tabindex="-1">Thank you.</p>
+        <p>We will contact you within one working day to set a time.</p>
+      </div>
+
+      <!-- TODO: point action at the real endpoint that receives demo requests. -->
+      <form class="demo-form" method="post" action="#">
+        <div class="field">
+          <label for="qs-name">Full name</label>
+          <input id="qs-name" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="qs-bank">Bank</label>
+          <input id="qs-bank" name="bank" type="text" autocomplete="organization" required />
+        </div>
+        <div class="field">
+          <label for="qs-role">Your role</label>
+          <select id="qs-role" name="role">
+            {roles.map((r) => <option>{r}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="qs-email">Work email</label>
+          <input id="qs-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <button type="submit" class="submit">Request a demo</button>
+        <p class="demo-privacy">We use these details only to arrange the demo. [Link to privacy notice]</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#demo .demo-form')!;
+  const thanks = document.querySelector<HTMLElement>('#demo .demo-thanks')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function swap() {
+    form.hidden = true;
+    thanks.hidden = false;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const focusThanks = () => thanks.querySelector<HTMLElement>('.demo-thanks-title')!.focus();
+    if (!reduce && 'startViewTransition' in document) {
+      const t = (document as any).startViewTransition(swap);
+      t.finished.then(focusThanks, focusThanks);
+    } else {
+      swap();
+      focusThanks();
+    }
+  });
+</script>

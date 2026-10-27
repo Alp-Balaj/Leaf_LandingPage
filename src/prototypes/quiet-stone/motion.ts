@@ -1,0 +1,185 @@
+// Platform-only motion, modelled on valzazhushi.com (see docs/research/valzazhushi-inspiration.md):
+// one IntersectionObserver for reveals, a smart glass header, light parallax, a custom
+// scrollbar, the mobile menu and the stage list. CSS owns every transition and easing.
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const root = document.documentElement;
+
+/* Reveals ---------------------------------------------------------------- */
+
+const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+const pending = new Set(targets);
+const reveal = (el: HTMLElement) => pending.delete(el) && el.classList.add('is-in');
+
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        io.unobserve(e.target);
+        reveal(e.target as HTMLElement);
+      }
+    },
+    { rootMargin: '0px 0px -10% 0px' }
+  );
+  targets.forEach((el) => io.observe(el));
+} else {
+  targets.forEach(reveal);
+}
+// Safety net for print and full-page capture, where observers may never fire.
+const revealRest = () => pending.forEach(reveal);
+addEventListener('beforeprint', revealRest);
+if (navigator.webdriver) revealRest();
+
+/* Header: glass after the hero, hides on scroll down, returns on scroll up -- */
+
+const header = document.querySelector<HTMLElement>('[data-header]')!;
+const hero = document.querySelector<HTMLElement>('[data-hero]');
+let solidAt = 8;
+let hideFrom = 240;
+let lastY = scrollY;
+let travel = 0;
+
+function measure() {
+  const heroBottom = hero ? hero.getBoundingClientRect().bottom + scrollY : 0;
+  solidAt = Math.max(heroBottom - header.offsetHeight, 8);
+  hideFrom = Math.max(solidAt + 160, 240);
+}
+
+function updateHeader() {
+  if (header.classList.contains('is-open')) return;
+  const y = scrollY;
+  const dy = y - lastY;
+  lastY = y;
+  if (dy !== 0) travel = Math.sign(dy) === Math.sign(travel) ? travel + dy : dy;
+  const atBottom = y + innerHeight >= root.scrollHeight - 2;
+  let hidden = header.classList.contains('is-hidden');
+  if (y < hideFrom) hidden = false;
+  else if (!atBottom && travel > 64) hidden = true;
+  else if (travel < -32) hidden = false;
+  header.classList.toggle('is-scrolled', y > solidAt);
+  header.classList.toggle('is-hidden', hidden);
+}
+
+/* Parallax ---------------------------------------------------------------- */
+
+const layers = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
+
+function updateParallax() {
+  if (reduce) return;
+  const vh = innerHeight;
+  for (const el of layers) {
+    const box = el.parentElement!.getBoundingClientRect();
+    if (box.bottom < -200 || box.top > vh + 200) continue;
+    const factor = Number(el.dataset.parallax) || 0.1;
+    const y = (box.top + box.height / 2 - vh / 2) * -factor;
+    el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0) scale(1.08)`;
+  }
+}
+
+/* Scrollbar: glass thumb that shows while scrolling --------------------------- */
+
+const track = document.querySelector<HTMLElement>('[data-scrollbar]')!;
+const thumb = document.querySelector<HTMLElement>('[data-scrollbar-thumb]')!;
+let idle = 0;
+let thumbH = 0;
+const maxScroll = () => root.scrollHeight - innerHeight;
+
+function updateScrollbar(show = true) {
+  const max = maxScroll();
+  track.classList.toggle('is-empty', max <= 1);
+  if (max <= 1) return;
+  const vh = innerHeight;
+  thumbH = Math.max((vh * vh) / (max + vh), 40);
+  thumb.style.height = `${thumbH}px`;
+  thumb.style.transform = `translate3d(0, ${(scrollY / max) * (vh - thumbH)}px, 0)`;
+  if (!show) return;
+  track.classList.add('is-active');
+  clearTimeout(idle);
+  idle = window.setTimeout(() => track.classList.remove('is-active'), 900);
+}
+
+thumb.addEventListener('pointerdown', (e) => {
+  e.preventDefault();
+  thumb.setPointerCapture(e.pointerId);
+  track.classList.add('is-dragging');
+  const startY = e.clientY;
+  const startScroll = scrollY;
+  const ratio = maxScroll() / (innerHeight - thumbH);
+  const move = (ev: PointerEvent) => scrollTo(0, startScroll + (ev.clientY - startY) * ratio);
+  const end = () => {
+    track.classList.remove('is-dragging');
+    thumb.removeEventListener('pointermove', move);
+    thumb.removeEventListener('pointerup', end);
+    thumb.removeEventListener('pointercancel', end);
+  };
+  thumb.addEventListener('pointermove', move);
+  thumb.addEventListener('pointerup', end);
+  thumb.addEventListener('pointercancel', end);
+});
+
+track.addEventListener('pointerdown', (e) => {
+  if (e.target === thumb) return;
+  scrollTo(0, ((e.clientY - thumbH / 2) / (innerHeight - thumbH)) * maxScroll());
+});
+
+/* Mobile menu --------------------------------------------------------------- */
+
+const menuBtn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
+const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+
+function setMenu(open: boolean) {
+  header.classList.toggle('is-open', open);
+  header.classList.remove('is-hidden');
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menu.classList.toggle('is-open', open);
+  menu.inert = !open;
+  menu.setAttribute('aria-hidden', String(!open));
+  root.classList.toggle('menu-open', open);
+  root.style.overflow = open ? 'hidden' : '';
+}
+
+menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
+menu.querySelectorAll('[data-menu-close]').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+addEventListener('keydown', (e) => e.key === 'Escape' && setMenu(false));
+
+/* Stage list: hover, focus or press a row to swap the panel ------------------- */
+
+document.querySelectorAll<HTMLElement>('[data-stages]').forEach((section) => {
+  const rows = [...section.querySelectorAll<HTMLButtonElement>('[data-stage]')];
+  const panes = [...section.querySelectorAll<HTMLElement>('[data-stage-pane]')];
+  const show = (i: number) => {
+    rows.forEach((r, j) => r.setAttribute('aria-pressed', String(j === i)));
+    panes.forEach((p, j) => {
+      p.classList.toggle('is-active', j === i);
+      p.setAttribute('aria-hidden', String(j !== i));
+    });
+  };
+  rows.forEach((row, i) => {
+    row.addEventListener('mouseenter', () => show(i));
+    row.addEventListener('focus', () => show(i));
+    row.addEventListener('click', () => show(i));
+  });
+});
+
+/* Wiring --------------------------------------------------------------------- */
+
+addEventListener(
+  'scroll',
+  () => {
+    updateHeader();
+    updateParallax();
+    updateScrollbar();
+  },
+  { passive: true }
+);
+addEventListener('resize', () => {
+  measure();
+  updateScrollbar(false);
+});
+new ResizeObserver(() => updateScrollbar(false)).observe(root);
+
+measure();
+updateHeader();
+updateParallax();
+updateScrollbar(false);

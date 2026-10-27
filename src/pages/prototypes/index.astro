@@ -55,6 +55,17 @@ const prototypes = [
       'Platform only. Tile entry is scroll-driven with animation-timeline: view() (IntersectionObserver fallback) and fill-mode forwards so nothing stays hidden. Each tile runs a CSS keyframe micro-illustration on transform and opacity (route traveller, scorecard bars, registry rows, permission highlight, early-warning ping, contract stamp) and the audit trail appends a line every 2.8s via @starting-style. Every loop parks at its finished state under reduced motion; the form uses document.startViewTransition.',
     deps: [],
   },
+  {
+    slug: 'quiet-stone',
+    title: 'Quiet stone, architectural pacing',
+    oneLiner:
+      'Leaf paced like an architecture studio site: a full-height hero over the loan record, slow mask reveals, a dark stage band where hovering a stage swaps the record panel, and a footer-sized wordmark.',
+    design:
+      'Modelled on valzazhushi.com (notes in docs/research/valzazhushi-inspiration.md). Warm stone ground (#e9e4da) with near-black ink, one dark band and a dark footer; Leaf red only on hover, active states and selection. Marcellus for display, Figtree for body, 12px letter-spaced uppercase labels and hairline rules instead of cards. Sections breathe at 96–200px. Order: glass header, hero, statement with overlapping record panes and the 25% stat, lifecycle band, borrowers as alternating “selected work”, quote over the blurred record, controls with roman numerals, demo, footer.',
+    animation:
+      'Platform only, one easing (cubic-bezier(.22,1,.36,1)) and long durations. Hero record settles from scale 1.12 over 2.8s while the headline and footer rule rise; a 1px scroll cue drips. One IntersectionObserver adds is-in to data-reveal (fade up 28px, 1.3s) or data-reveal="mask" (clip-path wipe, 1.6s) with --d staggers. Smart glass header hides on scroll down and returns on scroll up; light parallax on panes; custom glass scrollbar on fine pointers. Stage rows crossfade the sticky panel on hover, focus or press. All gated by prefers-reduced-motion.',
+    deps: [],
+  },
 ];
 ---
 
@@ -63,7 +74,7 @@ const prototypes = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Five landing-page prototypes for Leaf, each with its own design direction and animation approach." />
+    <meta name="description" content="Six landing-page prototypes for Leaf, each with its own design direction and animation approach." />
     <meta name="theme-color" content="#0a0a0b" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -79,7 +90,7 @@ const prototypes = [
       <a class="back" href="/">&larr; Current page</a>
       <h1>Leaf prototypes</h1>
       <p class="intro">
-        Five takes on the Leaf landing page. Each one keeps the same copy, stages and placeholders
+        Six takes on the Leaf landing page. Each one keeps the same copy, stages and placeholders
         but has its own design direction and animation approach. Open one to see it at full size.
       </p>
     </header>
