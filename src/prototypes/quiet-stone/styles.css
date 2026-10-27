@@ -501,9 +501,7 @@ a {
 
 /* Everything printed on paper keeps dark ink, whatever the page theme. */
 .rec,
-.pane,
-.work-pane,
-.stage-pane {
+.pane {
   color: var(--ink);
   --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
   --rule: color-mix(in srgb, var(--ink) 14%, transparent);
@@ -834,250 +832,63 @@ a {
   color: var(--stone);
 }
 
-.stages {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 48px 6vw;
-  align-items: start;
-}
-
-.stage-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid var(--rule);
-}
-
-.stage-list li {
-  border-bottom: 1px solid var(--rule);
-}
-
-.stage-row {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1.1fr);
-  align-items: baseline;
-  gap: 8px 32px;
-  padding: 26px 0;
-  background: none;
-  border: 0;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.stage-row:focus-visible {
-  outline-offset: -1px;
-}
-
-.stage-n {
-  font: 400 var(--t-sm) / 1 var(--font-display);
-  color: var(--ink-soft);
-  transition: color 0.5s var(--ease);
-}
-
-.stage-name {
-  font: 400 var(--t-xl) / 1.1 var(--font-display);
-  transition:
-    color 0.5s var(--ease),
-    transform 0.6s var(--ease);
-}
-
-.stage-body {
-  font-size: var(--t-sm);
-  color: var(--ink-soft);
-  max-width: 38ch;
-}
-
-.stage-row[aria-pressed='true'] .stage-name {
-  color: color-mix(in srgb, var(--accent) 45%, var(--stone));
-  transform: translateX(10px);
-}
-
-.stage-row[aria-pressed='true'] .stage-n {
-  color: var(--accent);
-}
-
-.stage-media {
-  position: sticky;
-  top: calc(var(--header-h) + 24px);
-  aspect-ratio: 4 / 5;
-  background: color-mix(in srgb, var(--stone) 7%, var(--ink));
-  overflow: hidden;
-}
-
-.stage-pane {
-  position: absolute;
-  inset: 8%;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(24px, 3vw, 40px);
-  background: var(--paper);
-  opacity: 0;
-  transform: scale(1.06);
-  transition:
-    opacity 0.9s var(--ease),
-    transform 1.4s var(--ease);
-}
-
-.stage-pane.is-active {
-  opacity: 1;
-  transform: none;
-}
-
-.mini-tl {
-  list-style: none;
-  margin: 0 0 auto;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-}
-
-.mini-tl li {
-  height: 2px;
-  background: var(--rule);
-}
-
-.mini-tl .done {
-  background: var(--ink);
-}
-
-.mini-tl .active {
-  background: var(--accent);
-}
-
-.stage-pane-n {
-  margin-top: 32px;
-  font: 400 var(--t-sm) / 1 var(--font-display);
-  color: var(--accent);
-}
-
-.stage-pane-name {
-  font: 400 var(--t-2xl) / 1.05 var(--font-display);
-  margin: 8px 0 24px;
-}
-
-.stage-pane .rec-kv {
-  font-size: var(--t-sm);
-  border-top: 1px solid var(--rule);
-}
-
-.stage-pane-who {
-  margin-top: 20px;
-  display: grid;
-  gap: 4px;
-  font-size: var(--t-sm);
+/* Prototype pages can swap in another layout below 900px through the mobile slot. */
+.stages-mobile {
+  display: none;
 }
 
 @media (width <= 900px) {
-  .stages {
-    grid-template-columns: 1fr;
-  }
-
-  .stage-media {
+  .stages-deck.has-mobile {
     display: none;
   }
 
-  .stage-row {
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    cursor: default;
-  }
-
-  .stage-body {
-    grid-column: 2;
+  .stages-mobile {
+    display: block;
   }
 }
 
-/* Borrowers (selected-work pattern) ------------------------------------------- */
-
-.works {
-  display: grid;
-  gap: clamp(96px, 12vw, 176px);
-}
-
-.work {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-  gap: 32px 5vw;
-  align-items: end;
-}
-
-.work.flip {
-  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
-}
-
-.work.flip .work-media {
-  order: 2;
-}
-
-.work-media {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--bg-deep);
-}
-
-.work-pane {
-  position: absolute;
-  inset: 11% 12%;
-  padding: clamp(18px, 2.5vw, 32px);
-  background: var(--paper);
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 24px 60px #3a2f2214;
-}
-
-.work-pane .rec-table td:not(:first-child),
-.work-pane .rec-table th:not(:first-child) {
-  text-align: right;
-}
-
-.work-copy {
-  display: grid;
-  gap: 14px;
-  padding-bottom: 8px;
-}
-
-.work-title {
-  font: 400 var(--t-xl) / 1.1 var(--font-display);
-}
-
-.work-body {
-  font-size: var(--t-sm);
-  color: var(--ink-soft);
-  max-width: 36ch;
-}
-
-@media (width <= 900px) {
-  .work,
-  .work.flip {
-    grid-template-columns: 1fr;
-  }
-
-  .work.flip .work-media {
-    order: 0;
-  }
-}
-
+/* On a phone the second running-head label becomes the section title. */
 @media (width <= 560px) {
-  .work-pane {
-    inset: 6%;
-    font-size: 11px;
+  .lifecycle .runhead {
+    flex-direction: column;
+    align-items: start;
+    gap: 14px;
+  }
+
+  .lifecycle .runhead > span.label {
+    font: 400 var(--t-xl) / 1.1 var(--font-display);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--stone);
   }
 }
 
 /* Quote ----------------------------------------------------------------------- */
 
+/* Registered so the veil can ease when hover swaps the screenshot. */
+@property --q-veil {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 66%;
+}
+
 .quote {
+  --q-veil: 66%;
   position: relative;
   overflow: hidden;
   min-height: clamp(480px, 70vh, 760px);
   display: grid;
   place-items: center;
-  background: #171512;
-  color: var(--stone);
+  background: var(--bg);
+  color: var(--fg);
+  transition: --q-veil 0.6s ease;
+}
+
+/* Hovering (or, on touch screens, scrolling it to mid-screen) shows the light
+   screenshot, under a dark veil so the stone headline reads. */
+.quote:hover,
+.quote.is-lit {
+  --q-veil: 64%;
 }
 
 .quote-bg {
@@ -1089,15 +900,57 @@ a {
 }
 
 .quote-img {
-  width: 1180px;
+  display: grid;
+  /* Phones see most of the dashboard instead of a sliver of its middle. */
+  width: clamp(680px, 120vw, 1180px);
   flex: none;
+  filter: blur(2px);
+  /* Feather the screenshot's edges so no rectangle shows against the fade. */
+  -webkit-mask-image:
+    linear-gradient(to right, #0000, #000 12%, #000 88%, #0000),
+    linear-gradient(#0000 4%, #000 28%, #000 72%, #0000 96%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, #0000, #000 12%, #000 88%, #0000),
+    linear-gradient(#0000 4%, #000 28%, #000 72%, #0000 96%);
+  mask-composite: intersect;
+}
+
+/* Both screenshots share one cell and cross-fade. */
+.quote-shot {
+  grid-area: 1 / 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: opacity 0.6s ease;
+}
+
+.quote-shot-light,
+.quote:hover .quote-shot-dark,
+.quote.is-lit .quote-shot-dark {
+  opacity: 0;
+}
+
+.quote:hover .quote-shot-light,
+.quote.is-lit .quote-shot-light {
+  opacity: 1;
+}
+
+/* The white dashboard is busier at a glance, so it gets a little more blur. */
+.quote-shot-light {
   filter: blur(2px);
 }
 
 .quote-shade {
   position: absolute;
   inset: 0;
-  background: #14110ebf;
+  background: linear-gradient(
+    var(--bg),
+    color-mix(in srgb, var(--bg) var(--q-veil), transparent) 30%,
+    color-mix(in srgb, var(--bg) var(--q-veil), transparent) 70%,
+    var(--bg)
+  );
 }
 
 .quote-text {
@@ -1441,9 +1294,8 @@ a {
 
 /* Dark ground ---------------------------------------------------------------- */
 
-/* The hero and quote fade into the page instead of sitting on their own ground. */
-[data-theme='dark'] .hero,
-[data-theme='dark'] .quote {
+/* The hero fades into the page instead of sitting on its own ground. */
+[data-theme='dark'] .hero {
   background: var(--bg);
 }
 
@@ -1475,10 +1327,6 @@ a {
   }
 }
 
-[data-theme='dark'] .quote-shade {
-  background: linear-gradient(var(--bg), #0f0e0cb3 30%, #0f0e0cb3 70%, var(--bg));
-}
-
 /* Lifted surfaces read as the band and footer once the page itself is dark. */
 [data-theme='dark'] .band {
   border-block: 1px solid var(--rule);
@@ -1490,7 +1338,6 @@ a {
 }
 
 [data-theme='dark'] .pane,
-[data-theme='dark'] .work-pane,
 [data-theme='dark'] .rec {
   box-shadow: 0 30px 80px #00000080;
 }
@@ -1532,9 +1379,7 @@ a {
     animation: none;
   }
 
-  .header,
-  .stage-pane,
-  .stage-name {
+  .header {
     transition: none;
   }
 }

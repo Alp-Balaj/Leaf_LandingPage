@@ -1,0 +1,491 @@
+---
+// "The spectrum": a loan-size ruler from EUR 1k to EUR 10M with each segment's range marked,
+// four dense paper columns under it, and their lines drawn together into one Leaf record.
+import { borrowers, shared } from './data';
+
+const ticks = ['1k', '10k', '100k', '1M', '10M'];
+// Spine paths run from each column's centre down into the shared node.
+const xs = [12.5, 37.5, 62.5, 87.5];
+---
+
+<section id="borrowers" class="sec bw" data-bw>
+  <div class="wrap">
+    <div class="runhead" data-reveal>
+      <h2 class="label">Every borrower</h2>
+      <a class="link link-arrow" href="#demo">Book a demo</a>
+    </div>
+    <p class="sec-title" data-reveal style="--d:.1s">Individuals, micro, SME and corporate in one place.</p>
+
+    <div class="bw-ruler" data-reveal aria-hidden="true">
+      <p class="label bw-ruler-h">Loan size, EUR</p>
+      <div class="bw-scale">
+        {ticks.map((t, i) => (
+          <span class="bw-tick" style={`--x:${i * 25}%`}>{t}</span>
+        ))}
+        {borrowers.map((b, i) => (
+          <span
+            class="bw-band"
+            style={`--a:${b.range[0] * 100}%;--b:${b.range[1] * 100}%;--row:${i};--d:${(0.2 + i * 0.12).toFixed(2)}s`}
+          >
+            <span>{b.n}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <ol class="bw-cols">
+      {
+        borrowers.map((b, i) => (
+          <li class="bw-col" data-reveal style={`--d:${(i * 0.1).toFixed(2)}s`}>
+            <div class="bw-col-head">
+              <span class="bw-n">{b.n}</span>
+              <h3 class="bw-seg">{b.segment}</h3>
+              <p class="bw-ticket">{b.ticket}</p>
+            </div>
+
+            <div class="bw-paper">
+              <p class="rec-h">{b.name}</p>
+              <p class="bw-purpose">{b.purpose}</p>
+
+              <figure class="bw-fig" aria-label={b.bars.caption}>
+                <div class="bw-bars" style={`--n:${b.bars.values.length}`}>
+                  {b.bars.values.map((v, j) => (
+                    <span
+                      class:list={['bw-b', { hi: j === b.bars.values.length - 1 }]}
+                      style={`--v:${v};--k:${j}`}
+                      title={b.bars.labels?.[j]}
+                    />
+                  ))}
+                </div>
+                {b.bars.labels && (
+                  <div class="bw-bar-labels" style={`--n:${b.bars.values.length}`}>
+                    {b.bars.labels.map((l) => <span>{l}</span>)}
+                  </div>
+                )}
+                <figcaption>{b.bars.caption}</figcaption>
+              </figure>
+
+              <p class="rec-h bw-h">{b.panel}</p>
+              {b.rows && (
+                <dl class="rec-kv bw-kv">
+                  {b.rows.map(([k, v]) => (
+                    <div>
+                      <dt>{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {b.table && (
+                <dl class="rec-kv bw-kv">
+                  {b.table.rows.map((r) => (
+                    <div>
+                      <dt>{r[0]}</dt>
+                      <dd>{r.slice(1).filter(Boolean).join(' · ')}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+
+              <p class="bw-count">
+                <span class="bw-count-n">{b.uses.length}</span> analyses ·{' '}
+                <span class="bw-count-n">{b.docs.length}</span> documents
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="bw-join" aria-hidden="true">
+      <svg class="bw-spine" viewBox="0 0 100 60" preserveAspectRatio="none">
+        {xs.map((x) => (
+          <path d={`M${x} 0 C${x} 36, 50 24, 50 60`} vector-effect="non-scaling-stroke" />
+        ))}
+      </svg>
+    </div>
+
+    <div class="bw-record" data-reveal>
+      <p class="bw-node">
+        <span class="mark mark-leaf" aria-hidden="true"></span>
+        One Leaf record
+      </p>
+      <ol class="bw-flow">
+        {shared.map((s, i) => (
+          <li style={`--d:${(0.3 + i * 0.08).toFixed(2)}s`}>
+            <span class="bw-dot" />
+            {s}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Draw the spine when it scrolls into view; the paths start undrawn in CSS.
+  document.querySelectorAll<HTMLElement>('[data-bw]').forEach((root) => {
+    const join = root.querySelector('.bw-join')!;
+    new IntersectionObserver(
+      ([e], io) => {
+        if (!e.isIntersecting) return;
+        join.classList.add('is-in');
+        io.disconnect();
+      },
+      { rootMargin: '0px 0px -15% 0px' }
+    ).observe(join);
+  });
+</script>
+
+<style>
+  /* Ruler ---------------------------------------------------------------- */
+
+  .bw-ruler {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 10fr);
+    gap: 24px;
+    align-items: start;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  .bw-scale {
+    position: relative;
+    height: 112px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .bw-tick {
+    position: absolute;
+    top: 0;
+    left: var(--x);
+    padding-top: 10px;
+    font-size: var(--t-xs);
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    transform: translateX(-50%);
+  }
+
+  .bw-tick:first-child {
+    transform: none;
+  }
+
+  .bw-tick:nth-child(5) {
+    transform: translateX(-100%);
+  }
+
+  .bw-tick::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 1px;
+    height: 6px;
+    background: var(--fg);
+  }
+
+  .bw-tick:first-child::before {
+    left: 0;
+  }
+
+  .bw-tick:nth-child(5)::before {
+    left: auto;
+    right: 0;
+  }
+
+  .bw-band {
+    position: absolute;
+    left: var(--a);
+    width: calc(var(--b) - var(--a));
+    top: calc(38px + var(--row) * 18px);
+    height: 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) calc(35% + var(--row) * 18%), transparent);
+    transform-origin: left;
+  }
+
+  .bw-band span {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .bw-band {
+      transform: scaleX(0);
+      transition: transform 1.4s var(--ease) var(--d);
+    }
+
+    .js .bw-ruler.is-in .bw-band {
+      transform: none;
+    }
+  }
+
+  /* Columns ---------------------------------------------------------------- */
+
+  .bw-cols {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(12px, 1.6vw, 24px);
+  }
+
+  .bw-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .bw-col-head {
+    display: grid;
+    gap: 4px;
+    padding-bottom: 18px;
+  }
+
+  .bw-n {
+    font-size: var(--t-xs);
+    letter-spacing: 0.18em;
+    color: var(--accent);
+  }
+
+  .bw-seg {
+    font: 400 var(--t-xl) / 1.1 var(--font-display);
+  }
+
+  .bw-ticket {
+    font-size: var(--t-sm);
+    color: var(--ink-soft);
+  }
+
+  .bw-paper {
+    --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
+    --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(16px, 1.8vw, 24px);
+    border-radius: 4px;
+    color: var(--ink);
+    background: var(--paper);
+    font-size: 12px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 30px 70px #00000080;
+  }
+
+  .bw-paper .rec-h {
+    margin-bottom: 4px;
+  }
+
+  .bw-purpose {
+    font: 400 1.05rem/1.3 var(--font-display);
+    margin-bottom: 18px;
+    min-height: 2.6em;
+  }
+
+  .bw-fig {
+    padding: 14px 0 12px;
+    border-block: 1px solid var(--rule);
+    margin-bottom: 18px;
+  }
+
+  .bw-bars,
+  .bw-bar-labels {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .bw-bars {
+    height: 64px;
+    align-items: end;
+  }
+
+  .bw-b {
+    height: calc(var(--v) * 100%);
+    background: color-mix(in srgb, var(--ink) 78%, var(--paper));
+    border-radius: 1px;
+    transform-origin: bottom;
+  }
+
+  .bw-b.hi {
+    background: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .bw-b {
+      transform: scaleY(0);
+      transition: transform 1.1s var(--ease) calc(var(--d, 0s) + 0.4s + var(--k) * 0.05s);
+    }
+
+    .js .bw-col.is-in .bw-b {
+      transform: none;
+    }
+  }
+
+  .bw-bar-labels {
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--ink-soft);
+  }
+
+  .bw-bar-labels span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bw-fig figcaption {
+    margin-top: 8px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .bw-h {
+    margin-top: 2px;
+  }
+
+  .bw-kv > div {
+    padding: 7px 0;
+    gap: 10px;
+  }
+
+  .bw-kv dt {
+    font-size: 12px;
+  }
+
+  .bw-kv dd {
+    text-align: right;
+  }
+
+  .bw-count {
+    margin-top: auto;
+    padding-top: 16px;
+    color: var(--ink-soft);
+  }
+
+  .bw-count-n {
+    color: var(--ink);
+    font: 400 1.1rem/1 var(--font-display);
+  }
+
+  /* Spine and shared record -------------------------------------------------- */
+
+  .bw-join {
+    height: clamp(64px, 8vw, 120px);
+  }
+
+  .bw-spine {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .bw-spine path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1;
+  }
+
+  /* The lines grow downward from the columns into the node. */
+  @media (prefers-reduced-motion: no-preference) {
+    .js .bw-spine {
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 1.6s var(--ease);
+    }
+
+    .js .bw-join.is-in .bw-spine {
+      clip-path: inset(0 0 -2px 0);
+    }
+  }
+
+  .bw-record {
+    display: grid;
+    justify-items: center;
+    gap: 28px;
+  }
+
+  .bw-node {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 22px;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font: 400 var(--t-lg) / 1 var(--font-display);
+  }
+
+  .bw-node .mark {
+    color: var(--accent);
+  }
+
+  .bw-flow {
+    list-style: none;
+    margin: 0;
+    padding: 18px 0 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+    font-size: var(--t-sm);
+    color: var(--ink-soft);
+  }
+
+  .bw-flow li {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .bw-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (width <= 1000px) {
+    .bw-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 48px;
+    }
+
+    .bw-join {
+      display: none;
+    }
+
+    .bw-record {
+      margin-top: 56px;
+    }
+  }
+
+  @media (width <= 720px) {
+    .bw-ruler {
+      grid-template-columns: 1fr;
+    }
+
+    .bw-band span {
+      display: none;
+    }
+
+    .bw-flow {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      row-gap: 14px;
+    }
+  }
+
+  @media (width <= 560px) {
+    .bw-cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

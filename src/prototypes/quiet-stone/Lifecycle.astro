@@ -1,130 +1,21 @@
 ---
-const stages = [
-  {
-    name: 'Apply',
-    body: 'Clients, products, co-borrowers and guarantors captured once and reused at every later step.',
-    who: 'Branch officer',
-    panel: [
-      ['Client type', 'SME'],
-      ['Co-borrower', 'Added, 1'],
-      ['Guarantor', 'Added, 1'],
-      ['Product', 'Working-capital loan'],
-    ],
-  },
-  {
-    name: 'Score',
-    body: 'Statements, registry exposure and your own scorecard, with knock-out and adjustment criteria applied.',
-    who: 'Credit analyst, risk',
-    panel: [
-      ['Statements', '3 periods'],
-      ['Registry exposure', 'Imported 9 Sep'],
-      ['Knock-out criteria', '0 triggered'],
-      ['Adjustments', '2 applied'],
-    ],
-  },
-  {
-    name: 'Approve',
-    body: 'Routed from branch to risk to committee by the limits you set per branch and product.',
-    who: 'Branch manager, risk, committee',
-    panel: [
-      ['Branch manager', 'Recommended'],
-      ['Risk department', 'Approved'],
-      ['Credit committee', 'Not required'],
-      ['Limit applied', 'to EUR 150,000'],
-    ],
-  },
-  {
-    name: 'Disburse',
-    body: 'Contracts from your own templates; collateral and mortgages on the same record.',
-    who: 'Credit administration',
-    panel: [
-      ['Contract', 'Template SME-WC v3'],
-      ['Mortgage', 'Registered'],
-      ['Movable pledge', 'Registered'],
-      ['Disbursement', 'Tranche 1 of 1'],
-    ],
-  },
-  {
-    name: 'Monitor',
-    body: 'Reviews and early warnings raised for revaluation, product expiry and special conditions.',
-    who: 'Monitoring team',
-    panel: [
-      ['Collateral revaluation', 'Due 2 Sep 2027'],
-      ['Special condition', 'Review in 30 days'],
-      ['Product expiry', 'Sep 2029'],
-      ['Early warnings', 'None open'],
-    ],
-  },
-  {
-    name: 'Collect',
-    body: 'Arrears sorted by days of delay and handed to collectors. Restructure without a new file.',
-    who: 'Collections',
-    panel: [
-      ['Days of delay', '0'],
-      ['Bucket', 'Current'],
-      ['Assigned to', 'Not assigned'],
-      ['Restructure', 'Available'],
-    ],
-  },
-];
-const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+import LifecycleDeck from './LifecycleDeck.astro';
+
+// The stage deck at every width. A "mobile" slot swaps in another layout below 900px
+// (the prototypes in lifecycle-mobile/ use it).
+const hasMobile = Astro.slots.has('mobile');
 ---
 
-<section id="lifecycle" class="sec band" data-stages>
+<section id="lifecycle" class="sec band lifecycle">
   <div class="wrap">
     <div class="runhead" data-reveal>
       <h2 class="label">How Leaf works</h2>
       <span class="label">Six stages, one record</span>
     </div>
 
-    <div class="stages">
-      <ol class="stage-list">
-        {
-          stages.map((s, i) => (
-            <li data-reveal style={`--d:${(i * 0.08).toFixed(2)}s`}>
-              <button
-                type="button"
-                class="stage-row"
-                aria-pressed={i === 0 ? 'true' : 'false'}
-                aria-controls="qs-stage-panels"
-                data-stage={i}
-              >
-                <span class="stage-n">{roman[i]}</span>
-                <span class="stage-name">{s.name}</span>
-                <span class="stage-body">{s.body}</span>
-              </button>
-            </li>
-          ))
-        }
-      </ol>
-
-      <div class="stage-media" id="qs-stage-panels" aria-live="polite" data-reveal="mask" style="--d:.2s">
-        {
-          stages.map((s, i) => (
-            <div class:list={['stage-pane', { 'is-active': i === 0 }]} data-stage-pane={i} aria-hidden={i === 0 ? 'false' : 'true'}>
-              <ol class="mini-tl" aria-hidden="true">
-                {stages.map((_, j) => (
-                  <li class:list={{ done: j < i, active: j === i }} />
-                ))}
-              </ol>
-              <p class="stage-pane-n">{roman[i]}</p>
-              <p class="stage-pane-name">{s.name}</p>
-              <dl class="rec-kv">
-                {s.panel.map(([k, v]) => (
-                  <div>
-                    <dt>{k}</dt>
-                    <dd>{v}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p class="stage-pane-who">
-                <span class="label">Worked by</span>
-                {s.who}
-              </p>
-            </div>
-          ))
-        }
-      </div>
+    <div class:list={['stages-deck', { 'has-mobile': hasMobile }]}>
+      <LifecycleDeck />
     </div>
+    {hasMobile && <div class="stages-mobile"><slot name="mobile" /></div>}
   </div>
 </section>

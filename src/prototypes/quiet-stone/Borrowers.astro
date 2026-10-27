@@ -1,52 +1,10 @@
 ---
-/* Panel figures are illustrative sample data. */
-const borrowers = [
-  {
-    label: 'Retail',
-    title: 'Individuals',
-    body: 'Income and expense analysis, co-borrowers and guarantors, payroll-linked loans created automatically.',
-    panel: 'Income and expenses',
-    rows: [
-      ['Net salary', 'EUR 1,240'],
-      ['Household expenses', 'EUR 610'],
-      ['Existing instalments', 'EUR 180'],
-      ['Disposable income', 'EUR 450'],
-      ['Co-borrower', 'Added'],
-      ['Payroll-linked', 'Yes, created automatically'],
-    ],
-  },
-  {
-    label: 'Business',
-    title: 'Micro and SME',
-    body: 'Balance sheet and P&L over three periods, declared against assumed figures, and credit limits that open new applications.',
-    panel: 'Balance sheet, three periods',
-    table: {
-      head: ['', '2023', '2024', '2025'],
-      rows: [
-        ['Revenue', '410k', '468k', '522k'],
-        ['EBITDA', '61k', '72k', '80k'],
-        ['Total debt', '140k', '128k', '115k'],
-        ['Declared vs assumed', '', '', '−4%'],
-      ],
-    },
-  },
-  {
-    label: 'Business',
-    title: 'Corporate',
-    body: 'Full financial-statement analysis, legal opinion, mortgages and movable collateral kept with their history.',
-    panel: 'Collateral history',
-    rows: [
-      ['Mortgage, warehouse', 'Valued 2 Sep 2026'],
-      ['Previous valuation', '4 Sep 2025'],
-      ['Movable pledge, fleet', 'Registered'],
-      ['Legal opinion', 'On file, 18 Aug'],
-      ['Statements', 'Audited, 3 periods'],
-    ],
-  },
-];
+// Every borrower: a switcher across the four segments. Each tab brings in a real-feeling borrower
+// and the analyses Leaf runs for them light up on a shared strip, so depth grows visibly.
+import { analyses, borrowers, shared } from './borrowers/data';
 ---
 
-<section id="borrowers" class="sec">
+<section id="borrowers" class="sec bs" data-bs>
   <div class="wrap">
     <div class="runhead" data-reveal>
       <h2 class="label">Every borrower</h2>
@@ -54,45 +12,477 @@ const borrowers = [
     </div>
     <p class="sec-title" data-reveal style="--d:.1s">Individuals, micro, SME and corporate in one place.</p>
 
-    <div class="works">
+    <div class="bs-tabs" role="tablist" aria-label="Borrower type" data-reveal style="--d:.15s">
       {
         borrowers.map((b, i) => (
-          <article class:list={['work', { flip: i % 2 === 1 }]}>
-            <div class="work-media" data-reveal="mask" aria-hidden="true">
-              <div class="work-pane" data-parallax="0.05">
-                <p class="rec-h">{b.panel}</p>
-                {b.rows && (
-                  <dl class="rec-kv">
-                    {b.rows.map(([k, v]) => (
-                      <div>
-                        <dt>{k}</dt>
-                        <dd>{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
-                {b.table && (
-                  <table class="rec-table">
-                    <thead>
-                      <tr>{b.table.head.map((h) => <th>{h}</th>)}</tr>
-                    </thead>
-                    <tbody>
-                      {b.table.rows.map((r) => (
-                        <tr>{r.map((c) => <td>{c}</td>)}</tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
-              </div>
-            </div>
-            <div class="work-copy" data-reveal style="--d:.2s">
-              <p class="label">{b.label}</p>
-              <h3 class="work-title">{b.title}</h3>
-              <p class="work-body">{b.body}</p>
-            </div>
-          </article>
+          <button
+            type="button"
+            role="tab"
+            class="bs-tab"
+            id={`bs-tab-${i}`}
+            aria-controls={`bs-panel-${i}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-bs-tab={i}
+          >
+            <span class="bs-n">{b.n}</span>
+            <span class="bs-seg">{b.segment}</span>
+            <span class="bs-ticket">{b.ticket}</span>
+            <span class="bs-bar" aria-hidden="true" />
+          </button>
         ))
       }
     </div>
+
+    <div class="bs-stage">
+      {
+        borrowers.map((b, i) => (
+          <div
+            class:list={['bs-panel', { 'is-active': i === 0 }]}
+            role="tabpanel"
+            id={`bs-panel-${i}`}
+            aria-labelledby={`bs-tab-${i}`}
+            inert={i !== 0}
+            data-bs-panel={i}
+          >
+            <div class="bs-who">
+              <p class="label">{b.label} · {b.file}</p>
+              <p class="bs-name">{b.name}</p>
+              <p class="bs-about">{b.about}</p>
+              <blockquote class="bs-purpose">“{b.purpose}”</blockquote>
+              <dl class="bs-facts">
+                <div>
+                  <dt class="label">Amount</dt>
+                  <dd>{b.amount}</dd>
+                </div>
+                <div>
+                  <dt class="label">Term</dt>
+                  <dd>{b.term}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="bs-paper" aria-hidden="true">
+              <div class="bs-paper-head">
+                <span class="rec-logo">
+                  <span class="mark mark-leaf" /> Leaf
+                </span>
+                <span class="rec-dim">Loans / {b.file}</span>
+              </div>
+              <p class="rec-h">{b.panel}</p>
+              {b.rows && (
+                <dl class="rec-kv">
+                  {b.rows.map(([k, v]) => (
+                    <div>
+                      <dt>{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {b.table && (
+                <table class="rec-table bs-table">
+                  <thead>
+                    <tr>{b.table.head.map((h) => <th>{h}</th>)}</tr>
+                  </thead>
+                  <tbody>
+                    {b.table.rows.map((r) => (
+                      <tr>{r.map((c) => <td>{c}</td>)}</tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+              <ol class="bs-flow">
+                {shared.map((s, j) => (
+                  <li class:list={{ done: j < 2 }}>
+                    <span class="rec-dot" />
+                    {s}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="bs-depth" data-reveal style="--d:.1s">
+      <p class="label bs-depth-h">
+        What Leaf looks at <span class="bs-count" data-bs-count>{borrowers[0].uses.length} of {analyses.length}</span>
+      </p>
+      <ul class="bs-chips">
+        {
+          analyses.map((a) => (
+            <li
+              class:list={['bs-chip', { on: borrowers[0].uses.includes(a) }]}
+              data-bs-chip={borrowers.map((b) => (b.uses.includes(a) ? 1 : 0)).join('')}
+            >
+              {a}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </div>
 </section>
+
+<script>
+  const AUTO_MS = 7000;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stacked = matchMedia('(width <= 900px)');
+
+  document.querySelectorAll<HTMLElement>('[data-bs]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-bs-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-bs-panel]')];
+    const chips = [...root.querySelectorAll<HTMLElement>('[data-bs-chip]')];
+    const count = root.querySelector<HTMLElement>('[data-bs-count]')!;
+    let current = 0;
+    let timer = 0;
+    let auto = !reduce;
+    let visible = false;
+
+    const show = (i: number, focus = false) => {
+      current = i;
+      tabs.forEach((t, j) => {
+        const on = j === i;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      if (focus) tabs[i].focus();
+      panels.forEach((p, j) => {
+        p.inert = j !== i;
+        p.classList.toggle('is-active', j === i);
+      });
+      let lit = 0;
+      chips.forEach((c) => {
+        const on = c.dataset.bsChip![i] === '1';
+        c.classList.toggle('on', on);
+        lit += Number(on);
+      });
+      count.textContent = `${lit} of ${chips.length}`;
+      schedule();
+    };
+
+    // Auto-advance while the section is on screen, until someone picks a tab themselves.
+    const schedule = () => {
+      clearTimeout(timer);
+      root.classList.toggle('is-auto', auto && visible);
+      if (!auto || !visible) return;
+      timer = window.setTimeout(() => show((current + 1) % tabs.length), AUTO_MS);
+    };
+
+    const stopAuto = () => {
+      auto = false;
+      schedule();
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        stopAuto();
+        show(i);
+        // Stacked layout: the panel sits below the tabs, so bring it up to read without scrolling.
+        if (stacked.matches) {
+          const who = panels[i].querySelector<HTMLElement>('.bs-who')!;
+          const top = who.getBoundingClientRect().top;
+          const min = parseFloat(getComputedStyle(who).scrollMarginTop) || 0;
+          scrollTo({ top: scrollY + top - min, behavior: reduce ? 'auto' : 'smooth' });
+        }
+      });
+      tab.addEventListener('keydown', (e) => {
+        const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (!step) return;
+        e.preventDefault();
+        stopAuto();
+        show((current + step + tabs.length) % tabs.length, true);
+      });
+    });
+    root.addEventListener('pointerenter', () => auto && clearTimeout(timer));
+    root.addEventListener('pointerleave', schedule);
+
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      schedule();
+    }, { threshold: 0.35 }).observe(root);
+  });
+</script>
+
+<style>
+  .bs-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--rule);
+    margin-bottom: clamp(40px, 6vw, 80px);
+  }
+
+  .bs-tab {
+    position: relative;
+    display: grid;
+    gap: 6px;
+    padding: 22px 24px 26px 0;
+    text-align: left;
+    font: inherit;
+    color: var(--ink-soft);
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: color 0.5s var(--ease);
+  }
+
+  .bs-tab:hover,
+  .bs-tab[aria-selected='true'] {
+    color: var(--fg);
+  }
+
+  .bs-n {
+    font-size: var(--t-xs);
+    letter-spacing: 0.18em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bs-tab[aria-selected='true'] .bs-n {
+    color: var(--accent);
+  }
+
+  .bs-seg {
+    font: 400 var(--t-xl) / 1.1 var(--font-display);
+  }
+
+  .bs-ticket {
+    font-size: var(--t-sm);
+    color: var(--ink-soft);
+  }
+
+  /* The top rule of the active tab fills in red; during auto-advance it fills over time. */
+  .bs-bar {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 24px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .bs-tab[aria-selected='true'] .bs-bar {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .is-auto .bs-tab[aria-selected='true'] .bs-bar {
+      animation: bs-fill 7s linear both;
+    }
+  }
+
+  @keyframes bs-fill {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  .bs-stage {
+    display: grid;
+  }
+
+  .bs-panel {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 48px 6vw;
+    align-items: center;
+  }
+
+  /* Every panel keeps its place in the grid so the stage is as tall as the tallest one. */
+  .bs-panel:not(.is-active) {
+    visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bs-panel.is-active .bs-who > * {
+      animation: bs-up 1.1s var(--ease) both;
+    }
+    .bs-panel.is-active .bs-who > :nth-child(2) { animation-delay: 0.06s; }
+    .bs-panel.is-active .bs-who > :nth-child(3) { animation-delay: 0.12s; }
+    .bs-panel.is-active .bs-who > :nth-child(4) { animation-delay: 0.18s; }
+    .bs-panel.is-active .bs-who > :nth-child(5) { animation-delay: 0.24s; }
+
+    .bs-panel.is-active .bs-paper {
+      animation: bs-paper 1.2s var(--ease) both;
+    }
+  }
+
+  @keyframes bs-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+  }
+
+  @keyframes bs-paper {
+    from {
+      opacity: 0;
+      transform: translateY(24px) rotate(-0.6deg);
+    }
+  }
+
+  .bs-who {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+    scroll-margin-top: calc(var(--header-h) + 24px);
+  }
+
+  .bs-name {
+    font: 400 var(--t-2xl) / 1.05 var(--font-display);
+  }
+
+  .bs-about {
+    color: var(--ink-soft);
+    max-width: 38ch;
+  }
+
+  .bs-purpose {
+    font: 400 var(--t-lg) / 1.35 var(--font-display);
+    padding-left: 18px;
+    border-left: 1px solid var(--accent);
+    max-width: 26ch;
+  }
+
+  .bs-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    width: 100%;
+  }
+
+  .bs-facts dd {
+    margin-top: 6px;
+    font: 400 var(--t-xl) / 1 var(--font-display);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .bs-paper {
+    --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
+    --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+    color: var(--ink);
+    background: var(--paper);
+    border-radius: 6px;
+    padding: clamp(20px, 3vw, 36px);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 30px 80px #00000080;
+  }
+
+  .bs-paper-head {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    font-size: 12px;
+  }
+
+  .bs-table td:not(:first-child),
+  .bs-table th:not(:first-child) {
+    text-align: right;
+  }
+
+  .bs-flow {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 14px 0 0;
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .bs-flow li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .bs-flow .done {
+    color: var(--ink);
+  }
+
+  .bs-flow .done .rec-dot {
+    background: currentColor;
+  }
+
+  .bs-depth {
+    margin-top: clamp(48px, 7vw, 96px);
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .bs-depth-h {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .bs-count {
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bs-chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .bs-chip {
+    padding: 7px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-size: var(--t-sm);
+    color: color-mix(in srgb, var(--fg) 32%, var(--bg));
+    transition:
+      color 0.6s var(--ease),
+      border-color 0.6s var(--ease),
+      background-color 0.6s var(--ease);
+  }
+
+  .bs-chip.on {
+    color: var(--fg);
+    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  @media (width <= 900px) {
+    .bs-tabs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .bs-panel {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (width <= 560px) {
+    .bs-tab {
+      padding: 16px 12px 18px 0;
+    }
+
+    .bs-ticket {
+      font-size: var(--t-xs);
+    }
+
+    .bs-flow {
+      grid-template-columns: repeat(3, auto);
+    }
+  }
+</style>

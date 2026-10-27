@@ -1,6 +1,6 @@
 // Platform-only motion, modelled on valzazhushi.com (see docs/research/valzazhushi-inspiration.md):
 // one IntersectionObserver for reveals, a smart glass header, light parallax, a custom
-// scrollbar, the mobile menu and the stage list. CSS owns every transition and easing.
+// scrollbar and the mobile menu. CSS owns every transition and easing.
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const root = document.documentElement;
@@ -143,24 +143,16 @@ menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expan
 menu.querySelectorAll('[data-menu-close]').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 addEventListener('keydown', (e) => e.key === 'Escape' && setMenu(false));
 
-/* Stage list: hover, focus or press a row to swap the panel ------------------- */
+/* Quote: touch screens have no hover, so the light dashboard shows while the
+   section sits in the middle of the screen ---------------------------------- */
 
-document.querySelectorAll<HTMLElement>('[data-stages]').forEach((section) => {
-  const rows = [...section.querySelectorAll<HTMLButtonElement>('[data-stage]')];
-  const panes = [...section.querySelectorAll<HTMLElement>('[data-stage-pane]')];
-  const show = (i: number) => {
-    rows.forEach((r, j) => r.setAttribute('aria-pressed', String(j === i)));
-    panes.forEach((p, j) => {
-      p.classList.toggle('is-active', j === i);
-      p.setAttribute('aria-hidden', String(j !== i));
-    });
-  };
-  rows.forEach((row, i) => {
-    row.addEventListener('mouseenter', () => show(i));
-    row.addEventListener('focus', () => show(i));
-    row.addEventListener('click', () => show(i));
-  });
-});
+const quote = document.querySelector<HTMLElement>('.quote');
+
+if (quote && matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
+  new IntersectionObserver(([e]) => quote.classList.toggle('is-lit', e.isIntersecting), {
+    rootMargin: '-35% 0px -35% 0px',
+  }).observe(quote);
+}
 
 /* Wiring --------------------------------------------------------------------- */
 

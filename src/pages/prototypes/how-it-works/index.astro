@@ -1,0 +1,286 @@
+---
+const variants = [
+  {
+    slug: 'stack',
+    title: 'File stack',
+    oneLiner:
+      'Each stage is a paper sheet of the same loan file. Scrolling pins each sheet one tab below the last, so by Collect the six tabs sit piled like a real file, each tab naming the team that worked it.',
+    why: 'Shows "one record" instead of saying it: the record visibly builds up. Nothing to learn; it is plain scrolling. Every stage is read in order.',
+    tradeoff:
+      'The longest of the three, about five screens of scroll. Six tabs need a phone at least about 640px tall; shorter screens get slimmer tabs.',
+  },
+  {
+    slug: 'deck',
+    title: 'Stage stepper (now on the main page, all widths)',
+    oneLiner:
+      'One stage per page in a swipe track, the next page peeking at the edge. A I–VI strip on top is both progress and jump links; previous and next sit at the bottom in thumb reach, with the next team named between them.',
+    why: 'The shortest: the whole section fits one screen. Closest to the desktop panel, so it is one pattern on both sizes. Naming the next team turns each step into a hand-off.',
+    tradeoff:
+      'Stages II–VI sit off-screen until the visitor swipes or taps; a visitor who only scrolls sees Apply alone. Never auto-advances.',
+  },
+  {
+    slug: 'relay',
+    title: 'Hand-off rail',
+    oneLiner:
+      'A vertical rail of six nodes, one stage open at a time. Closed, the rows read as the chain of teams; open, a stage shows its page of the record and a button that hands it to the next team. The rail fills up to the open stage.',
+    why: 'Scannable at a glance: all six stages and their teams fit on one screen while closed. Native exclusive <details>, so it works without JavaScript, and the rail progress is pure CSS.',
+    tradeoff:
+      'The record pages are one tap away rather than on show. Least cinematic of the three.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Three mobile prototypes for the How Leaf works section." />
+    <meta name="theme-color" content="#0a0a0b" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>How Leaf works, on a phone</title>
+  </head>
+  <body>
+    <header class="top">
+      <a class="back" href="/prototypes">&larr; All prototypes</a>
+      <h1>How Leaf works, on a phone</h1>
+      <p class="intro">
+        The section has one job: show that a single loan record moves through six stages, worked
+        by a different team at each. On desktop the light record panel proves it. Below 900px the
+        current page hides that panel, so phones get six words and their captions, and tapping a
+        stage does nothing visible. Each prototype below brings the record back on a phone in a
+        different way. B, the stage stepper, is now the main page's layout at every width,
+        desktop included; the stack and rail pages show their variant below 900px only.
+      </p>
+    </header>
+
+    <main>
+      <ol class="grid">
+        {
+          variants.map((v, i) => (
+            <li class="card">
+              <div class="phone">
+                <iframe
+                  src={`/prototypes/how-it-works/${v.slug}#lifecycle`}
+                  title={`${v.title}, at phone width`}
+                  loading="lazy"
+                  width="390"
+                  height="780"
+                />
+              </div>
+              <span class="num">{String.fromCharCode(65 + i)}</span>
+              <h2>
+                <a href={`/prototypes/how-it-works/${v.slug}#lifecycle`}>{v.title}</a>
+              </h2>
+              <p class="one">{v.oneLiner}</p>
+              <dl>
+                <div>
+                  <dt>Why it works</dt>
+                  <dd>{v.why}</dd>
+                </div>
+                <div>
+                  <dt>Trade-off</dt>
+                  <dd>{v.tradeoff}</dd>
+                </div>
+              </dl>
+              <a class="open" href={`/prototypes/how-it-works/${v.slug}#lifecycle`}>
+                Open /prototypes/how-it-works/{v.slug} &rarr;
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+  </body>
+</html>
+
+<style>
+  :root {
+    --ground: #0a0a0b;
+    --surface: #121214;
+    --ink: #f2f1ee;
+    --muted: #a8a6a1;
+    --rule: #2a2a2c;
+    --accent: #c8463f;
+    color-scheme: dark;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--ground);
+  }
+
+  body {
+    margin: 0;
+    padding: 0 16px;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .top,
+  main {
+    max-width: 1300px;
+    margin-inline: auto;
+  }
+
+  .top {
+    padding: 32px 0 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .back {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .back:hover,
+  .back:focus-visible {
+    color: var(--ink);
+  }
+
+  h1 {
+    margin: 32px 0 12px;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .intro {
+    margin: 0;
+    max-width: 68ch;
+    color: var(--muted);
+    font-size: 17px;
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 40px 0 64px;
+    display: grid;
+    gap: 40px 28px;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 1320px) {
+    .grid {
+      grid-template-columns: repeat(3, 410px);
+      justify-content: space-between;
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  /* Frames only where there is room; on a phone the links open the real page. */
+  .phone {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .phone {
+      display: block;
+      width: 410px;
+      margin-bottom: 12px;
+      border: 1px solid var(--rule);
+      border-radius: 28px;
+      padding: 10px;
+      background: #000;
+    }
+
+    .phone iframe {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 20px;
+      background: #0f0e0c;
+    }
+  }
+
+  .num {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  h2 a {
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  .one {
+    margin: 0;
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  dt {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 15px;
+    color: #d6d4cf;
+  }
+
+  .open {
+    align-self: flex-start;
+    margin-top: 4px;
+    text-decoration: none;
+    font-size: 15px;
+    border-bottom: 1px solid var(--muted);
+    padding-bottom: 2px;
+    overflow-wrap: anywhere;
+  }
+
+  .open:hover,
+  .open:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+  }
+</style>

@@ -6,7 +6,7 @@ const prototypes = [
     oneLiner:
       'Leaf paced like an architecture studio site on a near-black ground: a full-height hero over the loan record, slow mask reveals, a stage band where hovering a stage swaps the record panel, and a footer-sized wordmark. The light record panels are the brightest objects on the page.',
     design:
-      'Modelled on valzazhushi.com (notes in docs/research/valzazhushi-inspiration.md). Ground #0f0e0c with warm stone ink and Leaf red (#cf5149) only on hover, active states and selection. Marcellus for display, Figtree for body, letter-spaced uppercase labels and hairline rules instead of cards; sections breathe at 96–200px. The hero and quote fade into the page, the lifecycle band is a lifted surface edged with hairlines, record panes stay on paper with dark ink. Order: glass header, hero, statement with the 25% stat, lifecycle band, borrowers as alternating panels, quote, controls, demo, footer.',
+      'Modelled on valzazhushi.com (notes in docs/research/valzazhushi-inspiration.md). Ground #0f0e0c with warm stone ink and Leaf red (#cf5149) only on hover, active states and selection. Marcellus for display, Figtree for body, letter-spaced uppercase labels and hairline rules instead of cards; sections breathe at 96–200px. The hero and quote fade into the page, the lifecycle band is a lifted surface edged with hairlines, record panes stay on paper with dark ink. Order: glass header, hero, statement with the 25% stat, lifecycle band, borrowers as a four-tab switcher whose analysis strip lights up per segment, quote, controls, demo, footer.',
     animation:
       'Platform only, one easing (cubic-bezier(.22,1,.36,1)) and long durations. Hero record settles from scale 1.12 over 2.8s while the headline rises; one IntersectionObserver drives fade-up and clip-path mask reveals with --d staggers. Smart glass header hides on scroll down and returns on scroll up; light parallax; custom glass scrollbar on fine pointers; stage rows crossfade the sticky panel on hover, focus or press. All gated by prefers-reduced-motion.',
     deps: [],
@@ -20,6 +20,39 @@ const prototypes = [
       'Black ground. Ring right-aligned to the grid, each word ending a quarter of the way into the circle; stacking is ring, then word, then the title. On phones the ring fills the space above the headline against the right gutter, labels drop out, and the word starts on the left gutter.',
     animation:
       'Pure CSS on one shared 2.8s step (16.8s loop), so the arc head and the word change stage together. The word reveals with a left-to-right clip-path while easing in from -6% on x.',
+    deps: [],
+  },
+  {
+    slug: 'how-it-works',
+    title: 'How Leaf works, on a phone',
+    oneLiner:
+      'Three mobile treatments of the lifecycle section, side by side in phone frames: a file stack, a stage stepper and a hand-off rail. Each brings the record panel back at phone width, where the current page hides it.',
+    design:
+      'Desktop keeps the stage band; a mobile slot on Lifecycle takes over below 900px. All three share the stage data, paper record sheets, Marcellus numerals and Leaf red on the current stage, and name the team that works each stage.',
+    animation:
+      'Platform only. File stack: position: sticky sheets with a scroll check for the top sheet. Stepper: CSS scroll-snap with jump links. Rail: exclusive <details name>, ::details-content height transition and :has() for the rail fill. All gated by prefers-reduced-motion.',
+    deps: [],
+  },
+  {
+    slug: 'borrowers/files#borrowers',
+    title: 'Every borrower: case files',
+    oneLiner:
+      'One case file per borrower with its documents stacked behind it as index cards. The stacks share a baseline, so they read as a staircase: three sheets for the nurse, seven for the freight company.',
+    design:
+      'Paper cards with a red monogram, file number, the borrower’s purpose as a quote, amount and document count, and the first analyses Leaf runs. A short lede makes the human point, and a closing row lists the six stages all four share.',
+    animation:
+      'Each file rises in with a stagger; on hover the stack fans open slightly and the front card drops a few pixels, like thumbing through a folder.',
+    deps: [],
+  },
+  {
+    slug: 'borrowers/spectrum#borrowers',
+    title: 'Every borrower: the spectrum',
+    oneLiner:
+      'A loan-size ruler from EUR 1k to EUR 10M with each segment’s range marked in red, four dense paper columns under it, and red lines drawn from all four into one Leaf record and the six shared stages.',
+    design:
+      'The fullest version: every column carries a small figure (monthly budget, twelve-month revenue, three periods, collateral cover), its key figures and a count of analyses and documents. Says "one place" literally with the joining lines.',
+    animation:
+      'Range bands grow along the ruler, bars grow from their baseline per column, and the spine draws itself in when it scrolls into view. Off under reduced motion.',
     deps: [],
   },
 ];

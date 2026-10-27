@@ -1,0 +1,46 @@
+---
+/* The main page with one mobile variant of "How Leaf works". Desktop keeps the stage band. */
+import Layout from '../Layout.astro';
+import Header from '../Header.astro';
+import Hero from '../Hero.astro';
+import Statement from '../Statement.astro';
+import Borrowers from '../Borrowers.astro';
+import Lifecycle from '../Lifecycle.astro';
+import Quote from '../Quote.astro';
+import Controls from '../Controls.astro';
+import Demo from '../Demo.astro';
+import Footer from '../Footer.astro';
+import Stack from './Stack.astro';
+import Deck from '../LifecycleDeck.astro';
+import Relay from './Relay.astro';
+
+interface Props {
+  variant: 'stack' | 'deck' | 'relay';
+}
+
+const Mobile = { stack: Stack, deck: Deck, relay: Relay }[Astro.props.variant];
+---
+
+<Layout
+  title="Leaf — loan management for banks"
+  description="Leaf is the loan management system your credit, risk and compliance teams share, from the first application to the last repayment."
+  theme="dark"
+>
+  <Header />
+  <main>
+    <Hero background="loop" />
+    <Statement />
+    <Lifecycle>
+      <Mobile slot="mobile" />
+    </Lifecycle>
+    <Borrowers />
+    <Quote />
+    <Controls />
+    <Demo />
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import '../motion.ts';
+</script>
