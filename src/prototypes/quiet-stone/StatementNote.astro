@@ -1,0 +1,107 @@
+---
+/* One notification card in the statement's list. The newest card reads "now"
+   instead of its time. */
+interface Props {
+  title: string;
+  body: string;
+  who: string;
+  time: string;
+  accent?: boolean;
+}
+
+const { title, body, who, time, accent = false } = Astro.props;
+---
+
+<li class:list={['note', { 'note-accent': accent }]}>
+  <p class="note-head">
+    <span class="note-app"><span class="mark mark-leaf"></span><span>Leaf · <span data-file>LF-2026-0418</span></span></span>
+    <span class="note-time">{time}</span>
+    <span class="note-now">now</span>
+  </p>
+  <p class="note-title">{title}</p>
+  <p class="note-body">{body}<span class="note-who"> · {who}</span></p>
+</li>
+
+<style>
+  .note {
+    --ink-soft: color-mix(in srgb, var(--ink) 58%, var(--paper));
+    padding: 14px 16px 15px;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 10px;
+    box-shadow: 0 18px 40px #00000040;
+    font-size: 13px;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    transition:
+      transform 0.9s var(--ease),
+      opacity 0.9s var(--ease);
+  }
+
+  /* Older notes fade as they move down the list. */
+  .note:nth-child(2) {
+    opacity: 0.86;
+  }
+
+  .note:nth-child(3) {
+    opacity: 0.68;
+  }
+
+  .note:nth-child(n + 4) {
+    opacity: 0.5;
+  }
+
+  .note.is-new {
+    animation: note-in 0.9s var(--ease) both;
+  }
+
+  @keyframes note-in {
+    from {
+      opacity: 0;
+      transform: translateY(-18px) scale(0.96);
+    }
+  }
+
+  .note-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+    color: var(--ink-soft);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .note-app {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .note-app .mark {
+    width: 12px;
+    height: 12px;
+    color: var(--ink);
+  }
+
+  .note-accent .note-app .mark,
+  .note-now {
+    color: var(--accent);
+  }
+
+  .note:first-child .note-time,
+  .note:not(:first-child) .note-now {
+    display: none;
+  }
+
+  .note-title {
+    font: 400 16px / 1.25 var(--font-display);
+  }
+
+  .note-body {
+    margin-top: 3px;
+    color: var(--ink-soft);
+  }
+</style>

@@ -500,8 +500,7 @@ a {
 /* Loan record mock ----------------------------------------------------- */
 
 /* Everything printed on paper keeps dark ink, whatever the page theme. */
-.rec,
-.pane {
+.rec {
   color: var(--ink);
   --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
   --rule: color-mix(in srgb, var(--ink) 14%, transparent);
@@ -705,78 +704,6 @@ a {
   max-width: 24ch;
 }
 
-.statement-media {
-  position: relative;
-  aspect-ratio: 4 / 5;
-}
-
-.pane {
-  position: absolute;
-  overflow: hidden;
-  background: var(--paper);
-  box-shadow: 0 24px 60px #3a2f2214;
-}
-
-.pane-a {
-  inset: 0 0 18% 14%;
-  background: var(--bg-deep);
-}
-
-.pane-a .pane-in {
-  position: absolute;
-  inset: 12% 10% auto;
-  padding: 24px;
-  background: var(--paper);
-  font-size: 13px;
-}
-
-.pane-b {
-  inset: auto 34% 0 0;
-  padding: 20px;
-  font-size: 12px;
-}
-
-.route {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.route li {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 2px 12px;
-  padding: 12px 0 12px 20px;
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-}
-
-.route li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 18px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1px solid currentColor;
-}
-
-.route li.done::before {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.route li > :nth-child(2) {
-  grid-row: 2;
-}
-
-.route li > :nth-child(3) {
-  grid-row: 1 / 3;
-  grid-column: 2;
-  align-self: center;
-}
-
 .stats {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 2.5fr) minmax(0, 2.5fr);
@@ -815,11 +742,6 @@ a {
   .statement,
   .stats {
     grid-template-columns: 1fr;
-  }
-
-  .statement-media {
-    max-width: 520px;
-    width: 100%;
   }
 }
 

@@ -97,6 +97,12 @@ const editable = [
 </section>
 
 <style>
+  /* Borrowers follows on the same ground and brings its own top padding, so this
+     section's bottom padding is trimmed to keep the gap from doubling. */
+  .pace {
+    padding-bottom: clamp(24px, 4vw, 56px);
+  }
+
   .pace-grid {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);

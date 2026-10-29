@@ -1,3 +1,22 @@
+---
+/* The opening statement beside one file's notifications arriving as it moves. The list plays
+   only while on screen; with reduced motion it stays on the first four. Sample data. */
+import Note from './StatementNote.astro';
+
+const notes = [
+  { title: 'Application opened', body: '2 products on one application, group of 3 clients', who: 'Relationship officer', time: '10:12' },
+  { title: 'Internal rating ready', body: 'B2, calculated in 5 minutes', who: 'Credit risk', time: '10:30' },
+  { title: 'Mortgage valuation reused', body: 'Valued Apr 2026, within your set period', who: 'Collateral', time: '10:34' },
+  { title: 'Recommended by branch manager', body: 'Above the branch limit, sent to risk', who: 'Branch', time: '10:46' },
+  { title: 'Approved by risk department', body: 'Within the EUR 150,000 limit', who: 'Credit risk', time: '11:04', accent: true },
+  { title: 'Client notified', body: 'Approval shared the moment it was made', who: 'Automatic', time: '11:04' },
+  { title: 'Disbursed', body: 'EUR 120,000, tranche 1 of 1', who: 'Disbursement', time: '11:12', accent: true },
+];
+
+// Newest first, as the list shows them.
+const shown = notes.slice(0, 4).reverse();
+---
+
 <section id="statement" class="sec">
   <div class="wrap statement">
     <div class="statement-copy">
@@ -9,34 +28,27 @@
       <a class="link link-arrow" href="#lifecycle" data-reveal style="--d:.2s">How Leaf works</a>
     </div>
 
-    <div class="statement-media" aria-hidden="true">
-      <div class="pane pane-a" data-reveal="mask">
-        <div class="pane-in" data-parallax="0.06">
-          <p class="rec-h">Approval route</p>
-          <ol class="route">
-            <li class="done"><span>Branch manager</span><span class="rec-dim">to EUR 50,000</span><span>Recommended</span></li>
-            <li class="done"><span>Risk department</span><span class="rec-dim">to EUR 150,000</span><span>Approved</span></li>
-            <li><span>Credit committee</span><span class="rec-dim">above EUR 150,000</span><span class="rec-dim">Not required</span></li>
-          </ol>
-        </div>
+    <div class="statement-media" aria-hidden="true" data-reveal="mask">
+      <p class="label notes-h"><span class="notes-dot"></span>Live notifications</p>
+      <div class="notes" data-notes>
+        <ol class="notes-list" data-notes-list>
+          {shown.map((n) => <Note {...n} />)}
+        </ol>
       </div>
-      <div class="pane pane-b" data-reveal="mask" style="--d:.25s">
-        <div class="pane-in">
-          <p class="rec-h">Audit trail</p>
-          <ul class="rec-list">
-            <li><span>Scorecard applied, 0 knock-outs</span><span class="rec-dim">9 Sep, 14:37</span></li>
-            <li><span>Registry exposure imported</span><span class="rec-dim">9 Sep, 14:30</span></li>
-            <li><span>Application opened</span><span class="rec-dim">3 Sep, 10:12</span></li>
-          </ul>
-        </div>
-      </div>
+      {
+        notes.map((n, i) => (
+          <template data-note={i}>
+            <Note {...n} />
+          </template>
+        ))
+      }
     </div>
   </div>
 
   <div class="wrap stats">
     <div class="stat stat-main" data-reveal>
       <p class="stat-big">5 min</p>
-      <p class="stat-txt">for an internal client rating. It took six hours before.</p>
+      <p class="stat-txt">for an internal client rating.</p>
       <p class="stat-src">Measured at [client bank], [period].</p>
     </div>
     <div class="stat" data-reveal style="--d:.1s">
@@ -49,3 +61,120 @@
     </div>
   </div>
 </section>
+
+<style>
+  .statement-media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  /* The list is clipped at the bottom and fades out there, so older notes drift away. */
+  .notes {
+    position: absolute;
+    inset: 36px 0 0;
+    /* Room above the first card so its entrance is not clipped by the mask. */
+    padding-top: 20px;
+    -webkit-mask-image: linear-gradient(#000 62%, #0000 96%);
+    mask-image: linear-gradient(#000 62%, #0000 96%);
+  }
+
+  .notes-h {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--fg);
+  }
+
+  /* A slow pulse marks the list as live. */
+  .notes-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .notes-dot {
+      animation: notes-pulse 2.6s ease-in-out infinite;
+    }
+  }
+
+  @keyframes notes-pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  .notes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  @media (width <= 900px) {
+    .statement-media {
+      width: 100%;
+      max-width: 520px;
+      aspect-ratio: auto;
+      height: 460px;
+    }
+  }
+</style>
+
+<script>
+  const list = document.querySelector<HTMLElement>('[data-notes-list]');
+  const templates = [...document.querySelectorAll<HTMLTemplateElement>('template[data-note]')];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (list && templates.length && !reduce) {
+    const keep = 5;
+    let next = list.children.length % templates.length;
+    // Each pass through the notes is a new file, so times never run backwards on one number.
+    let file = 418;
+    let timer = 0;
+    let visible = false;
+
+    const push = () => {
+      const cards = [...list.children] as HTMLElement[];
+      const before = cards.map((c) => c.getBoundingClientRect().top);
+
+      if (next === 0) file++;
+      const card = templates[next].content.firstElementChild!.cloneNode(true) as HTMLElement;
+      card.querySelector('[data-file]')!.textContent = `LF-2026-${String(file).padStart(4, '0')}`;
+      next = (next + 1) % templates.length;
+      card.classList.add('is-new');
+      list.prepend(card);
+
+      // FLIP: start the older cards where they were, then let them ease down.
+      cards.forEach((c, i) => {
+        const dy = before[i] - c.getBoundingClientRect().top;
+        c.style.transition = 'none';
+        c.style.transform = `translateY(${dy}px)`;
+      });
+      list.offsetHeight;
+      cards.forEach((c) => {
+        c.style.transition = '';
+        c.style.transform = '';
+      });
+
+      while (list.children.length > keep) list.lastElementChild!.remove();
+    };
+
+    const run = () => {
+      clearInterval(timer);
+      if (visible && !document.hidden) timer = window.setInterval(push, 2600);
+    };
+
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      run();
+    }).observe(list);
+    document.addEventListener('visibilitychange', run);
+  }
+</script>
