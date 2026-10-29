@@ -3,23 +3,23 @@
 export const stages = [
   {
     name: 'Apply',
-    body: 'Clients, products, co-borrowers and guarantors captured once and reused at every later step.',
-    who: 'Branch officer',
+    body: 'One client or a whole group of connected clients, with several products on one application. Captured once, and the client follows its progress in real time.',
+    who: 'Relationship officer',
     panel: [
-      ['Client type', 'SME'],
-      ['Co-borrower', 'Added, 1'],
+      ['Applicant', 'Group, 3 clients'],
+      ['Products', '2 on one application'],
       ['Guarantor', 'Added, 1'],
-      ['Product', 'Working-capital loan'],
+      ['Progress alerts', 'Real time'],
     ],
   },
   {
     name: 'Score',
-    body: 'Statements, registry exposure and your own scorecard, with knock-out and adjustment criteria applied.',
+    body: 'Your own credit score ranks the client and prices the loan: statements, registry exposure, knock-out and adjustment rules. The internal client rating takes five minutes.',
     who: 'Credit analyst, risk',
     panel: [
-      ['Statements', '3 periods'],
+      ['Internal rating', 'B2, in 5 min'],
       ['Registry exposure', 'Imported 9 Sep'],
-      ['Knock-out criteria', '0 triggered'],
+      ['Knock-out rules', '0 triggered'],
       ['Adjustments', '2 applied'],
     ],
   },
@@ -36,24 +36,24 @@ export const stages = [
   },
   {
     name: 'Disburse',
-    body: 'Contracts from your own templates; collateral and mortgages on the same record.',
+    body: 'Contracts from your own templates; collateral and mortgages on the same record. A property valued within your set period is not valued again.',
     who: 'Credit administration',
     panel: [
       ['Contract', 'Template SME-WC v3'],
-      ['Mortgage', 'Registered'],
+      ['Mortgage valuation', 'Reused, Apr 2026'],
       ['Movable pledge', 'Registered'],
       ['Disbursement', 'Tranche 1 of 1'],
     ],
   },
   {
     name: 'Monitor',
-    body: 'Reviews and early warnings raised for revaluation, product expiry and special conditions.',
+    body: 'Reviews, early warnings and automatic notifications for revaluation, product expiry and special conditions. Credit terms and limits change on the live loan, without a new file.',
     who: 'Monitoring team',
     panel: [
       ['Collateral revaluation', 'Due 2 Sep 2027'],
-      ['Special condition', 'Review in 30 days'],
-      ['Product expiry', 'Sep 2029'],
-      ['Early warnings', 'None open'],
+      ['Credit limit', 'EUR 250,000, 46% used'],
+      ['Change of terms', 'Applied same day'],
+      ['Notifications', 'Sent automatically'],
     ],
   },
   {

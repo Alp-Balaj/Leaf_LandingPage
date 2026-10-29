@@ -1,0 +1,312 @@
+---
+/* Pace: hands-on minutes at each desk for one file, beside the internal client rating.
+   Desk ranges are on a 0 to 40 minute scale; a single figure has lo === hi. */
+const scale = 40;
+
+const desks = [
+  { name: 'Relationship officer', step: 'Application', lo: 8, hi: 8 },
+  { name: 'Business banker, with the client', step: 'Application', lo: 17, hi: 17 },
+  {
+    name: 'Mortgage valuer',
+    step: 'Collateral',
+    lo: 12,
+    hi: 15,
+    note: 'Skipped when the property was valued within your set period.',
+  },
+  { name: 'Credit risk', step: 'Score', lo: 18, hi: 36 },
+  { name: 'Branch approval', step: 'Approve', lo: 12, hi: 20 },
+  { name: 'Relationship officer', step: 'Core booking', lo: 8, hi: 10 },
+  { name: 'Disbursement', step: 'Disburse', lo: 6, hi: 8 },
+];
+
+const pct = (m: number) => `${((m / scale) * 100).toFixed(2)}%`;
+const minutes = (d: { lo: number; hi: number }) => (d.lo === d.hi ? `${d.lo} min` : `${d.lo}–${d.hi} min`);
+
+const editable = [
+  'Scorecards',
+  'Rating limits',
+  'Qualitative and statistical conditions',
+  'Stages',
+  'Knock-out and adjustment rules',
+];
+---
+
+<section id="pace" class="sec pace">
+  <div class="wrap">
+    <div class="runhead" data-reveal>
+      <h2 class="label">Pace</h2>
+      <span class="label">Minutes at each desk</span>
+    </div>
+    <p class="sec-title" data-reveal style="--d:.1s">A loan file moves in minutes, desk by desk.</p>
+
+    <div class="pace-grid">
+      <figure class="desks" data-reveal>
+        <ol class="desk-list">
+          {
+            desks.map((d) => (
+              <li class="desk">
+                <p class="desk-name">
+                  {d.name}
+                  <span>{d.step}</span>
+                </p>
+                <div class="desk-track" aria-hidden="true">
+                  <span class="desk-bar" style={`--w:${pct(d.hi)};--fill:${((d.lo / d.hi) * 100).toFixed(1)}%`} />
+                </div>
+                <p class="desk-min">{minutes(d)}</p>
+                {d.note && <p class="desk-note">{d.note}</p>}
+              </li>
+            ))
+          }
+        </ol>
+        <div class="desk-axis" aria-hidden="true">
+          {[0, 10, 20, 30, 40].map((m) => <span style={`--at:${pct(m)}`}>{m}</span>)}
+        </div>
+        <figcaption class="stat-src">
+          Hands-on minutes at each desk for one file, measured at [client bank]. An individual loan of
+          EUR 10,000 is completed in 3 minutes; individual loans run to EUR 100,000.
+        </figcaption>
+      </figure>
+
+      <aside class="rating" data-reveal style="--d:.15s" aria-label="Internal client rating">
+        <p class="label">Internal client rating</p>
+        <p class="rating-big">
+          <s aria-label="previously six hours">6 h</s>
+          <span>5 min</span>
+        </p>
+        <p class="rating-txt">The rating job that took six hours now runs in five minutes. Manual recalculation used to take 30 minutes per client.</p>
+
+        <dl class="rating-kv">
+          <div>
+            <dt>25,000 clients</dt>
+            <dd>rated in 15 seconds</dd>
+          </div>
+          <div>
+            <dt>895,013 records</dt>
+            <dd>in the historical rating grid</dd>
+          </div>
+        </dl>
+
+        <p class="label rating-h">Editable in Administration</p>
+        <ul class="rating-list">
+          {editable.map((e) => <li>{e}</li>)}
+        </ul>
+        <p class="rating-foot">The score ranks the client and feeds the loan calculation. Change the model, not the code.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pace-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 64px 6vw;
+    align-items: start;
+  }
+
+  .desks {
+    margin: 0;
+  }
+
+  .desk-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .desk {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) 7.5rem;
+    align-items: center;
+    gap: 6px 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .desk-name {
+    color: var(--fg);
+    font-size: var(--t-sm);
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .desk-name span {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink-soft);
+    font-size: var(--t-xs);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .desk-track {
+    position: relative;
+    height: 10px;
+    background: linear-gradient(var(--rule), var(--rule)) 0 50% / 100% 1px no-repeat;
+  }
+
+  /* Solid to the shortest time, then a lighter run to the longest. */
+  .desk-bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--w);
+    background: color-mix(in srgb, var(--accent) 38%, transparent);
+    transform-origin: left;
+  }
+
+  .desk-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--fill);
+    background: var(--accent);
+  }
+
+  .desk-min {
+    color: var(--fg);
+    font: 400 var(--t-lg) / 1 var(--font-display);
+    letter-spacing: 0;
+    text-transform: none;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .desk-note {
+    grid-column: 2 / -1;
+    font-size: var(--t-xs);
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .desk-axis {
+    position: relative;
+    height: 28px;
+    margin: 0 calc(7.5rem + 24px) 24px calc(15rem + 24px);
+  }
+
+  .desk-axis span {
+    position: absolute;
+    top: 10px;
+    left: var(--at);
+    translate: -50% 0;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .desk-axis span:last-child::after {
+    content: ' min';
+  }
+
+  .rating {
+    padding: 28px;
+    background: var(--bg-deep);
+    color: var(--fg);
+  }
+
+  .rating-big {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin: 18px 0 16px;
+    font: 400 clamp(3.5rem, 2.4rem + 4vw, 6rem) / 0.9 var(--font-display);
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  .rating-big s {
+    font-size: 0.45em;
+    color: var(--ink-soft);
+    text-decoration-thickness: 1px;
+  }
+
+  .rating-txt,
+  .rating-foot {
+    font-size: var(--t-sm);
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink-soft);
+  }
+
+  .rating-kv {
+    margin: 28px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .rating-kv > div {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .rating-kv dt {
+    font: 400 var(--t-lg) / 1.2 var(--font-display);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .rating-kv dd {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+  }
+
+  .rating-list {
+    list-style: none;
+    margin: 12px 0 20px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rating-list li {
+    padding: 7px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .desk-bar {
+      transform: scaleX(0);
+      transition: transform 1.4s var(--ease) 0.3s;
+    }
+
+    :global(.js) .desks:global(.is-in) .desk-bar {
+      transform: none;
+    }
+  }
+
+  @media (width <= 1100px) {
+    .pace-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rating {
+      max-width: 640px;
+    }
+  }
+
+  @media (width <= 640px) {
+    .desk {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .desk-track {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .desk-note {
+      grid-column: 1 / -1;
+    }
+
+    .desk-axis {
+      margin-inline: 8px 20px;
+    }
+
+    .desk-axis span:last-child::after {
+      content: none;
+    }
+  }
+</style>
