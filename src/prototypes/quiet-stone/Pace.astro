@@ -62,18 +62,14 @@ const editable = [
           {[0, 10, 20, 30, 40].map((m) => <span style={`--at:${pct(m)}`}>{m}</span>)}
         </div>
         <figcaption class="stat-src">
-          Hands-on minutes at each desk for one file, measured at [client bank]. An individual loan of
-          EUR 10,000 is completed in 3 minutes; individual loans run to EUR 100,000.
+          Hands-on minutes at each desk for one file, measured at [client bank]. An individual loan is
+          completed in 3 minutes.
         </figcaption>
       </figure>
 
       <aside class="rating" data-reveal style="--d:.15s" aria-label="Internal client rating">
         <p class="label">Internal client rating</p>
-        <p class="rating-big">
-          <s aria-label="previously six hours">6 h</s>
-          <span>5 min</span>
-        </p>
-        <p class="rating-txt">The rating job that took six hours now runs in five minutes. Manual recalculation used to take 30 minutes per client.</p>
+        <p class="rating-big">5 min</p>
 
         <dl class="rating-kv">
           <div>
@@ -81,8 +77,8 @@ const editable = [
             <dd>rated in 15 seconds</dd>
           </div>
           <div>
-            <dt>895,013 records</dt>
-            <dd>in the historical rating grid</dd>
+            <dt>Up to 5 years</dt>
+            <dd>of historical rating grid</dd>
           </div>
         </dl>
 
@@ -219,13 +215,6 @@ const editable = [
     text-transform: none;
   }
 
-  .rating-big s {
-    font-size: 0.45em;
-    color: var(--ink-soft);
-    text-decoration-thickness: 1px;
-  }
-
-  .rating-txt,
   .rating-foot {
     font-size: var(--t-sm);
     letter-spacing: 0.02em;
@@ -307,8 +296,18 @@ const editable = [
       grid-column: 1 / -1;
     }
 
+    /* The track runs full width here, so the axis does too; the end labels sit
+       inside it instead of centring past the edges. */
     .desk-axis {
-      margin-inline: 8px 20px;
+      margin-inline: 0;
+    }
+
+    .desk-axis span:first-child {
+      translate: none;
+    }
+
+    .desk-axis span:last-child {
+      translate: -100% 0;
     }
 
     .desk-axis span:last-child::after {

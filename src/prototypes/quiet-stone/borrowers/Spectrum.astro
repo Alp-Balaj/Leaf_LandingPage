@@ -6,6 +6,8 @@ import { borrowers, shared } from './data';
 const ticks = ['1k', '10k', '100k', '1M', '10M'];
 // Spine paths run from each column's centre down into the shared node.
 const xs = [12.5, 37.5, 62.5, 87.5];
+// Micro and SME share number 02, so Corporate moves up to 03.
+const num = (i: number) => String(i < 2 ? i + 1 : i).padStart(2, '0');
 ---
 
 <section id="borrowers" class="sec bw" data-bw>
@@ -27,7 +29,7 @@ const xs = [12.5, 37.5, 62.5, 87.5];
             class="bw-band"
             style={`--a:${b.range[0] * 100}%;--b:${b.range[1] * 100}%;--row:${i};--d:${(0.2 + i * 0.12).toFixed(2)}s`}
           >
-            <span>{b.n}</span>
+            <span>{num(i)}</span>
           </span>
         ))}
       </div>
@@ -38,10 +40,8 @@ const xs = [12.5, 37.5, 62.5, 87.5];
         borrowers.map((b, i) => (
           <li class="bw-col" data-reveal style={`--d:${(i * 0.1).toFixed(2)}s`}>
             <div class="bw-col-head">
-              <span class="bw-n">{b.n}</span>
-              <h3 class="bw-seg">{b.segment}</h3>
-              <p class="bw-ticket">{b.ticket}</p>
-            </div>
+              <span class:list={['bw-n', { 'is-shared': i === 2 }]}>{num(i)}</span>
+              <h3 class="bw-seg">{b.segment}</h3>            </div>
 
             <div class="bw-paper">
               <p class="rec-h">{b.name}</p>
@@ -230,9 +230,10 @@ const xs = [12.5, 37.5, 62.5, 87.5];
     list-style: none;
     margin: 0;
     padding: 0;
+    --gap: clamp(12px, 1.6vw, 24px);
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(12px, 1.6vw, 24px);
+    gap: var(--gap);
   }
 
   .bw-col {
@@ -257,9 +258,22 @@ const xs = [12.5, 37.5, 62.5, 87.5];
     font: 400 var(--t-xl) / 1.1 var(--font-display);
   }
 
-  .bw-ticket {
-    font-size: var(--t-sm);
-    color: var(--ink-soft);
+  /* A plus centred in the space between "Micro" and "SME". */
+  .bw-col:nth-child(2) .bw-seg {
+    display: flex;
+  }
+
+  .bw-col:nth-child(2) .bw-seg::after {
+    content: '+';
+    flex: 1;
+    margin-right: calc(-1 * var(--gap));
+    text-align: center;
+    color: var(--accent);
+  }
+
+  /* SME shares Micro's 02; keep the row so the titles stay level. */
+  .bw-n.is-shared {
+    visibility: hidden;
   }
 
   .bw-paper {
@@ -459,6 +473,15 @@ const xs = [12.5, 37.5, 62.5, 87.5];
       row-gap: 48px;
     }
 
+    .bw-col:nth-child(2) .bw-seg::after {
+      display: none;
+    }
+
+    /* Without the plus, SME needs its own 02 or it reads as unnumbered. */
+    .bw-n.is-shared {
+      visibility: visible;
+    }
+
     .bw-join {
       display: none;
     }
@@ -486,6 +509,11 @@ const xs = [12.5, 37.5, 62.5, 87.5];
   @media (width <= 560px) {
     .bw-cols {
       grid-template-columns: 1fr;
+    }
+
+    /* No neighbour column to level with. */
+    .bw-purpose {
+      min-height: 0;
     }
   }
 </style>

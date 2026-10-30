@@ -14,7 +14,7 @@ export const stages = [
   },
   {
     name: 'Score',
-    body: 'Your own credit score ranks the client and prices the loan: statements, registry exposure, knock-out and adjustment rules. The internal client rating takes five minutes.',
+    body: 'Your own credit score, fully configurable: you set the rating ranks and the criteria that score each client, from statements and registry exposure to knock-out and adjustment rules. The internal client rating takes five minutes.',
     who: 'Credit analyst, risk',
     panel: [
       ['Internal rating', 'B2, in 5 min'],

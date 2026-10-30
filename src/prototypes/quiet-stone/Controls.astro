@@ -38,6 +38,13 @@ const controls = [
   },
 ];
 const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+
+// Sign-off: words rise in, the year rolls in on odometer strips, then the timeline draws.
+const since = 2015;
+const words = ['Banking', 'software', 'since'];
+// Each strip spins once through 0–9 before settling on its digit.
+const digits = [...String(since)].map(Number);
+const ticks = new Date().getFullYear() - since;
 ---
 
 <section id="controls" class="sec">
@@ -58,19 +65,51 @@ const roman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
       }
     </dl>
 
-    <div class="cred" aria-label="About the company behind Leaf">
-      <div data-reveal>
-        <p class="label">Built by</p>
-        <p>iA (Inter Adria), Prishtina, Kosovo. <a class="link" href="https://interadria-ks.com">interadria-ks.com</a></p>
-      </div>
-      <div data-reveal style="--d:.1s">
-        <p class="label">Track record</p>
-        <p>[Banking software since year]. [Named launch bank, if permitted]</p>
-      </div>
-      <div data-reveal style="--d:.2s">
-        <p class="label">Hosting</p>
-        <p>[Hosting and data-residency statement]. ISO 27001, 45001, 9001, 14001 and 20000-1 certified.</p>
+    <div class="since" data-reveal>
+      <p class="sec-title since-title" aria-label={`${words.join(' ')} ${since}.`}>
+        {
+          words.map((w, i) => (
+            <span class="since-w" aria-hidden="true">
+              <span style={`--i:${i}`}>{w}</span>
+            </span>
+          ))
+        }
+        <span class="since-year" aria-hidden="true">
+          {
+            digits.map((d, i) => (
+              <span class="odo" style={`--i:${i};--d:${d}`}>
+                <span class="odo-size">{d}</span>
+                <span class="odo-strip">
+                  {[...Array(10 + d + 1).keys()].map((n) => (
+                    <span>{n % 10}</span>
+                  ))}
+                </span>
+              </span>
+            ))
+          }
+          <span class="since-dot">.</span>
+        </span>
+      </p>
+
+      <div class="since-line" aria-hidden="true">
+        <span class="since-end">{since}</span>
+        <span class="since-track">
+          {[...Array(ticks + 1).keys()].map((i) => <i style={`--t:${i / ticks}`} />)}
+          <b class="since-now" />
+        </span>
+        <span class="since-end">Today</span>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Feed the pointer position to the card's spotlight.
+  for (const card of document.querySelectorAll<HTMLElement>('#controls .ctl')) {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  }
+</script>
