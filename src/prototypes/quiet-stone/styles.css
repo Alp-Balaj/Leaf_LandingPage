@@ -403,7 +403,7 @@ a {
 
 .hero-foot {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 24px 48px;
   padding-top: 20px;
@@ -414,12 +414,6 @@ a {
 .hero .label {
   color: inherit;
   opacity: 0.75;
-}
-
-.hero-caption {
-  display: grid;
-  gap: 6px;
-  font-size: var(--t-sm);
 }
 
 .hero-lede {
@@ -487,7 +481,6 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .hero-caption,
   .scroll {
     display: none;
   }
@@ -706,42 +699,69 @@ a {
 
 .stats {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 2.5fr) minmax(0, 2.5fr);
-  gap: 48px 6vw;
-  align-items: end;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 3.5fr) minmax(0, 2.5fr);
+  /* Two shared rows: every figure sits on one bottom line, every caption starts on one top line. */
+  grid-template-rows: auto auto;
+  gap: 0 6vw;
   margin-top: clamp(96px, 12vw, 176px);
   padding-top: 32px;
   border-top: 1px solid var(--rule);
 }
 
-.stat-big {
-  font: 400 clamp(5rem, 3rem + 9vw, 11rem) / 0.9 var(--font-display);
+.stat {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  align-content: start;
+}
+
+.stat > :first-child {
+  align-self: end;
+}
+
+/* Figures step down left to right. */
+.stat-num {
+  font: 400 clamp(5rem, 3rem + 7vw, 9rem) / 0.95 var(--font-display);
   letter-spacing: -0.02em;
 }
 
-.stat-txt {
-  margin-top: 20px;
-  font-size: var(--t-lg);
+.stat:nth-child(2) .stat-num {
+  font-size: clamp(3.5rem, 2rem + 4vw, 6rem);
 }
 
-.stat-mid {
-  font: 400 var(--t-xl) / 1.1 var(--font-display);
-  margin-bottom: 8px;
+.stat:nth-child(3) .stat-num {
+  font-size: clamp(2.5rem, 1.75rem + 2.5vw, 4rem);
+}
+
+.stat-txt {
+  margin-top: 16px;
+  max-width: 26ch;
+}
+
+.stat-hl {
+  font-style: normal;
+  color: var(--accent);
 }
 
 .stat-src {
+  margin-top: 6px;
   font-size: var(--t-sm);
   color: var(--ink-soft);
-}
-
-.stat-main .stat-src {
-  margin-top: 6px;
 }
 
 @media (width <= 900px) {
   .statement,
   .stats {
     grid-template-columns: 1fr;
+  }
+
+  .stats {
+    row-gap: 48px;
+  }
+
+  .stat {
+    grid-row: auto;
+    grid-template-rows: none;
   }
 }
 
