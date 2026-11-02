@@ -17,7 +17,7 @@ export const stages = [
     body: 'Your own credit score, fully configurable: you set the rating ranks and the criteria that score each client, from statements and registry exposure to knock-out and adjustment rules. The internal client rating takes five minutes.',
     who: 'Credit analyst, risk',
     panel: [
-      ['Internal rating', 'B2, in 5 min'],
+      ['Internal rating', 'B2, in 15 s'],
       ['Registry exposure', 'Imported 9 Sep'],
       ['Knock-out rules', '0 triggered'],
       ['Adjustments', '2 applied'],

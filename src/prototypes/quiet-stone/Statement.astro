@@ -5,7 +5,7 @@ import Note from './StatementNote.astro';
 
 const notes = [
   { title: 'Application opened', body: '2 products on one application, group of 3 clients', who: 'Relationship officer', time: '10:12' },
-  { title: 'Internal rating ready', body: 'B2, calculated in 5 minutes', who: 'Credit risk', time: '10:30' },
+  { title: 'Internal rating ready', body: 'B2, calculated in 15 seconds', who: 'Credit risk', time: '10:30' },
   { title: 'Mortgage valuation reused', body: 'Valued Apr 2026, within your set period', who: 'Collateral', time: '10:34' },
   { title: 'Recommended by branch manager', body: 'Above the branch limit, sent to risk', who: 'Branch', time: '10:46' },
   { title: 'Approved by risk department', body: 'Within the EUR 150,000 limit', who: 'Credit risk', time: '11:04', accent: true },
@@ -49,14 +49,14 @@ const shown = notes.slice(0, 4).reverse();
     <div class="stats">
       <div class="stat" data-reveal>
         <p class="stat-num">3 min</p>
-        <p class="stat-txt">to <em class="stat-hl">complete</em> an individual loan.</p>
+        <p class="stat-txt">of system time, to <em class="stat-hl">complete</em> an individual loan.</p>
       </div>
       <div class="stat" data-reveal style="--d:.1s">
-        <p class="stat-num">5 min</p>
+        <p class="stat-num">15 s</p>
         <p class="stat-txt">for an <em class="stat-hl">internal client rating</em>.</p>
       </div>
       <div class="stat" data-reveal style="--d:.2s">
-        <p class="stat-num">15 s</p>
+        <p class="stat-num">≈ 5 min</p>
         <p class="stat-txt">to rate <em class="stat-hl">25,000 clients</em>.</p>
       </div>
     </div>
