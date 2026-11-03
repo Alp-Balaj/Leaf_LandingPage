@@ -1,0 +1,32 @@
+---
+/* The head of the scene: the runhead and a I to VI strip of jump links that doubles as
+   progress. The scripts set aria-current and is-done on the links; the deck does the same. */
+import { stages, roman } from '../lifecycle-stages';
+---
+
+<div class="lf-head" data-head data-reveal>
+  <div class="lf-glass" aria-hidden="true"></div>
+  <div class="lf-runhead">
+    <h2 class="label">How Leaf works</h2>
+    <span class="label">Six stages, one record</span>
+  </div>
+  <nav class="lf-steps" aria-label="Stages">
+    <ol>
+      {
+        stages.map((s, i) => (
+          <li>
+            <a
+              class="lf-step"
+              href={`#lf-${i}`}
+              data-step={i}
+              aria-current={i === 0 ? 'step' : undefined}
+              aria-label={`${s.name}, stage ${i + 1} of ${stages.length}`}
+            >
+              <span class="lf-step-n">{roman[i]}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+</div>

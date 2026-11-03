@@ -1,0 +1,21 @@
+---
+/* "How Leaf works" as a full-viewport scene: a Leaf screen behind each stage with the summary
+   card over it. Below 900px the scene is hidden and the band with the deck takes over
+   (scene.css does the swap). */
+import './scene.css';
+import Scrub from './Scrub.astro';
+import LifecycleDeck from '../LifecycleDeck.astro';
+---
+
+<section id="lifecycle" class="lifecycle-full">
+  <Scrub />
+  <div class="sec band lifecycle lf-phone">
+    <div class="wrap">
+      <div class="runhead" data-reveal>
+        <h2 class="label">How Leaf works</h2>
+        <span class="label">Six stages, one record</span>
+      </div>
+      <div class="stages-deck"><LifecycleDeck /></div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,35 @@
+---
+/* One stage of the full-page scene: the screen behind, dimmed, a shade centred under the
+   card, and the frosted summary card at the place screens.ts picked for that screen.
+   `reveal` hands the card to motion.ts (the curtain); the pinned mechanics animate it. */
+import { stages, roman } from '../lifecycle-stages';
+import { screens, shadeAt } from './screens';
+import Shot from './Shot.astro';
+
+interface Props {
+  i: number;
+  reveal?: boolean;
+  eager?: boolean;
+}
+
+const { i, reveal = false, eager = false } = Astro.props;
+const stage = stages[i];
+const screen = screens[i];
+const [cx, cy] = shadeAt(screen.place);
+---
+
+<div class={`lf-stage at-${screen.place}`} id={`lf-${i}`} data-stage={i} style={`--cx:${cx};--cy:${cy}`}>
+  <div class="lf-shot" data-shot>
+    <Shot screen={screen} eager={eager} />
+    <div class="lf-shade" aria-hidden="true"></div>
+  </div>
+  <div class="lf-card" data-card data-reveal={reveal || undefined} style={reveal ? '--d:.15s' : undefined}>
+    <div class="lf-glass" aria-hidden="true"></div>
+    <div class="lf-card-in" data-card-in>
+      <p class="lf-n">{roman[i]} <span>of VI</span></p>
+      <h3 class="lf-name">{stage.name}</h3>
+      <p class="lf-body">{stage.body}</p>
+      <p class="lf-who"><span class="label">Worked by</span>{stage.who}</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+---
+/* One Leaf screenshot filling the stage. The PNG source is resized to WebP at three widths;
+   the focal point from screens.ts sets which part of the screen survives the viewport crop. */
+import { getImage } from 'astro:assets';
+import type { Screen } from './screens';
+
+interface Props {
+  screen: Screen;
+  eager?: boolean;
+}
+
+const { screen, eager = false } = Astro.props;
+const img = await getImage({ src: screen.src, widths: [1280, 1920, 2560], format: 'webp', quality: 82 });
+---
+
+<img
+  class="lf-img"
+  src={img.src}
+  srcset={img.srcSet.attribute}
+  sizes="100vw"
+  width={img.attributes.width}
+  height={img.attributes.height}
+  alt={screen.alt}
+  style={`object-position:${screen.focal}`}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+/>

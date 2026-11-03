@@ -1,0 +1,252 @@
+/* Lifecycle, full page: a Leaf screen fills the viewport behind each stage, dimmed, with a
+   frosted summary card over it and the I to VI head riding top-left. The stacked column of
+   100vh stages is the default layout; scrub.ts switches on the pinned crossfade. Phones
+   get the deck instead. Global, prefixed lf-. */
+
+/* Scene and phone toggle --------------------------------------------------- */
+
+.lf-phone {
+  display: none;
+}
+
+.lf-scene {
+  --ink-soft: color-mix(in srgb, var(--stone) 60%, #0f0e0c);
+  --rule: color-mix(in srgb, var(--stone) 16%, transparent);
+  --lf-inset: clamp(32px, 4vw, 56px);
+  /* The glass header returns on scroll up, so the top row sits below it. */
+  --lf-inset-top: max(var(--lf-inset), calc(var(--header-h) + 12px));
+  --lf-card-w: clamp(380px, 36vw, 560px);
+  position: relative;
+  background: #0f0e0c;
+  color: var(--stone);
+}
+
+.lf-pin {
+  position: relative;
+}
+
+@media (width <= 900px) {
+  .lf-scene {
+    display: none;
+  }
+
+  .lf-phone {
+    display: block;
+  }
+}
+
+/* Stage: the stacked fallback ---------------------------------------------- */
+
+.lf-stage {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: #0f0e0c;
+}
+
+.lf-shot {
+  position: absolute;
+  inset: 0;
+}
+
+.lf-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+
+/* The shade pools under the card, with a faint darkening at the top and bottom edges. */
+.lf-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 80% at var(--cx) var(--cy), #0f0e0cb3, #0000 75%),
+    linear-gradient(#0f0e0c40, transparent 20%, transparent 80%, #0f0e0c40);
+}
+
+/* Card ---------------------------------------------------------------------- */
+
+.lf-card {
+  position: absolute;
+  z-index: 2;
+  width: var(--lf-card-w);
+  padding: 36px 40px;
+}
+
+/* Placement per screen. translate rather than transform, so GSAP's transforms compose. */
+.at-top-left .lf-card,
+.at-top-right .lf-card {
+  top: var(--lf-inset-top);
+}
+
+.at-bottom-left .lf-card,
+.at-bottom-right .lf-card {
+  bottom: var(--lf-inset);
+}
+
+.at-middle-left .lf-card,
+.at-middle-right .lf-card {
+  top: 50%;
+  translate: 0 -50%;
+}
+
+.at-top-left .lf-card,
+.at-middle-left .lf-card,
+.at-bottom-left .lf-card {
+  left: var(--lf-inset);
+}
+
+.at-top-right .lf-card,
+.at-middle-right .lf-card,
+.at-bottom-right .lf-card {
+  right: var(--lf-inset);
+}
+
+/* Glass: frosted, feathered on all four sides so it has no hard edge over the screen. */
+.lf-glass {
+  position: absolute;
+  inset: -28px;
+  background: color-mix(in srgb, #0f0e0c 58%, transparent);
+  -webkit-backdrop-filter: blur(22px) saturate(0.9);
+  backdrop-filter: blur(22px) saturate(0.9);
+  -webkit-mask-image:
+    linear-gradient(to right, #0000, #000 36px calc(100% - 36px), #0000),
+    linear-gradient(to bottom, #0000, #000 36px calc(100% - 36px), #0000);
+  mask-image:
+    linear-gradient(to right, #0000, #000 36px calc(100% - 36px), #0000),
+    linear-gradient(to bottom, #0000, #000 36px calc(100% - 36px), #0000);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+
+.lf-card-in {
+  position: relative;
+}
+
+.lf-n {
+  font: 400 var(--t-sm) / 1 var(--font-display);
+  color: var(--accent);
+}
+
+.lf-n span {
+  margin-left: 6px;
+  color: var(--ink-soft);
+}
+
+.lf-name {
+  margin: 14px 0 16px;
+  font: 400 var(--t-xl) / 1.1 var(--font-display);
+}
+
+.lf-body {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--stone) 88%, transparent);
+}
+
+.lf-who {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: var(--t-sm);
+}
+
+/* Head: the runhead and the I to VI strip ----------------------------------- */
+
+.lf-head {
+  position: absolute;
+  top: var(--lf-inset-top);
+  left: var(--lf-inset);
+  z-index: 5;
+  width: min(360px, 28vw);
+}
+
+/* The head sits over the Leaf sidebar on every screen, so it gets its own glass. */
+.lf-head > .lf-glass {
+  inset: -36px -40px;
+  background: color-mix(in srgb, #0f0e0c 66%, transparent);
+}
+
+.lf-head > :not(.lf-glass) {
+  position: relative;
+}
+
+.lf-runhead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.lf-steps ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.lf-step {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+  font: 400 var(--t-sm) / 1 var(--font-display);
+  color: var(--ink-soft);
+  transition: color 0.5s var(--ease);
+}
+
+/* The bar under each numeral mirrors the deck's strip. */
+.lf-step::after {
+  content: '';
+  height: 2px;
+  background: var(--rule);
+  transition: background-color 0.5s var(--ease);
+}
+
+.lf-step:hover {
+  color: var(--stone);
+}
+
+.lf-step.is-done::after {
+  background: var(--stone);
+}
+
+.lf-step[aria-current='step'] {
+  color: var(--accent);
+}
+
+.lf-step[aria-current='step']::after {
+  background: var(--accent);
+}
+
+/* Scrub, live: the stages pile up in one viewport and crossfade in place ----- */
+
+.lf-scrub.is-live .lf-stages {
+  position: relative;
+  height: 100vh;
+  background: #0f0e0c;
+}
+
+/* Stacked layers must be clear, or the top one hides the crossfade beneath it. */
+.lf-scrub.is-live .lf-stage {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+/* Reduced motion --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .lf-step,
+  .lf-step::after {
+    transition: none;
+  }
+}
