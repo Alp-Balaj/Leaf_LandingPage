@@ -1,13 +1,10 @@
 /* Lifecycle, full page: a Leaf screen fills the viewport behind each stage, dimmed, with a
    frosted summary card over it and the I to VI head riding top-left. The stacked column of
-   100vh stages is the default layout; scrub.ts switches on the pinned crossfade. Phones
-   get the deck instead. Global, prefixed lf-. */
+   100vh stages is the default layout; scrub.ts switches on the pinned crossfade. Phones keep
+   the stack: each stage is a snap page with the screen zoomed on its focal point, the card at
+   the foot and the head stuck to the top as a bar. Global, prefixed lf-. */
 
-/* Scene and phone toggle --------------------------------------------------- */
-
-.lf-phone {
-  display: none;
-}
+/* Scene ------------------------------------------------------------------------ */
 
 .lf-scene {
   --ink-soft: color-mix(in srgb, var(--stone) 60%, #0f0e0c);
@@ -23,16 +20,6 @@
 
 .lf-pin {
   position: relative;
-}
-
-@media (width <= 900px) {
-  .lf-scene {
-    display: none;
-  }
-
-  .lf-phone {
-    display: block;
-  }
 }
 
 /* Stage: the stacked fallback ---------------------------------------------- */
@@ -54,6 +41,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--df);
   filter: brightness(0.7);
 }
 
@@ -240,6 +228,165 @@
   position: absolute;
   inset: 0;
   background: transparent;
+}
+
+/* Phones: snap pages, zoomed screen, card at the foot, head as a bar ------------- */
+
+@media (width <= 900px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+
+  .lf-scene {
+    --lf-bar-h: 56px;
+    --lf-inset: 16px;
+  }
+
+  .lf-stage {
+    height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  /* A portrait viewport shows a strip of a desktop screen, so each zooms on its own focal
+     point; the shade pools under the card and the bar. */
+  .lf-img {
+    object-position: var(--pf);
+    transform: scale(var(--pz, 1));
+    transform-origin: var(--pf);
+  }
+
+  .lf-shade {
+    background:
+      linear-gradient(#0f0e0cb3, transparent calc(var(--lf-bar-h) + 56px)),
+      linear-gradient(to top, #0f0e0ccc, #0f0e0c66 40%, transparent 68%);
+  }
+
+  .lf-card,
+  .at-top-left .lf-card,
+  .at-top-right .lf-card,
+  .at-middle-left .lf-card,
+  .at-middle-right .lf-card,
+  .at-bottom-left .lf-card,
+  .at-bottom-right .lf-card {
+    inset: auto var(--lf-inset) max(20px, env(safe-area-inset-bottom)) var(--lf-inset);
+    width: auto;
+    max-width: 560px;
+    padding: 22px 22px 18px;
+    translate: none;
+  }
+
+  .lf-glass {
+    inset: -22px;
+    -webkit-mask-image:
+      linear-gradient(to right, #0000, #000 28px calc(100% - 28px), #0000),
+      linear-gradient(to bottom, #0000, #000 28px calc(100% - 28px), #0000);
+    mask-image:
+      linear-gradient(to right, #0000, #000 28px calc(100% - 28px), #0000),
+      linear-gradient(to bottom, #0000, #000 28px calc(100% - 28px), #0000);
+  }
+
+  .lf-name {
+    margin: 10px 0 10px;
+    font-size: 1.625rem;
+  }
+
+  .lf-body {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .lf-who {
+    margin-top: 14px;
+    padding-top: 10px;
+  }
+
+  /* Long team lists wrap in the value, not the label. */
+  .lf-who > .label {
+    flex: none;
+  }
+
+  /* The head is a bar stuck to the top of the column, below the site header while that shows
+     and sliding up to the edge when it hides. Its height is taken back so the stages' snap
+     positions stay at the top of the viewport. */
+  .lf-head {
+    position: sticky;
+    top: var(--header-h);
+    left: auto;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--lf-bar-h);
+    margin-bottom: calc(-1 * var(--lf-bar-h));
+    padding: 0 var(--lf-inset);
+    transition: top 0.55s var(--ease);
+  }
+
+  body:has(.header.is-hidden:not(.is-open)) .lf-head {
+    top: 0;
+  }
+
+  .lf-head > .lf-glass {
+    inset: 0 0 -24px;
+    background: color-mix(in srgb, #0f0e0c 66%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), #0000);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), #0000);
+  }
+
+  .lf-runhead {
+    gap: 2px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .lf-runhead .label {
+    font-size: 0.6875rem;
+  }
+
+  /* One line in the bar: the strip itself says there are six stages. */
+  .lf-runhead > span {
+    display: none;
+  }
+
+  .lf-steps ol {
+    grid-template-columns: repeat(6, 26px);
+    gap: 5px;
+  }
+
+  .lf-step {
+    gap: 6px;
+    padding-top: 4px;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  /* The card comes in once the stage fills a third of the viewport. Opacity goes on the glass
+     and the copy, never on the card, or the backdrop blur loses the screen. */
+  @media (prefers-reduced-motion: no-preference) {
+    .lf-stage .lf-glass,
+    .lf-stage .lf-card-in {
+      opacity: 0;
+      transition: opacity 0.9s var(--ease) 0.1s;
+    }
+
+    .lf-stage .lf-card-in {
+      translate: 0 18px;
+      transition:
+        opacity 0.9s var(--ease) 0.1s,
+        translate 0.9s var(--ease) 0.1s;
+    }
+
+    .lf-stage.is-seen .lf-glass,
+    .lf-stage.is-seen .lf-card-in {
+      opacity: 1;
+      translate: none;
+    }
+  }
 }
 
 /* Reduced motion --------------------------------------------------------------- */

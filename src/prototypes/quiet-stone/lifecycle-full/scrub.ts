@@ -1,10 +1,10 @@
 // The full-page lifecycle: the scene pins for five viewport heights and scroll scrubs one
 // timeline that crossfades the screens in place, the card fading out and back in at the next
-// stage's position. Below 900px and under reduced motion the stages stack and an observer
-// marks the steps.
+// stage's position. Below 900px and under reduced motion the stages stack and snap, and
+// observers mark the steps and bring each card in.
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { markStep, watchSteps } from './steps';
+import { markStep, watchSeen, watchSteps } from './steps';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -83,7 +83,11 @@ export function mountScrub(): void {
   });
 
   mm.add(STILL, () => {
-    const io = watchSteps(root);
-    return () => io?.disconnect();
+    const steps = watchSteps(root);
+    const seen = watchSeen(root);
+    return () => {
+      steps?.disconnect();
+      seen?.disconnect();
+    };
   });
 }

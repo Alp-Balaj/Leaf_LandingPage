@@ -18,7 +18,7 @@ const screen = screens[i];
 const [cx, cy] = shadeAt(screen.place);
 ---
 
-<div class={`lf-stage at-${screen.place}`} id={`lf-${i}`} data-stage={i} style={`--cx:${cx};--cy:${cy}`}>
+<div class={`lf-stage at-${screen.place}`} id={`lf-${i}`} data-stage={i} style={`--cx:${cx};--cy:${cy};--df:${screen.focal};--pf:${screen.phone.focal};--pz:${screen.phone.zoom}`}>
   <div class="lf-shot" data-shot>
     <Shot screen={screen} eager={eager} />
     <div class="lf-shade" aria-hidden="true"></div>

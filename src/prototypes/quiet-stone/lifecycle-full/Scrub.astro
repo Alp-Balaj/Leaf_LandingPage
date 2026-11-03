@@ -1,7 +1,8 @@
 ---
 /* The scene pins to the viewport and scrolling crossfades the six screens in place; the card
    fades out and reappears at the next stage's position. scrub.ts drives it with GSAP
-   ScrollTrigger; without it the stages stack as 100vh blocks. */
+   ScrollTrigger. Below 900px, and under reduced motion, the stages stack as full-height blocks
+   that snap, with the head stuck to the top. */
 import Stage from './Stage.astro';
 import Steps from './Steps.astro';
 import { stages } from '../lifecycle-stages';
@@ -9,10 +10,10 @@ import { stages } from '../lifecycle-stages';
 
 <div class="lf-scene lf-scrub" data-lf="scrub">
   <div class="lf-pin" data-pin>
+    <Steps />
     <div class="lf-stages" data-stages>
       {stages.map((_, i) => <Stage i={i} eager={i === 0} />)}
     </div>
-    <Steps />
   </div>
 </div>
 
