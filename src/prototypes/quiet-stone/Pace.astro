@@ -67,9 +67,10 @@ const editable = [
         </figcaption>
       </figure>
 
-      <aside class="rating" data-reveal style="--d:.15s" aria-label="Internal client rating">
-        <p class="label">Internal client rating</p>
-        <p class="rating-big">15 s</p>
+      <aside class="rating" data-reveal style="--d:.15s" aria-label="Average time, desk by desk">
+        <p class="label">Average, desk by desk</p>
+        <p class="rating-big"><span>≈ 1<small>h</small>38<small>min</small></span></p>
+        <p class="rating-sub">of hands-on time to complete a loan, on average.</p>
 
         <dl class="rating-kv">
           <div>
@@ -213,6 +214,20 @@ const editable = [
     font: 400 clamp(3.5rem, 2.4rem + 4vw, 6rem) / 0.9 var(--font-display);
     letter-spacing: -0.02em;
     text-transform: none;
+  }
+
+  .rating-big small {
+    margin: 0 0.4em 0 0.15em;
+    font-size: 0.35em;
+    letter-spacing: 0;
+  }
+
+  .rating-big small:last-child {
+    margin-right: 0;
+  }
+
+  .rating-sub {
+    color: var(--ink-soft);
   }
 
   .rating-foot {
