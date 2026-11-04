@@ -24,6 +24,11 @@ const TAIL = 0.45;
 // far a card drifts (px) during a change.
 const PAN = 2;
 const DRIFT = 56;
+// The shelves are not dead: through them the card and screen keep leaning toward the next
+// move by this much, so motion is continuous up to the rest point and the snap's overshoot
+// shows as a settle.
+const LEAN = 18;
+const LEAN_PAN = 0.7;
 // On the way in and out the screen lags the scroll by this much (percent) and the veil over
 // its edge covers this much of the viewport at most.
 const LAG = 6;
@@ -105,28 +110,37 @@ export function mountScrub(): void {
 
     const tl = gsap.timeline({ paused: true });
 
+    // Every tween states both ends and renders only when the playhead reaches it, so a refresh
+    // or the lead-in can never bake a wrong start value in. The starting picture is set here.
     gsap.set(shots.slice(1), { autoAlpha: 0 });
     gsap.set(fades.slice(1).flat(), { autoAlpha: 0 });
     gsap.set([veilTop, veilBottom], { scaleY: 0 });
+    const still = { immediateRender: false };
 
     for (let k = 0; k < n - 1; k++) {
       const [dx, dy] = dirs[k];
       const t0 = k + HOLD;
-      // The screens: both layers travel the same way, the old one leaving, the new one arriving.
-      tl.fromTo(shots[k], { xPercent: 0, yPercent: 0 }, { xPercent: -dx * PAN, yPercent: -dy * PAN, duration: MOVE, ease: 'power2.inOut' }, t0);
-      tl.fromTo(
-        shots[k + 1],
-        { xPercent: dx * PAN, yPercent: dy * PAN, autoAlpha: 0 },
-        { xPercent: 0, yPercent: 0, autoAlpha: 1, duration: MOVE, ease: 'power2.inOut' },
-        t0
-      );
-      // The cards: the first half hands off to the second, with a hair of overlap so no frame is
-      // empty. Drift goes on the card, alpha on its children.
+      const t1 = k + 1 - HOLD;
       const half = MOVE / 2;
-      tl.fromTo(cards[k], { x: 0, y: 0 }, { x: dx * DRIFT, y: dy * DRIFT, duration: half, ease: 'power2.in' }, t0);
-      tl.to(fades[k], { autoAlpha: 0, duration: half * 0.9, ease: 'power1.in' }, t0);
-      tl.fromTo(cards[k + 1], { x: -dx * DRIFT, y: -dy * DRIFT }, { x: 0, y: 0, duration: half, ease: 'power2.out' }, t0 + half);
-      tl.to(fades[k + 1], { autoAlpha: 1, duration: half * 0.9, ease: 'power1.out' }, t0 + half * 0.95);
+      const at = (v: number): [number, number] => [dx * v, dy * v];
+      const xy = ([x, y]: [number, number]) => ({ xPercent: x, yPercent: y });
+      const px = ([x, y]: [number, number]) => ({ x, y });
+
+      // The screens: both layers travel the same way, the old one leaving, the new one arriving.
+      // Through the shelves they lean, in the move they pan.
+      tl.fromTo(shots[k], xy(at(0)), { ...xy(at(-LEAN_PAN)), duration: HOLD, ease: 'none', ...still }, k);
+      tl.fromTo(shots[k], xy(at(-LEAN_PAN)), { ...xy(at(-PAN)), duration: MOVE, ease: 'power2.inOut', ...still }, t0);
+      tl.fromTo(shots[k + 1], { ...xy(at(PAN)), autoAlpha: 0 }, { ...xy(at(LEAN_PAN)), autoAlpha: 1, duration: MOVE, ease: 'power2.inOut', ...still }, t0);
+      tl.fromTo(shots[k + 1], xy(at(LEAN_PAN)), { ...xy(at(0)), duration: HOLD, ease: 'none', ...still }, t1);
+
+      // The cards: the first half of the move hands off to the second, with a hair of overlap so
+      // no frame is empty. Drift goes on the card, alpha on its children.
+      tl.fromTo(cards[k], px(at(0)), { ...px(at(LEAN)), duration: HOLD, ease: 'none', ...still }, k);
+      tl.fromTo(cards[k], px(at(LEAN)), { ...px(at(DRIFT)), duration: half, ease: 'power2.in', ...still }, t0);
+      tl.fromTo(fades[k], { autoAlpha: 1 }, { autoAlpha: 0, duration: half * 0.9, ease: 'power1.in', ...still }, t0);
+      tl.fromTo(cards[k + 1], px(at(-DRIFT)), { ...px(at(-LEAN)), duration: half, ease: 'power2.out', ...still }, t0 + half);
+      tl.fromTo(cards[k + 1], px(at(-LEAN)), { ...px(at(0)), duration: HOLD, ease: 'none', ...still }, t1);
+      tl.fromTo(fades[k + 1], { autoAlpha: 0 }, { autoAlpha: 1, duration: half * 0.9, ease: 'power1.out', ...still }, t0 + half * 0.95);
     }
     // The tail shelf: time passes, nothing moves, then the pin lets go.
     tl.to({}, { duration: TAIL }, n - 1);
@@ -158,15 +172,16 @@ export function mountScrub(): void {
       end: () => '+=' + total * innerHeight,
       pin: true,
       anticipatePin: 1,
-      scrub: 0.3,
+      scrub: 0.2,
       animation: tl,
       // Snap finishes the move you started and never pulls back; no inertia, so a fling
-      // lands on the nearest shelf, not the last one.
+      // lands on the nearest shelf, not the last one. It overshoots a little and settles,
+      // which the lean turns into a visible landing.
       snap: {
         snapTo,
-        duration: { min: 0.3, max: 0.6 },
-        delay: 0.08,
-        ease: 'power2.out',
+        duration: { min: 0.5, max: 0.9 },
+        delay: 0.06,
+        ease: 'back.out(1.8)',
         inertia: false,
       },
       onUpdate: (self) => paint(self.progress * total),
@@ -186,8 +201,10 @@ export function mountScrub(): void {
       },
     });
     lead
-      .fromTo(shots[0], { autoAlpha: 0.35, yPercent: -LAG }, { autoAlpha: 1, yPercent: 0, ease: 'none', duration: 1 }, 0)
-      .fromTo(cards[0], { y: 40 }, { y: 0, ease: 'power1.out', duration: 0.6 }, 0.4)
+      // y in px on the screen and yPercent on the card, never the main timeline's
+      // xPercent/yPercent and x/y: the two never fight over a property.
+      .fromTo(shots[0], { autoAlpha: 0.35, y: () => (-LAG / 100) * innerHeight }, { autoAlpha: 1, y: 0, ease: 'none', duration: 1 }, 0)
+      .fromTo(cards[0], { yPercent: 12 }, { yPercent: 0, ease: 'power1.out', duration: 0.6 }, 0.4)
       .fromTo(fades[0], { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.5 }, 0.45);
     if (veilTop) lead.fromTo(veilTop, { scaleY: VEIL }, { scaleY: 0, ease: 'power1.in', duration: 0.5 }, 0.5);
     if (head) {
@@ -204,8 +221,8 @@ export function mountScrub(): void {
       const out = gsap.parseEase('power1.out');
       // Brightness, not opacity: the screen before this one is still opaque underneath.
       const dim = 1 - 0.65 * span(q, 0, 0.7);
-      gsap.set(shots[last], { yPercent: LAG * q, filter: q > 0 ? `brightness(${dim.toFixed(3)})` : 'none' });
-      gsap.set(cards[last], { y: 40 * out(span(q, 0, 0.4)) });
+      gsap.set(shots[last], { y: (LAG / 100) * innerHeight * q, filter: q > 0 ? `brightness(${dim.toFixed(3)})` : 'none' });
+      gsap.set(cards[last], { yPercent: 12 * out(span(q, 0, 0.4)) });
       gsap.set(fades[last], { autoAlpha: 1 - span(q, 0, 0.35) });
       if (veilBottom) gsap.set(veilBottom, { scaleY: VEIL * out(span(q, 0, 0.5)) });
       if (head) {
