@@ -24,6 +24,14 @@ const TAIL = 0.45;
 // far a card drifts (px) during a change.
 const PAN = 2;
 const DRIFT = 56;
+// On the way in and out the screen lags the scroll by this much (percent) and the veil over
+// its edge covers this much of the viewport at most.
+const LAG = 6;
+const VEIL = 0.7;
+
+const clamp01 = (x: number) => Math.min(Math.max(x, 0), 1);
+// 0 to 1 as x runs from a to b.
+const span = (x: number, a: number, b: number) => clamp01((x - a) / (b - a));
 
 type Vec = [number, number];
 
@@ -90,6 +98,8 @@ export function mountScrub(): void {
     const steps = [...root.querySelectorAll<HTMLElement>('[data-step]')];
     const head = root.querySelector<HTMLElement>('[data-head]');
     const headFades = head ? ([...head.children] as HTMLElement[]) : [];
+    const veilTop = root.querySelector<HTMLElement>('[data-veil="top"]');
+    const veilBottom = root.querySelector<HTMLElement>('[data-veil="bottom"]');
     const n = shots.length;
     const dirs = stageEls.slice(1).map((s, k) => direction(placeOf(stageEls[k]), placeOf(s)));
 
@@ -97,6 +107,7 @@ export function mountScrub(): void {
 
     gsap.set(shots.slice(1), { autoAlpha: 0 });
     gsap.set(fades.slice(1).flat(), { autoAlpha: 0 });
+    gsap.set([veilTop, veilBottom], { scaleY: 0 });
 
     for (let k = 0; k < n - 1; k++) {
       const [dx, dy] = dirs[k];
@@ -163,7 +174,9 @@ export function mountScrub(): void {
     });
 
     // The approach: as the scene slides up under the section before it, the first screen
-    // brightens and the card and head settle in, so the pin engages on a scene at rest.
+    // emerges from the black, lagging the scroll a little, and the card and head settle in,
+    // so the pin engages on a scene at rest. The veil keeps the screen's top edge black until
+    // the last moment, so there is never a line.
     const lead = gsap.timeline({
       scrollTrigger: {
         trigger: root,
@@ -173,13 +186,47 @@ export function mountScrub(): void {
       },
     });
     lead
-      .fromTo(shots[0], { autoAlpha: 0.35, yPercent: -PAN }, { autoAlpha: 1, yPercent: 0, ease: 'none', duration: 1 }, 0)
+      .fromTo(shots[0], { autoAlpha: 0.35, yPercent: -LAG }, { autoAlpha: 1, yPercent: 0, ease: 'none', duration: 1 }, 0)
       .fromTo(cards[0], { y: 40 }, { y: 0, ease: 'power1.out', duration: 0.6 }, 0.4)
       .fromTo(fades[0], { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.5 }, 0.45);
+    if (veilTop) lead.fromTo(veilTop, { scaleY: VEIL }, { scaleY: 0, ease: 'power1.in', duration: 0.5 }, 0.5);
     if (head) {
       lead
         .fromTo(head, { y: 24 }, { y: 0, ease: 'power1.out', duration: 0.6 }, 0.3)
         .fromTo(headFades, { autoAlpha: 0 }, { autoAlpha: 1, ease: 'none', duration: 0.5 }, 0.35);
+    }
+
+    // The release: once the pin lets go the scene scrolls away. Its last screen sinks back into
+    // the black the same way the first came out of it, and the card and head leave first.
+    // Written imperatively, so nothing here renders before the scene has actually let go.
+    const last = n - 1;
+    const release = (q: number) => {
+      const out = gsap.parseEase('power1.out');
+      // Brightness, not opacity: the screen before this one is still opaque underneath.
+      const dim = 1 - 0.65 * span(q, 0, 0.7);
+      gsap.set(shots[last], { yPercent: LAG * q, filter: q > 0 ? `brightness(${dim.toFixed(3)})` : 'none' });
+      gsap.set(cards[last], { y: 40 * out(span(q, 0, 0.4)) });
+      gsap.set(fades[last], { autoAlpha: 1 - span(q, 0, 0.35) });
+      if (veilBottom) gsap.set(veilBottom, { scaleY: VEIL * out(span(q, 0, 0.5)) });
+      if (head) {
+        gsap.set(head, { y: -24 * out(span(q, 0, 0.4)) });
+        gsap.set(headFades, { autoAlpha: 1 - span(q, 0, 0.35) });
+      }
+    };
+    let released = false;
+    const exit = ScrollTrigger.create({
+      trigger: root,
+      start: 'bottom bottom',
+      end: 'bottom top',
+      onUpdate: (self) => {
+        if (self.progress === 0 && !released) return;
+        released = self.progress > 0;
+        release(self.progress);
+      },
+    });
+    if (exit.progress > 0) {
+      released = true;
+      release(exit.progress);
     }
 
     paint(st.progress * total);
@@ -202,6 +249,7 @@ export function mountScrub(): void {
       root.classList.remove('is-live');
       lead.scrollTrigger?.kill();
       lead.kill();
+      exit.kill();
       steps.forEach((s) => s.style.removeProperty('--f'));
     };
   });

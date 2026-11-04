@@ -260,6 +260,35 @@
   will-change: transform;
 }
 
+/* Veils: black bands over the top and bottom of the scene, pure black at the edge so the
+   screen's edge never meets the page's black as a line. The top one thins away as the scene
+   settles into the pin; the bottom one grows as the scene lets go. scrub.ts scales them. */
+.lf-veil {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: none;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lf-veil-top {
+  top: 0;
+  transform-origin: top;
+  background: linear-gradient(#0f0e0c, #0f0e0c 6%, transparent);
+}
+
+.lf-veil-bottom {
+  bottom: 0;
+  transform-origin: bottom;
+  background: linear-gradient(to top, #0f0e0c, #0f0e0c 6%, transparent);
+}
+
+.lf-scrub.is-live .lf-veil {
+  display: block;
+}
+
 /* Phones: snap pages, zoomed screen, card at the foot, head as a bar ------------- */
 
 @media (width <= 900px) {
