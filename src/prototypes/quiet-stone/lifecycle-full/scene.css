@@ -191,28 +191,47 @@
   transition: color 0.5s var(--ease);
 }
 
-/* The bar under each numeral mirrors the deck's strip. */
+/* The bar under each numeral mirrors the deck's strip: a rule with a fill drawn over it. */
 .lf-step::after {
   content: '';
   height: 2px;
-  background: var(--rule);
-  transition: background-color 0.5s var(--ease);
+  background: linear-gradient(var(--lf-fill, var(--rule)), var(--lf-fill, var(--rule))) left / calc(var(--f, 0) * 100%) 100% no-repeat var(--rule);
+  transition: background-size 0.5s var(--ease);
 }
 
 .lf-step:hover {
   color: var(--stone);
 }
 
+.lf-step.is-done {
+  --f: 1;
+}
+
 .lf-step.is-done::after {
-  background: var(--stone);
+  --lf-fill: var(--stone);
 }
 
 .lf-step[aria-current='step'] {
+  --f: 1;
   color: var(--accent);
 }
 
 .lf-step[aria-current='step']::after {
-  background: var(--accent);
+  --lf-fill: var(--accent);
+}
+
+/* Live, the bars are painted every frame from the scroll, so they do not ease on their own. */
+.lf-scrub.is-live .lf-step {
+  transition: color 0.25s var(--ease);
+}
+
+.lf-scrub.is-live .lf-step::after {
+  --lf-fill: var(--stone);
+  transition: none;
+}
+
+.lf-scrub.is-live .lf-step[aria-current='step']::after {
+  --lf-fill: var(--accent);
 }
 
 /* Scrub, live: the stages pile up in one viewport and crossfade in place ----- */
@@ -230,6 +249,17 @@
   background: transparent;
 }
 
+/* The screen pans a few percent during a change; it is drawn a little larger than the stage so
+   no edge shows. `scale` is its own property, so it composes with the transform GSAP writes. */
+.lf-scrub.is-live .lf-shot {
+  scale: 1.05;
+  will-change: transform, opacity;
+}
+
+.lf-scrub.is-live .lf-card {
+  will-change: transform;
+}
+
 /* Phones: snap pages, zoomed screen, card at the foot, head as a bar ------------- */
 
 @media (width <= 900px) {
@@ -245,7 +275,6 @@
   .lf-stage {
     height: 100svh;
     scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
 
   /* A portrait viewport shows a strip of a desktop screen, so each zooms on its own focal
