@@ -1,4 +1,4 @@
-// Platform-only motion, modelled on valzazhushi.com (see docs/research/valzazhushi-inspiration.md):
+// Platform-only motion, modelled on valzazhushi.com:
 // one IntersectionObserver for reveals, a smart glass header, light parallax, a custom
 // scrollbar and the mobile menu. CSS owns every transition and easing.
 

@@ -351,41 +351,27 @@ a {
 
 /* Hero -------------------------------------------------------------------- */
 
+/* The animated lifecycle loop sits on black and only darkens toward the headline. */
 .hero {
   position: relative;
   height: 100lvh;
   min-height: 600px;
   overflow: hidden;
   color: var(--stone);
-  background: #171512;
-}
-
-.hero-frame {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  padding-top: calc(var(--header-h) + 56px);
-}
-
-.hero-img {
-  width: 1180px;
-  flex: none;
-  opacity: 0.7;
-  animation: hero-in 2.8s var(--ease) both;
-  transform-origin: 50% 30%;
+  background: #000;
 }
 
 .hero-shade {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(#14110e99 0%, #0000 22%),
-    linear-gradient(#0000 10%, #14110ecc 40%, #14110ef7 70%);
+  z-index: 2;
+  background: linear-gradient(#0000 45%, #000c 72%, var(--bg) 96%);
 }
 
+/* The title always sits above the loop layers (ring 1, word 2 in the orbit). */
 .hero-content {
   position: relative;
+  z-index: 3;
   height: 100svh;
   min-height: 600px;
   display: flex;
@@ -446,12 +432,6 @@ a {
   animation: drip 2.4s var(--ease) infinite;
 }
 
-@keyframes hero-in {
-  from {
-    transform: scale(1.12);
-  }
-}
-
 @keyframes rise {
   from {
     opacity: 0;
@@ -485,182 +465,20 @@ a {
     display: none;
   }
 
-  .hero-img {
-    width: 900px;
+  /* On a phone the loop fills the top ~60%, so the fade starts just above the title. */
+  .hero-shade {
+    background: linear-gradient(#0000 52%, #000c 66%, var(--bg) 96%);
   }
 }
 
-/* Loan record mock ----------------------------------------------------- */
+/* Record type (the borrower sheets print with it) ------------------------- */
 
-/* Everything printed on paper keeps dark ink, whatever the page theme. */
-.rec {
-  color: var(--ink);
-  --ink-soft: color-mix(in srgb, var(--ink) 62%, var(--paper));
-  --rule: color-mix(in srgb, var(--ink) 14%, transparent);
-}
-
-.rec {
-  background: var(--paper);
-  border-radius: 6px;
-  font-size: 13px;
-  line-height: 1.45;
-  font-variant-numeric: tabular-nums;
-  box-shadow: 0 30px 80px #0000004d;
-  overflow: hidden;
-}
-
-.rec-bar {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--rule);
-  font-size: 12px;
-}
-
-.rec-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 500;
-}
-
-.rec-crumb {
-  color: var(--ink-soft);
-}
-
-.rec-user {
-  margin-left: auto;
-  color: var(--ink-soft);
-}
-
-.rec-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 24px 20px 20px;
-}
-
-.rec-name {
-  font: 400 1.5rem/1.2 var(--font-display);
-}
-
-.rec-sub,
-.rec-dim {
-  color: var(--ink-soft);
-}
-
-.rec-facts {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  gap: 32px;
-}
-
-.rec-facts dt,
-.rec-h,
-.rec-table th,
-.rec-kv dt {
+.rec-h {
+  margin-bottom: 12px;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink-soft);
-}
-
-.rec-chip {
-  display: inline-block;
-  padding: 1px 10px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  color: var(--accent);
-  font-size: 12px;
-}
-
-.rec-tl {
-  list-style: none;
-  margin: 0;
-  padding: 14px 20px;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  border-block: 1px solid var(--rule);
-}
-
-.rec-tl li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--ink-soft);
-}
-
-.rec-tl .done,
-.rec-tl .active {
-  color: var(--ink);
-}
-
-.rec-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1px solid currentColor;
-}
-
-.rec-tl .done .rec-dot {
-  background: currentColor;
-}
-
-.rec-tl .active .rec-dot {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
-}
-
-.rec-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.rec-panel {
-  padding: 18px 20px 22px;
-  border-top: 1px solid var(--rule);
-}
-
-.rec-panel + .rec-panel:not(.rec-wide) {
-  border-left: 1px solid var(--rule);
-}
-
-.rec-wide {
-  grid-column: 1 / -1;
-  border-top: 0;
-}
-
-.rec-h {
-  margin-bottom: 12px;
-}
-
-.rec-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.rec-table th,
-.rec-table td {
-  text-align: left;
-  padding: 8px 12px 8px 0;
-  border-bottom: 1px solid var(--rule);
-  font-weight: 400;
-}
-
-.rec-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.rec-list li {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--rule);
 }
 
 .rec-kv > div {
@@ -674,7 +492,7 @@ a {
 .rec-kv dt {
   font-size: 12px;
   letter-spacing: 0.04em;
-  text-transform: none;
+  color: var(--ink-soft);
 }
 
 /* Statement -------------------------------------------------------------- */
@@ -762,46 +580,6 @@ a {
   .stat {
     grid-row: auto;
     grid-template-rows: none;
-  }
-}
-
-/* Lifecycle band (disciplines pattern) -------------------------------------- */
-
-.band {
-  --ink-soft: color-mix(in srgb, var(--stone) 60%, var(--ink));
-  --rule: color-mix(in srgb, var(--stone) 16%, transparent);
-  background: var(--ink);
-  color: var(--stone);
-}
-
-/* Prototype pages can swap in another layout below 900px through the mobile slot. */
-.stages-mobile {
-  display: none;
-}
-
-@media (width <= 900px) {
-  .stages-deck.has-mobile {
-    display: none;
-  }
-
-  .stages-mobile {
-    display: block;
-  }
-}
-
-/* On a phone the second running-head label becomes the section title. */
-@media (width <= 560px) {
-  .lifecycle .runhead {
-    flex-direction: column;
-    align-items: start;
-    gap: 14px;
-  }
-
-  .lifecycle .runhead > span.label {
-    font: 400 var(--t-xl) / 1.1 var(--font-display);
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--stone);
   }
 }
 
@@ -1491,52 +1269,10 @@ a {
 
 /* Dark ground ---------------------------------------------------------------- */
 
-/* The hero fades into the page instead of sitting on its own ground. */
-[data-theme='dark'] .hero {
-  background: var(--bg);
-}
-
-[data-theme='dark'] .hero-shade {
-  background:
-    linear-gradient(#0f0e0c99 0%, #0f0e0c00 22%),
-    linear-gradient(#0f0e0c00 10%, #0f0e0ccc 40%, var(--bg) 78%);
-}
-
-/* Animated lifecycle loops sit on black and only darken toward the headline. */
-.hero:not([data-hero-bg='record']) {
-  background: #000;
-}
-
-.hero:not([data-hero-bg='record']) .hero-shade {
-  z-index: 2;
-  background: linear-gradient(#0000 45%, #000c 72%, var(--bg) 96%);
-}
-
-/* The title always sits above the loop layers (ring 1, word 2 in the orbit). */
-.hero:not([data-hero-bg='record']) .hero-content {
-  z-index: 3;
-}
-
-/* On a phone the loop fills the top ~60%, so the fade starts just above the title. */
-@media (width <= 720px) {
-  .hero:not([data-hero-bg='record']) .hero-shade {
-    background: linear-gradient(#0000 52%, #000c 66%, var(--bg) 96%);
-  }
-}
-
-/* Lifted surfaces read as the band and footer once the page itself is dark. */
-[data-theme='dark'] .band {
-  border-block: 1px solid var(--rule);
-}
-
+/* The footer reads as a lifted surface once the page itself is dark. */
 [data-theme='dark'] .foot {
   background: #0a0908;
   border-top: 1px solid color-mix(in srgb, var(--stone) 10%, transparent);
-}
-
-[data-theme='dark'] .pane,
-[data-theme='dark'] .rec {
-  box-shadow: 0 30px 80px #00000080;
 }
 
 /* Reveals ------------------------------------------------------------------- */
@@ -1569,7 +1305,6 @@ a {
     scroll-behavior: auto;
   }
 
-  .hero-img,
   .hero-title,
   .hero-foot,
   .scroll::after {

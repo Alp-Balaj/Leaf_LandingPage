@@ -1,6 +1,6 @@
 # Leaf Landing Page
 
-The page a Leaf QR code opens. Built with [Astro](https://astro.build), as a static single page.
+The page a Leaf QR code opens. Built with [Astro](https://astro.build) as a static single page, with [GSAP](https://gsap.com) for the scroll-driven lifecycle scene.
 
 ```sh
 npm install
@@ -8,20 +8,14 @@ npm run dev      # http://localhost:4321
 npm run build    # static output in dist/
 ```
 
-Requires Node 22.22 or later.
+Requires Node 22.22 or later. Pushing to `main` deploys to Railway.
+
+## Layout
+
+- `src/pages/index.astro` assembles the page from the components in `src/prototypes/quiet-stone/`: header, hero (the animated lifecycle loop in `hero-bg/`), statement, the "How Leaf works" scene, pace, borrowers, quote, controls, demo form and footer. `styles.css` holds the shared styles and `motion.ts` the platform-only motion (reveals, glass header, parallax, custom scrollbar, mobile menu).
+- `lifecycle-full/` is the six-stage scene: on a mouse-driven screen above 900px it pins and scrubs across the Leaf screenshots in `src/assets/lifecycle/` (`scrub.ts`); on phones, touch screens and under reduced motion it becomes stacked snap pages. Stage copy lives in `lifecycle-stages.ts`, card placement and phone crops in `lifecycle-full/screens.ts`.
+- `public/` holds the brand marks, the two dashboard screenshots behind the quote and the favicon.
 
 ## Before launch
 
-- Fill the `[placeholders]` in `src/components/Stats.astro` and `src/components/Controls.astro`, and the privacy-notice link in `src/components/Demo.astro`.
-- Point the demo form (`src/components/Demo.astro`) at a real endpoint. It currently only shows the thank-you message.
-
-## Prototypes
-
-Five landing-page prototypes live under `src/pages/prototypes/` (shared components per prototype in `src/prototypes/<slug>/`); with the dev server running, the gallery is at `/prototypes`. `motion`, `gsap` and `animejs` were added as dependencies for the prototypes; the main page does not use them.
-
-- `/prototypes/native-editorial`: the current dark look finished as an editorial page (oversized h1, light loan-record mock, running-head rules, numbered lifecycle accordion with a sticky record); platform-only CSS keyframes, one IntersectionObserver and `document.startViewTransition`, no dependencies.
-- `/prototypes/paper-ledger`: light Stripe-register ledger on warm paper with IBM Plex Sans, dotted leaders and a six-tab loan record; Motion mini build (`motion`) for staggered hero, inView reveals, tab crossfades, card lifts and FAQ panels.
-- `/prototypes/scroll-story`: green-black cinematic page where one loan record stays pinned and fills in stage by stage beside a red progress rail; GSAP 3 (`gsap`) with ScrollTrigger and SplitText inside `gsap.matchMedia`, static layout under reduced motion or below 900px.
-- `/prototypes/swiss-grid`: light grey Swiss typographic grid with a visible 12-column overlay, section numbers 01–06, wireframe record card and a stage ticker; Anime.js v4 (`animejs`) for the split-text hero, scroll reveals and the lifecycle ladder, CSS marquee for the ticker.
-- `/prototypes/bento-product`: product-first bento grid with automatic light and dark themes where every control tile is a living CSS/SVG micro-demo; platform-only scroll-driven `animation-timeline: view()` entry (IntersectionObserver fallback), CSS keyframe loops and `document.startViewTransition`, no dependencies.
-- `/prototypes/how-it-works`: three phone treatments of the "How Leaf works" section, shown side by side in phone frames: a file stack (`stack`), a stage stepper (`deck`) and a hand-off rail (`relay`). The main page's lifecycle is now the full-page scene in `src/prototypes/quiet-stone/lifecycle-full/` (GSAP scrub over Leaf screenshots on desktop, snap pages on phones); the stepper (`LifecycleDeck.astro`) remains here; the other two pages pass their variant into the `mobile` slot of `Lifecycle.astro`, which replaces the stepper below 900px (`src/prototypes/quiet-stone/lifecycle-mobile/`). The stage data is shared in `lifecycle-stages.ts`.
+- Point the demo form (`src/prototypes/quiet-stone/Demo.astro`) at a real endpoint. It posts nowhere yet and only shows the thank-you message.
