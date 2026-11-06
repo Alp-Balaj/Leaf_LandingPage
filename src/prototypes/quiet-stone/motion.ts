@@ -77,6 +77,17 @@ function updateParallax() {
   }
 }
 
+/* Contact sheet: opens from an inset card to full width as it rises up the screen -- */
+
+const sheet = document.querySelector<HTMLElement>('[data-sheet]');
+
+function updateSheet() {
+  if (!sheet || reduce) return;
+  const vh = innerHeight;
+  const t = Math.min(Math.max((vh - sheet.getBoundingClientRect().top) / (vh * 0.65), 0), 1);
+  sheet.style.setProperty('--p', (t * t * (3 - 2 * t)).toFixed(3));
+}
+
 /* Scrollbar: glass thumb that shows while scrolling --------------------------- */
 
 const track = document.querySelector<HTMLElement>('[data-scrollbar]')!;
@@ -161,12 +172,14 @@ addEventListener(
   () => {
     updateHeader();
     updateParallax();
+    updateSheet();
     updateScrollbar();
   },
   { passive: true }
 );
 addEventListener('resize', () => {
   measure();
+  updateSheet();
   updateScrollbar(false);
 });
 new ResizeObserver(() => updateScrollbar(false)).observe(root);
@@ -174,4 +187,5 @@ new ResizeObserver(() => updateScrollbar(false)).observe(root);
 measure();
 updateHeader();
 updateParallax();
+updateSheet();
 updateScrollbar(false);

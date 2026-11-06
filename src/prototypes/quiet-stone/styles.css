@@ -986,15 +986,41 @@ a {
 
 /* Demo ---------------------------------------------------------------------- */
 
+/* The one light surface on the dark page. --p (0 to 1) comes from motion.ts as the sheet
+   scrolls in; it stays 1 without JS and under reduced motion. */
 .demo-sec {
-  background: var(--bg-deep);
+  background: var(--bg);
+}
+
+.demo-sheet {
+  --p: 1;
+  --bg: var(--stone);
+  --fg: var(--ink);
+  --ink-soft: color-mix(in srgb, var(--ink) 72%, var(--stone));
+  --accent: #b23c34;
+  --rule: color-mix(in srgb, var(--ink) 16%, transparent);
+  background: var(--bg);
+  color: var(--fg);
+  color-scheme: light;
+  clip-path: inset(
+    calc((1 - var(--p)) * 72px) calc((1 - var(--p)) * var(--gutter)) 0
+      round calc((1 - var(--p)) * 32px)
+  );
 }
 
 .demo {
+  min-height: 100svh;
+  display: grid;
+  align-content: space-between;
+  gap: clamp(56px, 6vw, 96px);
+  padding-block: clamp(88px, 8vw, 128px) clamp(32px, 3.5vw, 48px);
+}
+
+.demo-head {
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: 64px 6vw;
-  align-items: start;
+  gap: 32px 6vw;
+  align-items: end;
 }
 
 .demo-pitch {
@@ -1004,94 +1030,123 @@ a {
 }
 
 .demo-title {
-  font: 400 clamp(2.6rem, 1.4rem + 4.4vw, 5.5rem) / 1.04 var(--font-display);
-  max-width: 12ch;
+  font: 400 clamp(2.6rem, 1.4rem + 4.4vw, 5.5rem) / 1.08 var(--font-display);
+  max-width: 16ch;
+}
+
+/* Masks clip only the bottom edge, bled outward so the p's descender survives. */
+.demo-w {
+  display: inline-block;
+  clip-path: inset(-0.2em -0.1em -0.16em);
+}
+
+.demo-w > span {
+  display: inline-block;
 }
 
 .demo-lede {
   font-size: var(--t-lg);
+  line-height: 1.45;
   max-width: 30ch;
   color: var(--ink-soft);
 }
 
-.demo-phone {
-  font: 400 var(--t-xl) / 1.2 var(--font-display);
-  transition: color 0.4s var(--ease);
+/* The address fills the column: --per-em is its measured width in Marcellus, in ems. */
+.demo-fit {
+  --per-em: 10.62;
+  container-type: inline-size;
 }
 
-.demo-phone:hover,
-.demo-phone:focus-visible {
+.demo-mail {
+  display: block;
+  font: 400 calc(100cqi / var(--per-em)) / 1.3 var(--font-display);
+  white-space: nowrap;
+}
+
+.demo-mail:focus-visible {
+  outline-offset: 8px;
+}
+
+.demo-run {
+  display: inline-block;
+}
+
+/* Each letter is a one-line window: the ink letter sits in it, the accent copy waits below. */
+.demo-ch {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  clip-path: inset(0 -0.04em);
+}
+
+.demo-ch > span,
+.demo-ch::after {
+  display: block;
+  transition: translate 0.7s var(--ease) calc(var(--i) * 12ms);
+}
+
+.demo-ch::after {
+  content: attr(data-c);
+  position: absolute;
+  inset: 100% 0 auto;
   color: var(--accent);
 }
 
-.demo-form {
-  display: grid;
-  gap: 28px;
+@media (hover: hover) and (pointer: fine) {
+  .demo-mail:hover .demo-ch > span,
+  .demo-mail:hover .demo-ch::after {
+    translate: 0 -100%;
+  }
 }
 
-.field {
-  display: grid;
-  gap: 6px;
+.demo-mail:focus-visible .demo-ch > span,
+.demo-mail:focus-visible .demo-ch::after {
+  translate: 0 -100%;
 }
 
-.field label {
-  font: 500 var(--t-xs) / 1.4 var(--font-body);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+.demo-rule {
+  position: relative;
+  height: 1px;
+  margin-top: clamp(12px, 2vw, 28px);
+  background: var(--rule);
 }
 
-.field input,
-.field select {
-  width: 100%;
-  padding: 10px 0;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--fg) 30%, transparent);
-  border-radius: 0;
-  color: var(--fg);
-  font: 400 1.0625rem/1.4 var(--font-body);
-  transition: border-color 0.5s var(--ease);
+.demo-rule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
 }
 
-/* The native select insets its text a few pixels; drop it so the value sits on
-   the same left edge as the inputs, and draw the chevron instead. */
-.field select {
-  appearance: none;
-  padding-right: 24px;
-  background-image:
-    linear-gradient(45deg, #0000 calc(50% - 0.8px), currentColor 50%, #0000 calc(50% + 0.8px)),
-    linear-gradient(135deg, #0000 calc(50% - 0.8px), currentColor 50%, #0000 calc(50% + 0.8px));
-  background-position:
-    calc(100% - 11px) 50%,
-    calc(100% - 5px) 50%;
-  background-size: 6px 6px;
-  background-repeat: no-repeat;
+.demo-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(24px, 3vw, 36px);
 }
 
-.field input:focus,
-.field select:focus {
-  outline: none;
-  border-color: var(--fg);
-}
-
-.submit {
-  justify-self: start;
+.demo-btn {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 28px;
-  background: var(--fg);
-  color: var(--bg);
-  border: 0;
+  min-height: 48px;
+  padding: 0 28px;
   border-radius: 999px;
   font: 500 var(--t-sm) / 1 var(--font-body);
   letter-spacing: 0.06em;
   cursor: pointer;
+}
+
+.demo-send {
+  gap: 16px;
+  background: var(--fg);
+  color: var(--bg);
   transition: background-color 0.5s var(--ease);
 }
 
-.submit::after {
+.demo-send::after {
   content: '';
   width: 20px;
   height: 1px;
@@ -1099,34 +1154,163 @@ a {
   transition: width 0.6s var(--ease);
 }
 
-.submit:hover,
-.submit:focus-visible {
+.demo-send:hover,
+.demo-send:focus-visible {
   background: var(--accent);
-  color: var(--stone);
 }
 
-.submit:hover::after,
-.submit:focus-visible::after {
+.demo-send:hover::after,
+.demo-send:focus-visible::after {
   width: 36px;
 }
 
-.demo-privacy {
-  font-size: var(--t-xs);
+.demo-copy {
+  background: none;
+  border: 1px solid color-mix(in srgb, var(--fg) 30%, transparent);
+  color: var(--fg);
+  transition: border-color 0.5s var(--ease);
+}
+
+.demo-copy:hover,
+.demo-copy:focus-visible {
+  border-color: var(--fg);
+}
+
+/* Both labels share one cell, so the pill keeps its width when the label rolls over. */
+.demo-copy-roll {
+  display: grid;
+  justify-items: center;
+  overflow: clip;
+  overflow-clip-margin: 2px;
+}
+
+.demo-copy-roll > span {
+  grid-area: 1 / 1;
+  transition:
+    translate 0.6s var(--ease),
+    color 0.3s ease;
+}
+
+.demo-copy-roll > :last-child {
+  translate: 0 140%;
+  color: var(--accent);
+}
+
+.demo-copy.is-done .demo-copy-roll > :first-child {
+  translate: 0 -140%;
+}
+
+.demo-copy.is-done .demo-copy-roll > :last-child {
+  translate: none;
+}
+
+.demo-note {
+  margin-left: auto;
+  font-size: var(--t-sm);
   color: var(--ink-soft);
 }
 
-.demo-thanks {
-  display: grid;
-  gap: 12px;
+.demo-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.demo-thanks-title {
-  font: 400 var(--t-2xl) / 1.1 var(--font-display);
+@media (prefers-reduced-motion: no-preference) {
+  /* These blocks stay put; their parts carry the motion. */
+  .js .demo-sheet :is(.demo-title, .demo-contact)[data-reveal] {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+
+  .js .demo-w > span {
+    translate: 0 115%;
+    transition: translate 1.2s var(--ease) calc(var(--i) * 0.07s);
+  }
+
+  .js .demo-title.is-in .demo-w > span {
+    translate: none;
+  }
+
+  .js .demo-contact:not(.is-in) .demo-ch > span {
+    translate: 0 105%;
+  }
+
+  /* An animation, so the rise keeps its own pace and the hover roll stays quick. */
+  .js .demo-contact.is-in .demo-ch > span {
+    animation: demo-rise 1.1s var(--ease) calc(0.15s + var(--i) * 28ms) backwards;
+  }
+
+  .js .demo-rule::before {
+    transform: scaleX(0);
+    transition: transform 1.6s var(--ease) 0.35s;
+  }
+
+  .js .demo-contact.is-in .demo-rule::before {
+    transform: none;
+  }
+
+  .js .demo-actions {
+    opacity: 0;
+    translate: 0 16px;
+    transition:
+      opacity 1s var(--ease) 0.8s,
+      translate 1s var(--ease) 0.8s;
+  }
+
+  .js .demo-contact.is-in .demo-actions {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@keyframes demo-rise {
+  from {
+    translate: 0 105%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-ch > span,
+  .demo-ch::after {
+    transition: none;
+  }
+
+  .demo-mail:hover .demo-ch::after,
+  .demo-mail:focus-visible .demo-ch::after {
+    translate: none;
+  }
+
+  .demo-mail:hover .demo-ch > span,
+  .demo-mail:focus-visible .demo-ch > span {
+    translate: none;
+    color: var(--accent);
+  }
 }
 
 @media (width <= 900px) {
-  .demo {
+  .demo-head {
     grid-template-columns: 1fr;
+  }
+}
+
+/* On a phone the address breaks after the @ and the longer line sets the size. */
+@media (width <= 560px) {
+  .demo-fit {
+    --per-em: 7.9;
+  }
+
+  .demo-run {
+    display: block;
+  }
+
+  .demo-note {
+    flex-basis: 100%;
+    margin: 8px 0 0;
   }
 }
 

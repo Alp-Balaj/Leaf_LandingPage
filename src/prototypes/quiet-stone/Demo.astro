@@ -1,79 +1,98 @@
 ---
-const roles = [
-  'Retail or SME lending',
-  'Credit risk',
-  'Operations',
-  'IT',
-  'Compliance',
-  'Management board',
-];
+/* The closing sheet: the one light surface on the dark page, opening to full width as it
+   scrolls in (motion.ts). The address is set edge to edge and is the section's only call to
+   action. The prefilled body asks for what the old form did. */
+const email = 'info@interadria-ks.com';
+const mailto =
+  `mailto:${email}?subject=${encodeURIComponent('Leaf live demo')}` +
+  `&body=${encodeURIComponent('Bank:\r\nYour role:\r\n')}`;
+
+const titleWords = 'See your own loan process in Leaf.'.split(' ');
+
+// Phones break the address after the @, so it is set as two runs of letters.
+const at = email.indexOf('@') + 1;
+const runs = [email.slice(0, at), email.slice(at)];
 ---
 
-<section id="demo" class="sec demo-sec">
-  <div class="wrap demo">
-    <div class="demo-pitch">
-      <p class="label label-mark" data-reveal><span class="mark mark-leaf" aria-hidden="true"></span>Live demo</p>
-      <h2 class="demo-title" data-reveal style="--d:.1s">See your own loan process in Leaf.</h2>
-      <p class="demo-lede" data-reveal style="--d:.2s">
-        45 minutes with the team that builds it. Bring your credit and risk leads.
-      </p>
-      <p data-reveal style="--d:.3s">
-        <a class="demo-phone" href="tel:+38338246375">+383 38 246 375</a>
-      </p>
-    </div>
-
-    <div class="demo-card" data-reveal style="--d:.2s">
-      <div class="demo-thanks" hidden>
-        <p class="demo-thanks-title" tabindex="-1">Thank you.</p>
-        <p>We will contact you within one working day to set a time.</p>
+<section id="demo" class="demo-sec">
+  <div class="demo-sheet" data-sheet>
+    <div class="wrap demo">
+      <div class="demo-head">
+        <div class="demo-pitch">
+          <p class="label label-mark" data-reveal><span class="mark mark-leaf" aria-hidden="true"></span>Live demo</p>
+          <h2 class="demo-title" data-reveal>
+            {
+              titleWords.map((w, i) => (
+                <>
+                  <span class="demo-w"><span style={`--i:${i}`}>{w}</span></span>{' '}
+                </>
+              ))
+            }
+          </h2>
+        </div>
+        <p class="demo-lede" data-reveal style="--d:.3s">
+          Write to us and we will set up 45 minutes with the team that builds it. Bring your credit
+          and risk leads.
+        </p>
       </div>
 
-      <!-- TODO: point action at the real endpoint that receives demo requests. -->
-      <form class="demo-form" method="post" action="#">
-        <div class="field">
-          <label for="qs-name">Full name</label>
-          <input id="qs-name" name="name" type="text" autocomplete="name" required />
+      <div class="demo-contact" data-reveal>
+        <div class="demo-fit">
+          <a class="demo-mail" href={mailto} aria-label={`Email ${email}`}>
+            {
+              runs.map((run, r) => (
+                <span class="demo-run">
+                  {[...run].map((c, i) => (
+                    <span class="demo-ch" data-c={c} style={`--i:${i + (r ? at : 0)}`}>
+                      <span>{c}</span>
+                    </span>
+                  ))}
+                </span>
+              ))
+            }
+          </a>
         </div>
-        <div class="field">
-          <label for="qs-bank">Bank</label>
-          <input id="qs-bank" name="bank" type="text" autocomplete="organization" required />
+        <div class="demo-rule" aria-hidden="true"></div>
+
+        <div class="demo-actions">
+          <a class="demo-btn demo-send" href={mailto}>Email us</a>
+          <button class="demo-btn demo-copy" type="button" data-copy={email}>
+            <span class="demo-copy-roll">
+              <span>Copy address</span>
+              <span aria-hidden="true" data-copy-done>Copied</span>
+            </span>
+          </button>
+          <p class="demo-note">We reply within one working day.</p>
+          <span class="demo-status" role="status" data-copy-status></span>
         </div>
-        <div class="field">
-          <label for="qs-role">Your role</label>
-          <select id="qs-role" name="role">
-            {roles.map((r) => <option>{r}</option>)}
-          </select>
-        </div>
-        <div class="field">
-          <label for="qs-email">Work email</label>
-          <input id="qs-email" name="email" type="email" autocomplete="email" required />
-        </div>
-        <button type="submit" class="submit">Request a demo</button>
-        <p class="demo-privacy">We use these details only to arrange the demo.</p>
-      </form>
+      </div>
     </div>
   </div>
 </section>
 
 <script>
-  const form = document.querySelector<HTMLFormElement>('#demo .demo-form')!;
-  const thanks = document.querySelector<HTMLElement>('#demo .demo-thanks')!;
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const copy = document.querySelector<HTMLButtonElement>('[data-copy]')!;
+  const done = copy.querySelector<HTMLElement>('[data-copy-done]')!;
+  const status = document.querySelector<HTMLElement>('[data-copy-status]')!;
+  const mail = document.querySelector<HTMLElement>('.demo-mail')!;
+  let timer = 0;
 
-  function swap() {
-    form.hidden = true;
-    thanks.hidden = false;
-  }
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const focusThanks = () => thanks.querySelector<HTMLElement>('.demo-thanks-title')!.focus();
-    if (!reduce && 'startViewTransition' in document) {
-      const t = (document as any).startViewTransition(swap);
-      t.finished.then(focusThanks, focusThanks);
-    } else {
-      swap();
-      focusThanks();
+  copy.addEventListener('click', async () => {
+    let message = 'Copied';
+    try {
+      await navigator.clipboard.writeText(copy.dataset.copy!);
+    } catch {
+      // No clipboard access (an http page or a denied permission): leave the address ready to copy.
+      getSelection()?.selectAllChildren(mail);
+      message = 'Selected';
     }
+    done.textContent = message;
+    status.textContent = message === 'Copied' ? 'Address copied' : 'Address selected';
+    copy.classList.add('is-done');
+    clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      copy.classList.remove('is-done');
+      status.textContent = '';
+    }, 2200);
   });
 </script>
