@@ -1,16 +1,26 @@
 ---
-/* The opening statement beside one file's notifications arriving as it moves. The list plays
-   only while on screen; with reduced motion it stays on the first four. Sample data. */
+/* The opening statement beside one file moving through the app's Progresi rail. Titles and
+   handoffs are the rail's own steps, read from the lifecycle screenshots and put in English; the
+   times are sample data. The list plays only while on screen; with reduced motion it stays on
+   the first four. */
 import Note from './StatementNote.astro';
 
 const notes = [
-  { title: 'Application opened', body: '2 products on one application, group of 3 clients', who: 'Relationship officer', time: '10:12' },
-  { title: 'Internal rating ready', body: 'B2, calculated in 15 seconds', who: 'Credit risk', time: '10:30' },
-  { title: 'Mortgage valuation reused', body: 'Valued Apr 2026, within your set period', who: 'Collateral', time: '10:34' },
-  { title: 'Recommended by branch manager', body: 'Above the branch limit, sent to risk', who: 'Branch', time: '10:46' },
-  { title: 'Approved by risk department', body: 'Within the EUR 150,000 limit', who: 'Credit risk', time: '11:04', accent: true },
-  { title: 'Client notified', body: 'Approval shared the moment it was made', who: 'Automatic', time: '11:04' },
-  { title: 'Disbursed', body: 'EUR 120,000, tranche 1 of 1', who: 'Disbursement', time: '11:12', accent: true },
+  { title: 'Application created', who: 'Credit officer', time: '10:12' },
+  { title: 'Exposure created', who: 'Credit officer', time: '10:14' },
+  { title: 'Application creation completed', who: 'Credit officer', time: '10:16' },
+  { title: 'Completing the data', who: 'Credit officer', time: '10:17' },
+  { title: 'Awaiting mortgage valuation', who: 'Credit officer → Pool', time: '10:19' },
+  { title: 'Mortgage valuation in progress', who: 'Pool → Mortgage valuer', time: '10:22' },
+  { title: 'Mortgage valuation completed', who: 'Mortgage valuer → Credit officer', time: '10:34', accent: true },
+  { title: 'Field visit completed', who: 'Credit officer', time: '10:41' },
+  { title: 'Analysis completed', who: 'Credit officer', time: '10:52' },
+  { title: 'Awaiting branch consent', who: 'Credit officer → Branch manager', time: '10:53' },
+  { title: 'Branch consent given', who: 'Branch manager → Credit officer', time: '11:05', accent: true },
+  { title: 'Awaiting review by Business-Client', who: 'Branch manager → Pool', time: '11:06' },
+  { title: 'Under review by Business-Client', who: 'Pool → Business analyst', time: '11:09' },
+  { title: 'Review completed', who: 'Business analyst → Credit officer', time: '11:21', accent: true },
+  { title: 'Under analysis by Credit Risk', who: 'Business analyst → Risk analyst', time: '11:22' },
 ];
 
 // Newest first, as the list shows them.

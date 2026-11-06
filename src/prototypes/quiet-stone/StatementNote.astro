@@ -3,13 +3,12 @@
    instead of its time. */
 interface Props {
   title: string;
-  body: string;
   who: string;
   time: string;
   accent?: boolean;
 }
 
-const { title, body, who, time, accent = false } = Astro.props;
+const { title, who, time, accent = false } = Astro.props;
 ---
 
 <li class:list={['note', { 'note-accent': accent }]}>
@@ -19,7 +18,7 @@ const { title, body, who, time, accent = false } = Astro.props;
     <span class="note-now">now</span>
   </p>
   <p class="note-title">{title}</p>
-  <p class="note-body">{body}<span class="note-who"> · {who}</span></p>
+  <p class="note-body">{who}</p>
 </li>
 
 <style>
