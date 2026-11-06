@@ -1,4 +1,4 @@
-// The six lifecycle stages, shared by the desktop stage band and the mobile variants.
+// The five lifecycle stages, shared by the desktop stage band and the mobile variants.
 // Panel values are illustrative sample data, not claims.
 export const stages = [
   {
@@ -13,19 +13,8 @@ export const stages = [
     ],
   },
   {
-    name: 'Score',
-    body: 'Your own credit score, fully configurable: you set the rating ranks and the criteria that score each client, from statements and registry exposure to knock-out and adjustment rules. The internal client rating takes five minutes.',
-    who: 'Credit analyst, risk',
-    panel: [
-      ['Internal rating', 'B2, in 15 s'],
-      ['Registry exposure', 'Imported 9 Sep'],
-      ['Knock-out rules', '0 triggered'],
-      ['Adjustments', '2 applied'],
-    ],
-  },
-  {
     name: 'Approve',
-    body: 'Routed from branch to risk to committee by the limits you set per branch and product.',
+    body: 'Routed from branch to risk to committee by the limits you set per branch and product, with the internal client rating on the file at every step.',
     who: 'Branch manager, risk, committee',
     panel: [
       ['Branch manager', 'Recommended'],
@@ -47,7 +36,7 @@ export const stages = [
   },
   {
     name: 'Monitor',
-    body: 'Reviews, early warnings and automatic notifications for revaluation, product expiry and special conditions. Credit terms and limits change on the live loan, without a new file.',
+    body: 'Reviews, early warnings and automatic notifications for revaluation, product expiry and special conditions. Credit terms and limits change on the live loan, without a new file, and internal ratings refresh across the portfolio, 25,000 clients in roughly 5 minutes.',
     who: 'Monitoring team',
     panel: [
       ['Collateral revaluation', 'Due 2 Sep 2027'],
@@ -69,4 +58,4 @@ export const stages = [
   },
 ];
 
-export const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+export const roman = ['I', 'II', 'III', 'IV', 'V'];

@@ -25,7 +25,7 @@ import { stages } from './stages';
           </span>
         ))
       }
-      <span class="of">/ 06</span>
+      <span class="of">/ {String(stages.length).padStart(2, '0')}</span>
     </span>
     <span class="details">
       {
@@ -53,7 +53,7 @@ import { stages } from './stages';
     color: var(--stone);
   }
 
-  /* All six words share one grid cell; each owns one step of the loop. */
+  /* All five words share one grid cell; each owns one step of the loop. */
   .word-stack {
     display: grid;
     justify-items: end;
@@ -117,13 +117,13 @@ import { stages } from './stages';
       clip-path: inset(0 100% 0 0);
       transform: translateX(-6%);
     }
-    6%,
-    14% {
+    7.2%,
+    16.8% {
       clip-path: inset(0);
       transform: none;
       opacity: 1;
     }
-    18%,
+    21.6%,
     100% {
       clip-path: inset(0);
       opacity: 0;
@@ -135,12 +135,12 @@ import { stages } from './stages';
       opacity: 0;
       transform: translateY(6px);
     }
-    4%,
-    14% {
+    4.8%,
+    16.8% {
       opacity: 1;
       transform: none;
     }
-    17%,
+    20.4%,
     100% {
       opacity: 0;
     }

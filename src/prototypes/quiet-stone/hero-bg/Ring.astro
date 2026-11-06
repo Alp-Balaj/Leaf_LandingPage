@@ -68,7 +68,7 @@ const points = stages.map((s, i) => {
     stroke: color-mix(in srgb, var(--stone) 12%, transparent);
   }
 
-  /* pathLength=1 lets the dash offset count stages in sixths of the ring. */
+  /* pathLength=1 lets the dash offset count stages in fifths of the ring. */
   .arc {
     stroke: color-mix(in srgb, var(--stone) 55%, transparent);
     stroke-dasharray: 1;
@@ -106,29 +106,25 @@ const points = stages.map((s, i) => {
 
   @keyframes arc {
     0%,
-    13.3% {
+    16% {
       stroke-dashoffset: 1;
       opacity: 1;
     }
-    16.7%,
-    30% {
-      stroke-dashoffset: 0.8333;
+    20%,
+    36% {
+      stroke-dashoffset: 0.8;
     }
-    33.3%,
-    46.7% {
-      stroke-dashoffset: 0.6667;
+    40%,
+    56% {
+      stroke-dashoffset: 0.6;
     }
-    50%,
-    63.3% {
-      stroke-dashoffset: 0.5;
+    60%,
+    76% {
+      stroke-dashoffset: 0.4;
     }
-    66.7%,
-    80% {
-      stroke-dashoffset: 0.3333;
-    }
-    83.3%,
-    95% {
-      stroke-dashoffset: 0.1667;
+    80%,
+    94% {
+      stroke-dashoffset: 0.2;
       opacity: 1;
     }
     100% {
@@ -139,28 +135,24 @@ const points = stages.map((s, i) => {
 
   @keyframes head {
     0%,
-    13.3% {
+    16% {
       transform: rotate(0deg);
     }
-    16.7%,
-    30% {
-      transform: rotate(60deg);
+    20%,
+    36% {
+      transform: rotate(72deg);
     }
-    33.3%,
-    46.7% {
-      transform: rotate(120deg);
+    40%,
+    56% {
+      transform: rotate(144deg);
     }
-    50%,
-    63.3% {
-      transform: rotate(180deg);
+    60%,
+    76% {
+      transform: rotate(216deg);
     }
-    66.7%,
-    80% {
-      transform: rotate(240deg);
-    }
-    83.3%,
-    95% {
-      transform: rotate(300deg);
+    80%,
+    94% {
+      transform: rotate(288deg);
     }
     100% {
       transform: rotate(360deg);
@@ -171,11 +163,11 @@ const points = stages.map((s, i) => {
     0% {
       opacity: 0.3;
     }
-    3%,
-    15% {
+    3.6%,
+    18% {
       opacity: 1;
     }
-    19%,
+    22.8%,
     100% {
       opacity: 0.3;
     }

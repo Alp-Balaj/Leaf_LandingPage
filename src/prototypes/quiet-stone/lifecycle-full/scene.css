@@ -1,5 +1,5 @@
 /* Lifecycle, full page: a Leaf screen fills the viewport behind each stage, dimmed, with a
-   frosted summary card over it and the I to VI head riding top-left. The stacked column of
+   frosted summary card over it and the I to V head riding top-left. The stacked column of
    100vh stages is the default layout; scrub.ts switches on the pinned crossfade. Phones keep
    the stack: each stage is a snap page with the screen zoomed on its focal point, the card at
    the foot and the head stuck to the top as a bar. Global, prefixed lf-. */
@@ -144,7 +144,7 @@
   font-size: var(--t-sm);
 }
 
-/* Head: the runhead and the I to VI strip ----------------------------------- */
+/* Head: the runhead and the I to V strip ----------------------------------- */
 
 .lf-head {
   position: absolute;
@@ -178,7 +178,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 6px;
 }
 
@@ -406,13 +406,13 @@
     font-size: 0.6875rem;
   }
 
-  /* One line in the bar: the strip itself says there are six stages. */
+  /* One line in the bar: the strip itself says there are five stages. */
   .lf-runhead > span {
     display: none;
   }
 
   .lf-steps ol {
-    grid-template-columns: repeat(6, 26px);
+    grid-template-columns: repeat(5, 26px);
     gap: 5px;
   }
 

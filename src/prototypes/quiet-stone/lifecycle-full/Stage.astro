@@ -26,7 +26,7 @@ const [cx, cy] = shadeAt(screen.place);
   <div class="lf-card" data-card data-reveal={reveal || undefined} style={reveal ? '--d:.15s' : undefined}>
     <div class="lf-glass" aria-hidden="true"></div>
     <div class="lf-card-in" data-card-in>
-      <p class="lf-n">{roman[i]} <span>of VI</span></p>
+      <p class="lf-n">{roman[i]} <span>of {roman.at(-1)}</span></p>
       <h3 class="lf-name">{stage.name}</h3>
       <p class="lf-body">{stage.body}</p>
       <p class="lf-who"><span class="label">Worked by</span>{stage.who}</p>

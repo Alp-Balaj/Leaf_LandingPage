@@ -188,4 +188,4 @@ export const borrowers: Borrower[] = [
 ];
 
 /** The stages every borrower goes through once captured. */
-export const shared = ['Score', 'Approve', 'Contract', 'Disburse', 'Monitor', 'Collect'];
+export const shared = ['Approve', 'Contract', 'Disburse', 'Monitor', 'Collect'];

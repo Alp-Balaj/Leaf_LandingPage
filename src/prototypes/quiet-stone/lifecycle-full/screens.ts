@@ -5,7 +5,6 @@
 // sources are the truth; the build emits WebP at several widths. Screens show demo data in Albanian.
 import type { ImageMetadata } from 'astro';
 import apply from '../../../assets/lifecycle/apply.png';
-import score from '../../../assets/lifecycle/score.png';
 import approve from '../../../assets/lifecycle/approve.png';
 import disburse from '../../../assets/lifecycle/disburse.png';
 import monitor from '../../../assets/lifecycle/monitor.png';
@@ -34,13 +33,6 @@ export const screens: Screen[] = [
     focal: '50% 0%',
     phone: { focal: '26% 8%', zoom: 1.4 },
     alt: 'Leaf application details: the applicant, the product list with its exposure total, and the document checklist.',
-  },
-  {
-    src: score,
-    place: 'middle-left',
-    focal: '50% 35%',
-    phone: { focal: '42% 100%', zoom: 1.5 },
-    alt: 'Leaf internal rating window: scorecard, statistical and qualitative scores, final score and rating, and the rating ladder.',
   },
   {
     src: approve,

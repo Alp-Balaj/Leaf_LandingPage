@@ -1,4 +1,4 @@
-// Shared step tracking for the I to VI strip: the current stage gets aria-current, the
+// Shared step tracking for the I to V strip: the current stage gets aria-current, the
 // ones passed get is-done. The pinned mechanics call markStep from ScrollTrigger; the
 // curtain and every fallback watch the stages cross the middle of the viewport instead.
 

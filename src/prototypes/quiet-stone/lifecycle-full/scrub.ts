@@ -1,4 +1,4 @@
-// The full-page lifecycle: the scene pins for five viewport heights and scroll scrubs one
+// The full-page lifecycle: the scene pins for about four and a half viewport heights and scroll scrubs one
 // timeline. A stage change is one direction of motion: the screen pans a little toward the
 // next card's corner while dissolving, the outgoing card drifts that way and fades, the next
 // card arrives from the same side. Rest points are short shelves; the move fills the middle of
