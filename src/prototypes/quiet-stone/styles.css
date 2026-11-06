@@ -986,34 +986,67 @@ a {
 
 /* Demo ---------------------------------------------------------------------- */
 
-/* The one light surface on the dark page. --p (0 to 1) comes from motion.ts as the sheet
-   scrolls in; it stays 1 without JS and under reduced motion. */
-.demo-sec {
+/* The one light surface on the dark page. It stays pinned for the rest of the page: it grows
+   from a small box over --travel of scroll, then the footer slides up over it. --p (0 to 1)
+   comes from motion.ts and stays 1 without JS and under reduced motion. The #demo anchor sits
+   at the end of the hold, so links land on the open sheet. */
+.closing {
+  --travel: 0px;
+  position: relative;
   background: var(--bg);
+}
+
+.demo-anchor {
+  position: absolute;
+  top: var(--travel);
+}
+
+.demo-hold {
+  height: var(--travel);
 }
 
 .demo-sheet {
   --p: 1;
-  --bg: var(--stone);
+  --cream: #f4e9d3;
+  --bg: var(--cream);
   --fg: var(--ink);
-  --ink-soft: color-mix(in srgb, var(--ink) 72%, var(--stone));
+  --ink-soft: color-mix(in srgb, var(--ink) 72%, var(--cream));
   --accent: #b23c34;
   --rule: color-mix(in srgb, var(--ink) 16%, transparent);
   background: var(--bg);
   color: var(--fg);
   color-scheme: light;
+  position: relative;
   clip-path: inset(
-    calc((1 - var(--p)) * 72px) calc((1 - var(--p)) * var(--gutter)) 0
-      round calc((1 - var(--p)) * 32px)
+    calc((1 - var(--p)) * 32%) calc((1 - var(--p)) * 30%) round calc((1 - var(--p)) * 28px)
   );
+}
+
+.js .demo-sheet {
+  position: sticky;
+  top: 0;
+}
+
+/* The leaf fills the box while it is small and is gone before the content arrives. */
+.demo-sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 56px;
+  height: 54px;
+  background: var(--accent);
+  mask: url('/leaf.svg') center / contain no-repeat;
+  -webkit-mask: url('/leaf.svg') center / contain no-repeat;
+  opacity: calc(1.15 - var(--p) * 1.4);
 }
 
 .demo {
   min-height: 100svh;
   display: grid;
-  align-content: space-between;
-  gap: clamp(56px, 6vw, 96px);
-  padding-block: clamp(88px, 8vw, 128px) clamp(32px, 3.5vw, 48px);
+  align-content: center;
+  gap: clamp(36px, 4vw, 56px);
+  padding-block: 56px 32px;
 }
 
 .demo-head {
@@ -1025,12 +1058,12 @@ a {
 
 .demo-pitch {
   display: grid;
-  gap: 28px;
+  gap: 18px;
   justify-items: start;
 }
 
 .demo-title {
-  font: 400 clamp(2.6rem, 1.4rem + 4.4vw, 5.5rem) / 1.08 var(--font-display);
+  font: 400 clamp(2.1rem, 1.3rem + 2.8vw, 4rem) / 1.1 var(--font-display);
   max-width: 16ch;
 }
 
@@ -1045,9 +1078,8 @@ a {
 }
 
 .demo-lede {
-  font-size: var(--t-lg);
-  line-height: 1.45;
-  max-width: 30ch;
+  line-height: 1.5;
+  max-width: 38ch;
   color: var(--ink-soft);
 }
 
@@ -1059,7 +1091,7 @@ a {
 
 .demo-mail {
   display: block;
-  font: 400 calc(100cqi / var(--per-em)) / 1.3 var(--font-display);
+  font: 400 calc(100cqi / var(--per-em)) / 1.22 var(--font-display);
   white-space: nowrap;
 }
 
@@ -1107,7 +1139,7 @@ a {
 .demo-rule {
   position: relative;
   height: 1px;
-  margin-top: clamp(12px, 2vw, 28px);
+  margin-top: clamp(8px, 1vw, 14px);
   background: var(--rule);
 }
 
@@ -1125,7 +1157,7 @@ a {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-top: clamp(24px, 3vw, 36px);
+  margin-top: clamp(18px, 2vw, 24px);
 }
 
 .demo-btn {
@@ -1220,11 +1252,27 @@ a {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* These blocks stay put; their parts carry the motion. */
-  .js .demo-sheet :is(.demo-title, .demo-contact)[data-reveal] {
+  .js .closing {
+    --travel: 110svh;
+  }
+
+  /* Everything inside waits for .is-open, set by motion.ts once the box has nearly opened. */
+  .js .demo-sheet .label,
+  .js .demo-lede {
+    opacity: 0;
+    translate: 0 20px;
+    transition:
+      opacity 1.1s var(--ease) var(--d, 0s),
+      translate 1.1s var(--ease) var(--d, 0s);
+  }
+
+  .js .demo-lede {
+    --d: 0.35s;
+  }
+
+  .js .demo-sheet.is-open :is(.label, .demo-lede) {
     opacity: 1;
-    transform: none;
-    clip-path: none;
+    translate: none;
   }
 
   .js .demo-w > span {
@@ -1232,25 +1280,33 @@ a {
     transition: translate 1.2s var(--ease) calc(var(--i) * 0.07s);
   }
 
-  .js .demo-title.is-in .demo-w > span {
+  .js .demo-sheet.is-open .demo-w > span {
     translate: none;
   }
 
-  .js .demo-contact:not(.is-in) .demo-ch > span {
+  .js .demo-sheet:not(.is-open) .demo-ch > span {
     translate: 0 105%;
   }
 
   /* An animation, so the rise keeps its own pace and the hover roll stays quick. */
-  .js .demo-contact.is-in .demo-ch > span {
-    animation: demo-rise 1.1s var(--ease) calc(0.15s + var(--i) * 28ms) backwards;
+  .js .demo-sheet.is-open .demo-ch > span {
+    animation: demo-rise 1.1s var(--ease) calc(0.3s + var(--i) * 28ms) backwards;
+  }
+
+  .js .demo-rule {
+    transition: opacity 0.8s var(--ease) 0.5s;
+  }
+
+  .js .demo-sheet:not(.is-open) .demo-rule {
+    opacity: 0;
   }
 
   .js .demo-rule::before {
     transform: scaleX(0);
-    transition: transform 1.6s var(--ease) 0.35s;
+    transition: transform 1.6s var(--ease) 0.6s;
   }
 
-  .js .demo-contact.is-in .demo-rule::before {
+  .js .demo-sheet.is-open .demo-rule::before {
     transform: none;
   }
 
@@ -1258,11 +1314,11 @@ a {
     opacity: 0;
     translate: 0 16px;
     transition:
-      opacity 1s var(--ease) 0.8s,
-      translate 1s var(--ease) 0.8s;
+      opacity 1s var(--ease) 1.1s,
+      translate 1s var(--ease) 1.1s;
   }
 
-  .js .demo-contact.is-in .demo-actions {
+  .js .demo-sheet.is-open .demo-actions {
     opacity: 1;
     translate: none;
   }
@@ -1316,7 +1372,10 @@ a {
 
 /* Footer ---------------------------------------------------------------------- */
 
+/* Rises over the pinned contact sheet. */
 .foot {
+  position: relative;
+  z-index: 1;
   --ink-soft: color-mix(in srgb, var(--stone) 58%, var(--ink));
   --rule: color-mix(in srgb, var(--stone) 16%, transparent);
   background: var(--ink);

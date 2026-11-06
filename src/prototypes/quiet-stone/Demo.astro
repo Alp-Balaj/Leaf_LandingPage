@@ -1,6 +1,7 @@
 ---
-/* The closing sheet: the one light surface on the dark page, opening to full width as it
-   scrolls in (motion.ts). The address is set edge to edge and is the section's only call to
+/* The closing sheet: the one light surface on the dark page. It sits with the footer in
+   .closing (index.astro), held on screen while it grows from a small box, its content playing
+   in once it has opened (motion.ts), until the footer slides up over it. The address is set edge to edge and is the section's only call to
    action. The prefilled body asks for what the old form did. */
 const email = 'info@interadria-ks.com';
 const mailto =
@@ -14,13 +15,13 @@ const at = email.indexOf('@') + 1;
 const runs = [email.slice(0, at), email.slice(at)];
 ---
 
-<section id="demo" class="demo-sec">
-  <div class="demo-sheet" data-sheet>
+<span id="demo" class="demo-anchor"></span>
+<section class="demo-sheet" aria-label="Contact" data-sheet>
     <div class="wrap demo">
       <div class="demo-head">
         <div class="demo-pitch">
-          <p class="label label-mark" data-reveal><span class="mark mark-leaf" aria-hidden="true"></span>Live demo</p>
-          <h2 class="demo-title" data-reveal>
+          <p class="label label-mark"><span class="mark mark-leaf" aria-hidden="true"></span>Live demo</p>
+          <h2 class="demo-title">
             {
               titleWords.map((w, i) => (
                 <>
@@ -30,13 +31,13 @@ const runs = [email.slice(0, at), email.slice(at)];
             }
           </h2>
         </div>
-        <p class="demo-lede" data-reveal style="--d:.3s">
+        <p class="demo-lede">
           Write to us and we will set up 45 minutes with the team that builds it. Bring your credit
           and risk leads.
         </p>
       </div>
 
-      <div class="demo-contact" data-reveal>
+      <div class="demo-contact">
         <div class="demo-fit">
           <a class="demo-mail" href={mailto} aria-label={`Email ${email}`}>
             {
@@ -67,8 +68,8 @@ const runs = [email.slice(0, at), email.slice(at)];
         </div>
       </div>
     </div>
-  </div>
 </section>
+<div class="demo-hold" aria-hidden="true"></div>
 
 <script>
   const copy = document.querySelector<HTMLButtonElement>('[data-copy]')!;

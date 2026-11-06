@@ -28,8 +28,12 @@ if ('IntersectionObserver' in window) {
 }
 // Safety net for print and full-page capture, where observers may never fire.
 const revealRest = () => pending.forEach(reveal);
-addEventListener('beforeprint', revealRest);
-if (navigator.webdriver) revealRest();
+const revealAll = () => {
+  revealRest();
+  document.querySelector('[data-sheet]')?.classList.add('is-open');
+};
+addEventListener('beforeprint', revealAll);
+if (navigator.webdriver) revealAll();
 
 /* Header: glass after the hero, hides on scroll down, returns on scroll up -- */
 
@@ -77,15 +81,24 @@ function updateParallax() {
   }
 }
 
-/* Contact sheet: opens from an inset card to full width as it rises up the screen -- */
+/* Contact sheet: a small box that grows to full size while held on screen, starting near
+   mid-screen and ending just before the footer arrives. Its content plays in once it has
+   nearly opened. A sheet taller than the screen pins by its bottom edge, so the footer
+   never covers the buttons before they have been seen ---------------------------------- */
 
 const sheet = document.querySelector<HTMLElement>('[data-sheet]');
 
 function updateSheet() {
-  if (!sheet || reduce) return;
-  const vh = innerHeight;
-  const t = Math.min(Math.max((vh - sheet.getBoundingClientRect().top) / (vh * 0.65), 0), 1);
-  sheet.style.setProperty('--p', (t * t * (3 - 2 * t)).toFixed(3));
+  if (!sheet) return;
+  sheet.style.top = `${Math.min(innerHeight - sheet.offsetHeight, 0)}px`;
+  if (reduce) return;
+  const top = sheet.parentElement!.getBoundingClientRect().top;
+  const start = innerHeight * 0.5;
+  const travel = sheet.nextElementSibling!.getBoundingClientRect().height;
+  const t = Math.min(Math.max((start - top) / (start + travel * 0.8), 0), 1);
+  const p = t * t * (3 - 2 * t);
+  sheet.style.setProperty('--p', p.toFixed(3));
+  if (p >= 0.85) sheet.classList.add('is-open');
 }
 
 /* Scrollbar: glass thumb that shows while scrolling --------------------------- */
